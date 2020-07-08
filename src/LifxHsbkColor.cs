@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx {
-    public class LifxHsbkColor : ILifxHsbkColor, ILifxColor {
+    public class LifxHsbkColor : ILifxHsbkColor {
         public ushort Hue { get; set; }
         public ushort Saturation { get; set; }
         public ushort Brightness { get; set; }

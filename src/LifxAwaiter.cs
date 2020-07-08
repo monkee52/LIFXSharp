@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     internal class LifxAwaiter {
-        public event EventHandler<LifxResponseReceivedEventArgs> ResponseReceived;
-        public event EventHandler<LifxExceptionEventArgs> ExceptionGenerated;
+        public event LifxResponseReceivedEventHandler ResponseReceived;
+        public event LifxExceptionEventHandler ExceptionGenerated;
 
         internal event EventHandler Finished;
 

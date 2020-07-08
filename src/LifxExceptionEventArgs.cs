@@ -10,4 +10,6 @@ namespace AydenIO.Lifx {
             this.Exception = exception;
         }
     }
+
+    internal delegate void LifxExceptionEventHandler(object sneder, LifxExceptionEventArgs e);
 }
