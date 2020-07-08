@@ -5,36 +5,51 @@ using System.Text;
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
-    /// Sent by a client to change the light state.
+    /// Apply an effect to the bulb.
     /// </summary>
-    internal class LightSetColor : LifxMessage, ILifxHsbkColor, ILifxTransition {
-        public const LifxMessageType TYPE = LifxMessageType.LightSetColor;
+    internal class LightSetWaveform : LifxMessage, ILifxWaveform {
+        public const LifxMessageType TYPE = LifxMessageType.LightSetWaveform;
 
-        public LightSetColor() : base(TYPE) {
+        public LightSetWaveform() : base(TYPE) {
 
         }
 
+        internal LightSetWaveform(LifxMessageType type) : base(type) {
+
+        }
+
+        public bool Transient { get; set; }
         public ushort Hue { get; set; }
         public ushort Saturation { get; set; }
         public ushort Brightness { get; set; }
         public ushort Kelvin { get; set; }
-
-        public TimeSpan Duration { get; set; }
+        public TimeSpan Period { get; set; }
+        public float Cycles { get; set; }
+        public short SkewRatio { get; set; }
+        public LifxWaveform Waveform { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
             /* uint8_t reserved */ writer.Write((byte)0);
+            /* uint8_t transient */ writer.Write((byte)(this.Transient ? 1 : 0));
 
             // HSBK
             /* uint16_t le hue */ writer.Write(this.Hue);
-            /* uint16_t le saturation */ writer.Write(this.Saturation);
+            /* uint16_t le saturaiton */ writer.Write(this.Saturation);
             /* uint16_t le brightness */ writer.Write(this.Brightness);
             /* uint16_t le kelvin */ writer.Write(this.Kelvin);
 
-            /* uint32_t le duration */ writer.Write((uint)this.Duration.TotalMilliseconds);
+            /* uint32_t le period */ writer.Write((uint)this.Period.TotalMilliseconds);
+            /* float32 le cycles */ writer.Write(this.Cycles);
+            /* int16_t le skew_ratio */ writer.Write(this.SkewRatio);
+            /* uint8_t waveform */ writer.Write((byte)this.Waveform);
         }
 
         protected override void ReadPayload(BinaryReader reader) {
             /* uint8_t reserved */ reader.ReadByte();
+
+            ushort transient = reader.ReadByte();
+
+            this.Transient = transient >= 1;
 
             // HSBK
             ushort hue = reader.ReadUInt16();
@@ -53,9 +68,21 @@ namespace AydenIO.Lifx.Messages {
 
             this.Kelvin = kelvin;
 
-            uint duration = reader.ReadUInt32();
+            uint period = reader.ReadUInt32();
 
-            this.Duration = TimeSpan.FromMilliseconds(duration);
+            this.Period = TimeSpan.FromMilliseconds(period);
+
+            float cycles = reader.ReadSingle();
+
+            this.Cycles = cycles;
+
+            short skewRatio = reader.ReadInt16();
+
+            this.SkewRatio = skewRatio;
+
+            byte waveform = reader.ReadByte();
+
+            this.Waveform = (LifxWaveform)waveform;
         }
 
         public void FromHsbk(ILifxHsbkColor hsbk) {

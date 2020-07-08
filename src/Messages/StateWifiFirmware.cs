@@ -17,7 +17,10 @@ namespace AydenIO.Lifx.Messages {
         public ushort VersionMajor { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            throw new NotSupportedException();
+            /* uint64_t le build */ writer.Write(this.Build);
+            /* uint64_t le reserved */ writer.Write((ulong)0);
+            /* uint16_t le minor */ writer.Write(this.VersionMinor);
+            /* uint16_t le major */ writer.Write(this.VersionMajor);
         }
 
         protected override void ReadPayload(BinaryReader reader) {

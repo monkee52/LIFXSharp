@@ -5,11 +5,14 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Request an arbitrary payload be echoed back.
+    /// </summary>
     internal class EchoRequest : LifxMessage, ILifxEcho {
         public const LifxMessageType TYPE = LifxMessageType.EchoRequest;
 
         public EchoRequest() : base(TYPE) {
-
+            this.payload = new byte[64];
         }
 
         private byte[] payload;
@@ -20,10 +23,6 @@ namespace AydenIO.Lifx.Messages {
 
         public void SetPayload(IEnumerable<byte> payload) {
             byte[] payloadBytes = payload.Take(64).ToArray();
-
-            if (payloadBytes.Length != 64) {
-                // TODO: ???
-            }
 
             payloadBytes.CopyTo(this.payload, 0);
         }

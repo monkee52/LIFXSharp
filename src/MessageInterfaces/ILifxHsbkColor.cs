@@ -18,6 +18,10 @@ namespace AydenIO.Lifx {
         /// Brightness, between 0 and 65535
         /// </summary>
         public ushort Brightness { get; set; }
+
+        /// <summary>
+        /// Kelvin, between a minimum and maximum kelvin depending on the device
+        /// </summary>
         public ushort Kelvin { get; set; }
     }
 }

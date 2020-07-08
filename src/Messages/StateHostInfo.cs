@@ -17,7 +17,9 @@ namespace AydenIO.Lifx.Messages {
         public uint ReceivedBytes { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            throw new NotSupportedException();
+            /* float32 le signal */ writer.Write(this.Signal);
+            /* uint32_t le tx */ writer.Write(this.TransmittedBytes);
+            /* uint32_t le rx */ writer.Write(this.ReceivedBytes);
         }
 
         protected override void ReadPayload(BinaryReader reader) {

@@ -19,7 +19,9 @@ namespace AydenIO.Lifx.Messages {
         public uint Version { get; private set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            throw new NotSupportedException();
+            /* uint32_t le vendor */ writer.Write(this.VendorId);
+            /* uint32_t le product */ writer.Write(this.ProductId);
+            /* uint32_t le version */ writer.Write(this.Version);
         }
 
         protected override void ReadPayload(BinaryReader reader) {

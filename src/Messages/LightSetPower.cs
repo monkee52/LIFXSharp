@@ -4,6 +4,9 @@ using System.IO;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Sent by a client to change the light power level.
+    /// </summary>
     internal class LightSetPower : LifxMessage, Lifx.ILifxPower, ILifxTransition {
         public const LifxMessageType TYPE = LifxMessageType.LightSetPower;
 
@@ -18,6 +21,16 @@ namespace AydenIO.Lifx.Messages {
         protected override void WritePayload(BinaryWriter writer) {
             /* uint16_t le level */ writer.Write((ushort)(this.PoweredOn ? 65535 : 0));
             /* uint32_t le duration */ writer.Write((uint)this.Duration.TotalMilliseconds);
+        }
+
+        protected override void ReadPayload(BinaryReader reader) {
+            ushort level = reader.ReadUInt16();
+
+            this.PoweredOn = level >= 32768;
+
+            uint duration = reader.ReadUInt32();
+
+            this.Duration = TimeSpan.FromMilliseconds(duration);
         }
     }
 }

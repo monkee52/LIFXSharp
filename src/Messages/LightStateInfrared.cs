@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// This message is returned from a GetInfrared message. It indicates the current maximum setting for the infrared channel.
+    /// </summary>
     internal class LightStateInfrared : LifxMessage, ILifxInfrared {
         public const LifxMessageType TYPE = LifxMessageType.LightStateInfrared;
 
@@ -15,7 +18,7 @@ namespace AydenIO.Lifx.Messages {
         public ushort Level { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            throw new NotSupportedException();
+            /* uint16_t le level */ writer.Write(this.Level);
         }
 
         protected override void ReadPayload(BinaryReader reader) {

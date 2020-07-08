@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Sent by a device to provide the current light state.
+    /// </summary>
     internal class LightState : LifxMessage, ILifxLightState {
         public const LifxMessageType TYPE = LifxMessageType.LightState;
 
@@ -21,7 +24,24 @@ namespace AydenIO.Lifx.Messages {
         public string Label { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            throw new NotSupportedException();
+            // HSBK
+            /* uint16_t le hue */ writer.Write(this.Hue);
+            /* uint16_t le saturation */ writer.Write(this.Saturation);
+            /* uint16_t le brightness */ writer.Write(this.Brightness);
+            /* uint16_t le kelvin */ writer.Write(this.Kelvin);
+
+            /* int16_t le reserved */ writer.Write((short)0);
+            /* uint16_t le power */ writer.Write((ushort)(this.PoweredOn ? 65535 : 0));
+
+            // Label
+            byte[] label = new byte[64];
+            
+            Encoding.UTF8.GetBytes(this.Label).CopyTo(label, 0);
+
+            /* uint8_t[32] label */ writer.Write(label);
+
+            // Reserved
+            /* uint64_t le reserved */ writer.Write((ulong)0);
         }
 
         protected override void ReadPayload(BinaryReader reader) {

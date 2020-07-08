@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
-    internal class LightStatePower : LifxMessage, Lifx.ILifxPower {
+    /// <summary>
+    /// Sent by a device to provide the current power level.
+    /// </summary>
+    internal class LightStatePower : LifxMessage, ILifxPower {
         public const LifxMessageType TYPE = LifxMessageType.LightStatePower;
 
         public LightStatePower() : base(TYPE) {
@@ -15,7 +18,7 @@ namespace AydenIO.Lifx.Messages {
         public bool PoweredOn { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            throw new NotSupportedException();
+            /* uint16_t le level */ writer.Write((ushort)(this.PoweredOn ? 65535 : 0));
         }
 
         protected override void ReadPayload(BinaryReader reader) {

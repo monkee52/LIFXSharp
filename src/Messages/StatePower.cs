@@ -15,7 +15,7 @@ namespace AydenIO.Lifx.Messages {
         public bool PoweredOn { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            throw new NotSupportedException();
+            /* uint16_t le level */ writer.Write((ushort)(this.PoweredOn ? 65535 : 0));
         }
 
         protected override void ReadPayload(BinaryReader reader) {

@@ -16,5 +16,11 @@ namespace AydenIO.Lifx.Messages {
         protected override void WritePayload(BinaryWriter writer) {
             /* uint16_t le level */ writer.Write((ushort)(this.PoweredOn ? 65535 : 0));
         }
+
+        protected override void ReadPayload(BinaryReader reader) {
+            ushort level = reader.ReadUInt16();
+
+            this.PoweredOn = level >= 32768;
+        }
     }
 }

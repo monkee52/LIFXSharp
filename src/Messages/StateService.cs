@@ -15,7 +15,8 @@ namespace AydenIO.Lifx.Messages {
         public uint Port { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            throw new NotSupportedException();
+            /* uint8_t service */ writer.Write((byte)this.Service);
+            /* uint32_t le port */ writer.Write(this.Port);
         }
 
         protected override void ReadPayload(BinaryReader reader) {

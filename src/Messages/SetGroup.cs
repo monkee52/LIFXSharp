@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Set the device group.
+    /// </summary>
     internal class SetGroup : LifxMessage, ILifxGroup {
         public const LifxMessageType TYPE = LifxMessageType.SetGroup;
 
@@ -27,6 +31,23 @@ namespace AydenIO.Lifx.Messages {
             ulong updatedAt = (ulong)(this.UpdatedAt - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds * 1000000;
 
             /* uint64_t le updated_at */ writer.Write(updatedAt);
+        }
+
+        protected override void ReadPayload(BinaryReader reader) {
+            // Group
+            byte[] guid = reader.ReadBytes(16);
+
+            this.Group = new Guid(guid);
+
+            // Label
+            byte[] label = reader.ReadBytes(32);
+
+            this.Label = Encoding.UTF8.GetString(label.TakeWhile(x => x != 0).ToArray());
+
+            // Updated at
+            ulong updatedAt = reader.ReadUInt64();
+
+            this.UpdatedAt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromMilliseconds(updatedAt / 1000000);
         }
     }
 }

@@ -15,7 +15,11 @@ namespace AydenIO.Lifx.Messages {
         public string Label { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            throw new NotSupportedException();
+            byte[] label = new byte[32];
+
+            Encoding.UTF8.GetBytes(this.Label).CopyTo(label, 0);
+
+            writer.Write(label);
         }
 
         protected override void ReadPayload(BinaryReader reader) {
