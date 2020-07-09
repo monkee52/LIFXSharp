@@ -240,11 +240,7 @@ namespace AydenIO.Lifx {
         }
 
         // Echo
-        public virtual async Task<bool> Ping(int? timeoutMs = null) {
-            byte[] payload = new byte[64];
-
-            new Random().NextBytes(payload);
-
+        public virtual async Task<bool> Ping(IEnumerable<byte> payload, int? timeoutMs = null) {
             Messages.EchoRequest echoRequest = new Messages.EchoRequest();
 
             echoRequest.SetPayload(payload);
@@ -256,6 +252,14 @@ namespace AydenIO.Lifx {
             } catch (TimeoutException) {
                 return false;
             }
+        }
+
+        public virtual Task<bool> Ping(int? timeoutMs = null) {
+            byte[] payload = new byte[64];
+
+            new Random().NextBytes(payload);
+
+            return this.Ping(payload, timeoutMs);
         }
     }
 }

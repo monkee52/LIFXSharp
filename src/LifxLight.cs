@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,11 +22,30 @@ namespace AydenIO.Lifx {
         }
 
         // Waveform
-        public virtual async Task SetWaveform(bool transient, ILifxColor color, uint period, float cycles, short skewRatio, LifxWaveform waveform, bool rapid = false, int? timeoutMs = null) {
-            await this.SetWaveformOptional(transient, color, period, cycles, skewRatio, waveform, true, true, true, true, rapid, timeoutMs);
+        public virtual async Task SetWaveform(bool transient, ILifxColor color, TimeSpan period, float cycles, short skewRatio, LifxWaveform waveform, bool rapid = false, int? timeoutMs = null) {
+            Messages.LightSetWaveform setWaveform = new Messages.LightSetWaveform() {
+                Transient = transient,
+
+                Period = period,
+                Cycles = cycles,
+                SkewRatio = skewRatio,
+                Waveform = waveform
+            };
+
+            setWaveform.FromHsbk(color.ToHsbk());
+
+            if (rapid) {
+                await this.Lifx.Send(this, setWaveform);
+            } else {
+                await this.Lifx.SendWithAcknowledgement(this, setWaveform, timeoutMs);
+            }
         }
 
-        public virtual async Task SetWaveformOptional(bool transient, ILifxColor color, uint period, float cycles, short skewRatio, LifxWaveform waveform, bool setHue, bool setSaturation, bool setBrightness, bool setKelvin, bool rapid = false, int? timeoutMs = null) {
+        public virtual Task SetWaveform(bool transient, ILifxColor color, uint periodMs, float cycles, short skewRatio, LifxWaveform waveform, bool rapid = false, int? timeoutMs = null) {
+            return this.SetWaveform(transient, color, TimeSpan.FromMilliseconds(periodMs), cycles, skewRatio, waveform, rapid, timeoutMs);)
+        }
+
+        public virtual async Task SetWaveformOptional(bool transient, ILifxColor color, TimeSpan period, float cycles, short skewRatio, LifxWaveform waveform, bool setHue, bool setSaturation, bool setBrightness, bool setKelvin, bool rapid = false, int? timeoutMs = null) {
             Messages.LightSetWaveformOptional setWaveformOptional = new Messages.LightSetWaveformOptional() {
                 Transient = transient,
 
@@ -47,6 +67,10 @@ namespace AydenIO.Lifx {
             } else {
                 await this.Lifx.SendWithAcknowledgement(this, setWaveformOptional, timeoutMs);
             }
+        }
+
+        public virtual Task SetWaveformOptional(bool transient, ILifxColor color, uint periodMs, float cycles, short skewRatio, LifxWaveform waveform, bool setHue, bool setSaturation, bool setBrightness, bool setKelvin, bool rapid = false, int? timeoutMs = null) {
+            return this.SetWaveformOptional(transient, color, TimeSpan.FromMilliseconds(periodMs), cycles, skewRatio, waveform, setHue, setSaturation, setBrightness, setKelvin, rapid, timeoutMs);
         }
 
         // Power
