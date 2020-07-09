@@ -506,7 +506,7 @@ namespace AydenIO.Lifx {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
             // Handle timeout
-            _ = Task.Delay(timeoutMs ?? this.ReceiveTimeout, cancellationTokenSource.Token).ContinueWith((Task task) => {
+            _ = Task.Delay(timeoutMs ?? this.ReceiveTimeout, cancellationTokenSource.Token).ContinueWith(_ => {
                 if (!cancellationTokenSource.IsCancellationRequested) {
                     awaitingResponse.HandleException(new TimeoutException("Time out while waiting for response."));
                 }
@@ -643,6 +643,7 @@ namespace AydenIO.Lifx {
         /// <param name="productId">The product ID to look up</param>
         /// <returns>An object containing the supported features for that product ID</returns>
         public static ILifxDeviceFeatures GetFeaturesForProductId(uint productId) {
+            // https://github.com/mclarkk/lifxlan/blob/master/lifxlan/products.py
             return productId switch {
                  1 => new LifxDeviceFeatures() { Name = "Original 1000", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
                  3 => new LifxDeviceFeatures() { Name = "Color 650", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
@@ -686,6 +687,8 @@ namespace AydenIO.Lifx {
                 if (disposing) {
                     // TODO: dispose managed state (managed objects).
                     this.StopDiscoverySync();
+
+                    this.socket.Close();
 
                     this.socketReceiveThread?.Join();
                     this.socketReceiveThread = null;

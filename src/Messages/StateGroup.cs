@@ -6,7 +6,7 @@ using System.Text;
 
 namespace AydenIO.Lifx.Messages {
     internal class StateGroup : LifxMessage, ILifxGroup {
-        public const LifxMessageType TYPE = LifxMessageType.StateLocation;
+        public const LifxMessageType TYPE = LifxMessageType.StateGroup;
 
         public StateGroup() : base(TYPE) {
 

@@ -379,7 +379,7 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
         /// <returns>The device group</returns>
         public virtual async Task<ILifxGroup> GetGroup(bool forceRefresh = false, int? timeoutMs = null) {
-            if (!forceRefresh && this.location != null) {
+            if (!forceRefresh && this.group != null) {
                 return this.group;
             }
 
