@@ -647,6 +647,42 @@ namespace AydenIO.Lifx {
             await this.SendWithResponse<Messages.Acknowledgement>(device, message, timeoutMs, true);
         }
 
+        public ILifxDeviceFeatures GetFeaturesForProductId(uint productId) {
+            return productId switch {
+                 1 => new LifxDeviceFeatures() { Name = "Original 1000", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                 3 => new LifxDeviceFeatures() { Name = "Color 650", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                10 => new LifxDeviceFeatures() { Name = "White 800 (Low Voltage)", SupportsColor = false, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2700, MaxKelvin = 6500 },
+                11 => new LifxDeviceFeatures() { Name = "White 800 (High Voltage)", SupportsColor = false, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2700, MaxKelvin = 6500 },
+                18 => new LifxDeviceFeatures() { Name = "White 900 BR30 (Low Voltage)", SupportsColor = false, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2700, MaxKelvin = 6500 },
+                20 => new LifxDeviceFeatures() { Name = "Color 1000 BR30", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                22 => new LifxDeviceFeatures() { Name = "Color 1000", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                27 => new LifxDeviceFeatures() { Name = "LIFX A19", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                28 => new LifxDeviceFeatures() { Name = "LIFX BR30", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                29 => new LifxDeviceFeatures() { Name = "LIFX+ A19", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                30 => new LifxDeviceFeatures() { Name = "LIFX+ BR30", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                31 => new LifxDeviceFeatures() { Name = "LIFX Z", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                32 => new LifxDeviceFeatures() { Name = "LIFX Z 2", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                36 => new LifxDeviceFeatures() { Name = "LIFX Downlight", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                37 => new LifxDeviceFeatures() { Name = "LIFX Downlight", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                38 => new LifxDeviceFeatures() { Name = "LIFX Beam", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                43 => new LifxDeviceFeatures() { Name = "LIFX A19", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                44 => new LifxDeviceFeatures() { Name = "LIFX BR30", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                45 => new LifxDeviceFeatures() { Name = "LIFX+ A19", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                46 => new LifxDeviceFeatures() { Name = "LIFX+ BR30", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                49 => new LifxDeviceFeatures() { Name = "LIFX Mini", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                50 => new LifxDeviceFeatures() { Name = "LIFX Mini Day and Dusk", SupportsColor = false, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 1500, MaxKelvin = 4000 },
+                51 => new LifxDeviceFeatures() { Name = "LIFX Mini White", SupportsColor = false, SupportsTemperature = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2700, MaxKelvin = 2700 },
+                52 => new LifxDeviceFeatures() { Name = "LIFX GU10", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                55 => new LifxDeviceFeatures() { Name = "LIFX Tile", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = true, MinKelvin = 2500, MaxKelvin = 9000 },
+                57 => new LifxDeviceFeatures() { Name = "LIFX Candle", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                59 => new LifxDeviceFeatures() { Name = "LIFX Mini Color", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                60 => new LifxDeviceFeatures() { Name = "LIFX Mini Day and Dusk", SupportsColor = false, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 1500, MaxKelvin = 4000 },
+                61 => new LifxDeviceFeatures() { Name = "LIFX Mini White", SupportsColor = false, SupportsTemperature = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2700, MaxKelvin = 2700 },
+                68 => new LifxDeviceFeatures() { Name = "LIFX Candle", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                _ => null
+            };
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 

@@ -131,10 +131,6 @@ namespace AydenIO.Lifx {
         }
 
         // Color
-        public virtual Task SetColor(ILifxColor color, int durationMs = 0, bool rapid = false, int? timeoutMs = null) {
-            return this.SetColor(color, TimeSpan.FromMilliseconds(durationMs), rapid, timeoutMs);
-        }
-
         public virtual async Task SetColor(ILifxColor color, TimeSpan? duration, bool rapid = false, int? timeoutMs = null) {
             duration ??= TimeSpan.Zero;
 
@@ -151,7 +147,8 @@ namespace AydenIO.Lifx {
             }
         }
 
-        public int MinKelvin => throw new NotImplementedException();
-        public int MaxKelvin => throw new NotImplementedException();
+        public virtual Task SetColor(ILifxColor color, int durationMs = 0, bool rapid = false, int? timeoutMs = null) {
+            return this.SetColor(color, TimeSpan.FromMilliseconds(durationMs), rapid, timeoutMs);
+        }
     }
 }

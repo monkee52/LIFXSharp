@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
-    public class LifxDevice {
+    public class LifxDevice : ILifxDeviceFeatures {
         protected LifxNetwork Lifx;
 
         public LifxDevice(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version) {
@@ -20,7 +20,35 @@ namespace AydenIO.Lifx {
             this.version = version;
 
             this.LastSeen = DateTime.MinValue;
+
+            // Get product features
+            ILifxDeviceFeatures features = lifx.GetFeaturesForProductId(version.ProductId);
+
+            this.Name = features.Name;
+
+            this.SupportsColor = features.SupportsColor;
+            this.SupportsTemperature = features.SupportsTemperature;
+            this.SupportsInfrared = features.SupportsInfrared;
+
+            this.IsMultizone = features.IsMultizone;
+            this.IsChain = features.IsChain;
+
+            this.MinKelvin = features.MinKelvin;
+            this.MaxKelvin = features.MaxKelvin;
         }
+
+        // Properties
+        public string Name { get; private set; }
+
+        public bool SupportsColor { get; private set; }
+        public bool SupportsTemperature { get; private set; }
+        public bool SupportsInfrared { get; private set; }
+
+        public bool IsMultizone { get; private set; }
+        public bool IsChain { get; private set; }
+
+        public ushort MinKelvin { get; private set; }
+        public ushort MaxKelvin { get; private set; }
 
         public IPEndPoint EndPoint { get; protected set; }
         public MacAddress MacAddress { get; protected set; }
