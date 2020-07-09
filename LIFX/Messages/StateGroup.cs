@@ -27,7 +27,7 @@ namespace AydenIO.Lifx.Messages {
             /* uint8_t[32] label */
             writer.Write(label, 0, 32);
 
-            ulong updatedAt = (ulong)(this.UpdatedAt - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds * 1000000;
+            ulong updatedAt = (ulong)(this.UpdatedAt - LifxNetwork.UNIX_EPOCH).Ticks * 100;
 
             /* uint64_t le updated_at */
             writer.Write(updatedAt);
@@ -44,7 +44,7 @@ namespace AydenIO.Lifx.Messages {
 
             ulong updatedAt = reader.ReadUInt64();
 
-            this.UpdatedAt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromMilliseconds(updatedAt / 1000000);
+            this.UpdatedAt = LifxNetwork.UNIX_EPOCH + TimeSpan.FromTicks((long)(updatedAt / 100));
         }
     }
 }

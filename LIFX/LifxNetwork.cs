@@ -26,6 +26,8 @@ namespace AydenIO.Lifx {
         /// </summary>
         public static uint[] LIFX_LIGHT_PRODUCT_IDS = new uint[] { 1, 3, 10, 11, 18, 20, 22, 27, 28, 29, 30, 31, 32, 36, 37, 43, 44, 45, 46, 49, 50, 51, 52, 55, 57, 59, 60, 61, 68 };
 
+        internal static readonly DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         private UdpClient socket;
 
         /// <value>An identifier to distinguish this <c>LifxNetwork</c> from others in the protocol</value>

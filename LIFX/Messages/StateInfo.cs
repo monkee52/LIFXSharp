@@ -17,15 +17,15 @@ namespace AydenIO.Lifx.Messages {
         public TimeSpan Downtime { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            ulong time = (ulong)(this.Time - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds * 1000000;
+            ulong time = (ulong)(this.Time - LifxNetwork.UNIX_EPOCH).Ticks * 100;
 
             /* uint64_t le time */ writer.Write(time);
 
-            ulong uptime = (ulong)this.Uptime.TotalMilliseconds * 1000000;
+            ulong uptime = (ulong)this.Uptime.Ticks * 100;
 
             /* uint64_t le uptime */ writer.Write(uptime);
 
-            ulong downtime = (ulong)this.Downtime.TotalMilliseconds * 1000000;
+            ulong downtime = (ulong)this.Downtime.Ticks * 100;
 
             /* uint64_t le downtime */ writer.Write(downtime);
         }
@@ -33,15 +33,15 @@ namespace AydenIO.Lifx.Messages {
         protected override void ReadPayload(BinaryReader reader) {
             ulong time = reader.ReadUInt64();
 
-            this.Time = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromMilliseconds(time / 1000000);
+            this.Time = LifxNetwork.UNIX_EPOCH + TimeSpan.FromTicks((long)(time / 100));
 
             ulong uptime = reader.ReadUInt64();
 
-            this.Uptime = TimeSpan.FromMilliseconds(uptime / 1000000);
+            this.Uptime = TimeSpan.FromTicks((long)(uptime / 100));
 
             ulong downtime = reader.ReadUInt64();
 
-            this.Downtime = TimeSpan.FromMilliseconds(downtime / 1000000);
+            this.Downtime = TimeSpan.FromTicks((long)(downtime / 100));
         }
     }
 }

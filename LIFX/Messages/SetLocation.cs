@@ -5,22 +5,19 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
-    /// <summary>
-    /// Set the device group.
-    /// </summary>
-    internal class SetGroup : LifxMessage, ILifxGroup {
-        public const LifxMessageType TYPE = LifxMessageType.SetGroup;
+    internal class SetLocation : LifxMessage, ILifxLocation {
+        public const LifxMessageType TYPE = LifxMessageType.SetLocation;
 
-        public SetGroup() : base(TYPE) {
+        public SetLocation() : base(TYPE) {
 
         }
 
-        public Guid Group { get; set; }
+        public Guid Location { get; set; }
         public string Label { get; set; }
         public DateTime UpdatedAt { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            /* uint8_t[16] guid */ writer.Write(this.Group.ToByteArray());
+            /* uint8_t[16] guid */ writer.Write(this.Location.ToByteArray());
 
             byte[] label = new byte[32];
 
@@ -28,16 +25,16 @@ namespace AydenIO.Lifx.Messages {
 
             /* uint8_t[32] label */ writer.Write(label, 0, 32);
 
-            ulong updatedAt = (ulong)(this.UpdatedAt - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds * 1000000;
+            ulong updatedAt = (ulong)(this.UpdatedAt - LifxNetwork.UNIX_EPOCH).Ticks * 100;
 
             /* uint64_t le updated_at */ writer.Write(updatedAt);
         }
 
         protected override void ReadPayload(BinaryReader reader) {
-            // Group
+            // Location
             byte[] guid = reader.ReadBytes(16);
 
-            this.Group = new Guid(guid);
+            this.Location = new Guid(guid);
 
             // Label
             byte[] label = reader.ReadBytes(32);
@@ -47,7 +44,7 @@ namespace AydenIO.Lifx.Messages {
             // Updated at
             ulong updatedAt = reader.ReadUInt64();
 
-            this.UpdatedAt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromMilliseconds(updatedAt / 1000000);
+            this.UpdatedAt = LifxNetwork.UNIX_EPOCH + TimeSpan.FromTicks((long)(updatedAt / 100));
         }
     }
 }
