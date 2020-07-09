@@ -33,7 +33,7 @@ namespace AydenIO.Lifx {
             this.LastSeen = DateTime.MinValue;
 
             // Get product features
-            ILifxDeviceFeatures features = lifx.GetFeaturesForProductId(version.ProductId);
+            ILifxDeviceFeatures features = LifxNetwork.GetFeaturesForProductId(version.ProductId);
 
             this.Name = features.Name;
 

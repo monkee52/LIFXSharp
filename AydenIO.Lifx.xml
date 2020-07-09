@@ -726,6 +726,13 @@
             <param name="message">The message</param>
             <param name="timeoutMs">How long before the call times out if there is no response</param>
         </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetFeaturesForProductId(System.UInt32)">
+            <summary>
+            Gets the features supported by a device, given a product ID
+            </summary>
+            <param name="productId">The product ID to look up</param>
+            <returns>An object containing the supported features for that product ID</returns>
+        </member>
         <member name="T:AydenIO.Lifx.LifxService">
             <summary>
             Possible (public) service types for devices

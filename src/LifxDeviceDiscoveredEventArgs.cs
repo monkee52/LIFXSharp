@@ -14,11 +14,4 @@ namespace AydenIO.Lifx {
             this.Device = device;
         }
     }
-
-    /// <summary>
-    /// Event handler for when a device is discovered
-    /// </summary>
-    /// <param name="sender">A reference to the <c>LifxNetwork</c> that discovered the device</param>
-    /// <param name="e">Event arguments containing the discovered device</param>
-    public delegate void LifxDeviceDiscoveredEventHandler(object sender, LifxDeviceDiscoveredEventArgs e);
 }
