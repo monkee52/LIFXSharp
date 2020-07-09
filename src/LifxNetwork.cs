@@ -32,7 +32,7 @@ namespace AydenIO.Lifx {
         public int SourceId { get; private set; }
 
         private int sequenceCounter;
-        private IDictionary<byte, LifxAwaiter> AwaitingSequences;
+        private IDictionary<byte, LifxAwaiter> awaitingSequences;
 
         private Thread socketReceiveThread;
 
@@ -84,7 +84,7 @@ namespace AydenIO.Lifx {
             // Set up internals
             this.sequenceCounter = -1; // Start at -1 because Interlocked.Increment returns the incremented value
             this.deviceLookup = new Dictionary<MacAddress, LifxDevice>();
-            this.AwaitingSequences = new Dictionary<byte, LifxAwaiter>();
+            this.awaitingSequences = new Dictionary<byte, LifxAwaiter>();
 
             // Set up config
             this.DiscoveryInterval = discoveryInterval;
@@ -114,86 +114,49 @@ namespace AydenIO.Lifx {
 
                 try {
                     // Decode message to determine type
-                    LifxMessage message = new LifxMessage(LifxMessageType._internal_unknown_);
+                    LifxMessage origMessage = new LifxMessage(LifxMessageType._internal_unknown_);
 
-                    message.FromBytes(buffer);
+                    origMessage.FromBytes(buffer);
 
                     // Skip messages not intended for us
-                    if (message.SourceId != this.SourceId) {
+                    if (origMessage.SourceId != this.SourceId) {
                         continue;
                     }
 
                     // Find awaiters
-                    LifxAwaiter awaitingResponse;
+                    bool found = this.awaitingSequences.TryGetValue(origMessage.SequenceNumber, out LifxAwaiter awaitingResponse);
 
-                    bool found = this.AwaitingSequences.TryGetValue(message.SequenceNumber, out awaitingResponse);
+                    LifxMessage message = null;
 
                     // Decode message as appropriate type
-                    bool decodeAgain = found;
-
                     if (found) {
-                        switch (message.Type) {
+                        message = message.Type switch
+                        {
                             // Device messages
-                            case LifxMessageType.StateService:
-                                message = new Messages.StateService();
-                                break;
-                            case LifxMessageType.StateHostInfo:
-                                message = new Messages.StateHostInfo();
-                                break;
-                            case LifxMessageType.StateHostFirmware:
-                                message = new Messages.StateHostFirmware();
-                                break;
-                            case LifxMessageType.StateWifiInfo:
-                                message = new Messages.StateWifiInfo();
-                                break;
-                            case LifxMessageType.StateWifiFirmware:
-                                message = new Messages.StateWifiFirmware();
-                                break;
-                            case LifxMessageType.StatePower:
-                                message = new Messages.StatePower();
-                                break;
-                            case LifxMessageType.StateLabel:
-                                message = new Messages.StateLabel();
-                                break;
-                            case LifxMessageType.StateVersion:
-                                message = new Messages.StateVersion();
-                                break;
-                            case LifxMessageType.StateInfo:
-                                message = new Messages.StateInfo();
-                                break;
-                            case LifxMessageType.Acknowledgement:
-                                message = new Messages.Acknowledgement();
-                                break;
-                            case LifxMessageType.StateLocation:
-                                message = new Messages.StateLocation();
-                                break;
-                            case LifxMessageType.StateGroup:
-                                message = new Messages.StateGroup();
-                                break;
-                            case LifxMessageType.EchoResponse:
-                                message = new Messages.EchoResponse();
-                                break;
-
+                            LifxMessageType.StateService => new Messages.StateService(),
+                            LifxMessageType.StateHostInfo => new Messages.StateHostInfo(),
+                            LifxMessageType.StateHostFirmware => new Messages.StateHostFirmware(),
+                            LifxMessageType.StateWifiInfo => new Messages.StateWifiInfo(),
+                            LifxMessageType.StateWifiFirmware => new Messages.StateWifiFirmware(),
+                            LifxMessageType.StatePower => new Messages.StatePower(),
+                            LifxMessageType.StateLabel => new Messages.StateLabel(),
+                            LifxMessageType.StateVersion => new Messages.StateVersion(),
+                            LifxMessageType.StateInfo => new Messages.StateInfo(),
+                            LifxMessageType.Acknowledgement => new Messages.Acknowledgement(),
+                            LifxMessageType.StateLocation => new Messages.StateLocation(),
+                            LifxMessageType.StateGroup => new Messages.StateGroup(),
+                            LifxMessageType.EchoResponse => new Messages.EchoResponse(),
                             // Light messages
-                            case LifxMessageType.LightState:
-                                message = new Messages.LightState();
-                                break;
-                            case LifxMessageType.LightStatePower:
-                                message = new Messages.LightStatePower();
-                                break;
-                            case LifxMessageType.LightStateInfrared:
-                                message = new Messages.LightStateInfrared();
-                                break;
-                            
-                            default:
-                                decodeAgain = false;
-                                break;
-                        }
+                            LifxMessageType.LightState => new Messages.LightState(),
+                            LifxMessageType.LightStatePower => new Messages.LightStatePower(),
+                            LifxMessageType.LightStateInfrared => new Messages.LightStateInfrared(),
+                            _ => origMessage,
+                        };
                     }
 
                     try {
                         // Decode message again if needed
-                        if (decodeAgain) {
+                        if (message != origMessage) {
                             message.SourceId = this.SourceId;
 
                             message.FromBytes(buffer);
@@ -527,7 +490,7 @@ namespace AydenIO.Lifx {
             byte seq = this.SetMessageHeaderCommon(null, message, responseFlags);
 
             // Determine if message can be sent
-            bool canAwaitResponse = this.AwaitingSequences.TryAdd(seq, awaitingResponse);
+            bool canAwaitResponse = this.awaitingSequences.TryAdd(seq, awaitingResponse);
 
             if (!canAwaitResponse) {
                 // TODO: Throw unqueued message because queue is full
@@ -540,7 +503,7 @@ namespace AydenIO.Lifx {
 
             // Remove message from queue when finished
             awaitingResponse.Finished += (object sender, EventArgs e) => {
-                this.AwaitingSequences.Remove(seq);
+                this.awaitingSequences.Remove(seq);
             };
 
             await this.SendCommon(endPoint, message);
