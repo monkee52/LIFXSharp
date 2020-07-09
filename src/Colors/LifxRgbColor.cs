@@ -5,17 +5,30 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx {
+    /// <summary>
+    /// Represents an RGB color
+    /// </summary>
     public class LifxRgbColor : ILifxColor {
+        /// <value>Gets or sets the red value for the color</value>
         public byte Red { get; set; }
+
+        /// <value>Gets or sets the green value for the color</value>
         public byte Green { get; set; }
+
+        /// <value>Gets or sets the blue value for the color</value>
         public byte Blue { get; set; }
+
+        /// <value>Gets or sets the kelvin value for the color</value>
         public ushort Kelvin { get; set; }
 
+        /// <inheritdoc />
         public void FromHsbk(ILifxHsbkColor hsbk) {
+            // Scale values
             double H = (double)hsbk.Hue / UInt16.MaxValue;
             double S = (double)hsbk.Saturation / UInt16.MaxValue;
             double V = (double)hsbk.Brightness / UInt16.MaxValue;
 
+            // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
             double C = V * S;
             double Hd = H / 6.0d;
             double X = C * (1.0d - Math.Abs(Hd % 2 - 1.0d));
@@ -58,6 +71,7 @@ namespace AydenIO.Lifx {
             this.Kelvin = hsbk.Kelvin;
         }
 
+        /// <inheritdoc />
         public ILifxHsbkColor ToHsbk() {
             double colorMax = new[] { this.Red, this.Green, this.Blue }.Max();
             double colorMin = new[] { this.Red, this.Green, this.Blue }.Min();

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace AydenIO.Lifx {
+    /// <summary>
+    /// Possible message types for the LIFX protocol
+    /// </summary>
     public enum LifxMessageType {
         _internal_unknown_ = -1,
 

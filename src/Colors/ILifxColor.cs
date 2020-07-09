@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace AydenIO.Lifx {
+    /// <summary>
+    /// Represents a generic color type
+    /// </summary>
     public interface ILifxColor {
         /// <summary>
         /// Converts a color to the LIFX HSBK representation (Hue, Saturation, Brightness, Kelvin)

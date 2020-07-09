@@ -1,0 +1,405 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AydenIO.Lifx</name>
+    </assembly>
+    <members>
+        <member name="M:AydenIO.Lifx.ILifxColor.ToHsbk">
+            <summary>
+            Converts a color to the LIFX HSBK representation (Hue, Saturation, Brightness, Kelvin)
+            </summary>
+            <returns>The HSBK representation</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxColor.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
+            <summary>
+            Converts a LIFX HSBK color representation to a color.
+            </summary>
+            <param name="hsbk">The LIFX HSBK color</param>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxHsbkColor.Hue">
+            <summary>
+            Hue, between 0 and 65535
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxHsbkColor.Saturation">
+            <summary>
+            Saturation, between 0 and 65535
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxHsbkColor.Brightness">
+            <summary>
+            Brightness, between 0 and 65535
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxHsbkColor.Kelvin">
+            <summary>
+            Kelvin, between a minimum and maximum kelvin depending on the device
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.StartDiscovery">
+            <summary>
+            Starts the discovery thread
+            </summary>
+            <returns>True if the call started the thread, otherwise the thread was already started</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscoverySync">
+            <summary>
+            Synchronous version of <c>StopDiscovery</c>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscovery">
+            <summary>
+            Stops the discovery thread
+            </summary>
+            <returns>True if the call stopped the thread, otherwise the thread was already stopped.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoverOnce">
+            <summary>
+            Sends a single discovery packet
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(AydenIO.Lifx.MacAddress,System.UInt16,System.Nullable{System.Int32})">
+            <summary>
+            Gets a device with a specific <c>MacAddress</c>
+            </summary>
+            <param name="macAddress">The mac address to find</param>
+            <param name="timeoutMs">How long to wait for a response before the call times out</param>
+            <returns>The device</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(System.Net.IPEndPoint,System.Nullable{System.Int32})">
+            <summary>
+            Gets a device with a specific <c>MacAddress</c>
+            </summary>
+            <param name="endPoint">The endpoint to search</param>
+            <param name="timeoutMs">How long to wait for a response before the call times out</param>
+            <returns>The device</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(System.Net.IPAddress,System.UInt16,System.Nullable{System.Int32})">
+            <summary>
+            Gets a device with at an IP address and port
+            </summary>
+            <param name="address">IP address to search</param>
+            <param name="port">The port to search</param>
+            <param name="timeoutMs">How long to wait for a response before the call times out</param>
+            <returns></returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(System.String,System.UInt16,System.Nullable{System.Int32})">
+            <summary>
+            Gets a device using an IP or MAC address, and a port
+            </summary>
+            <param name="address">The IP or MAC address to search</param>
+            <param name="port">The port to search</param>
+            <param name="timeoutMs">How long to wait for a response before the call times out</param>
+            <returns></returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoveryWorker">
+            <summary>
+            Thread worker that calls DiscoverOnce repeatedly every <c>DiscoveryInterval</c> milliseconds
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendCommon(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage)">
+            <summary>
+            Converts a message to bytes, and sends it.
+            </summary>
+            <param name="endPoint">The destination, or null if message is to be broadcast</param>
+            <param name="message">The message</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SetMessageHeaderCommon(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,AydenIO.Lifx.LifxeResponseFlags)">
+            <summary>
+            Sets common header fields of the message
+            </summary>
+            <param name="device">The device to target, or null if message is to be broadcast</param>
+            <param name="message">The message</param>
+            <param name="responseFlags">The type of response required from the device</param>
+            <returns>An 8-bit sequence number</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.Send(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage)">
+            <summary>
+            Sends a message with no response
+            </summary>
+            <param name="device">The device to target</param>
+            <param name="message">The message</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponseCommon(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage,AydenIO.Lifx.LifxAwaiter,System.Nullable{System.Int32},System.Boolean)">
+            <summary>
+            Sends a message, and returns the response
+            </summary>
+            <param name="endPoint">The endpoint to target</param>
+            <param name="message">The message</param>
+            <param name="awaitingResponse">The awaiter that handles the response</param>
+            <param name="timeoutMs">How long before the call times out if there is no response</param>
+            <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponseCommon(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,AydenIO.Lifx.LifxAwaiter,System.Nullable{System.Int32},System.Boolean)">
+            <summary>
+            Sends a message, and returns the response
+            </summary>
+            <param name="device">The device to target</param>
+            <param name="message">The message</param>
+            <param name="awaitingResponse">The awaiter that handles the response</param>
+            <param name="timeoutMs">How long before the call times out if there is no response</param>
+            <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponse``1(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Boolean)">
+            <summary>
+            Sends a message, and returns the response
+            </summary>
+            <typeparam name="T">The returned <c>LifxMessage</c> message type</typeparam>
+            <param name="endPoint">The endpoint to target</param>
+            <param name="message">The message</param>
+            <param name="timeoutMs">How long before the call times out if there is no response</param>
+            <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
+            <returns>The returned message</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponse``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Boolean)">
+            <summary>
+            Sends a message, and returns the response
+            </summary>
+            <typeparam name="T">The returned <c>LifxMessage</c> message type</typeparam>
+            <param name="device">The device to target</param>
+            <param name="message">The message</param>
+            <param name="timeoutMs">How long before the call times out if there is no response</param>
+            <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
+            <returns>The returned message</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithMultipleResponse``1(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Boolean)">
+            <summary>
+            Sends a message, and returns all responses after timeout
+            </summary>
+            <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
+            <param name="endPoint">The endpoint to target</param>
+            <param name="message">The message</param>
+            <param name="timeoutMs">How long before the call takes before the responses are returned</param>
+            <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
+            <returns>The returned messages</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithMultipleResponse``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Boolean)">
+            <summary>
+            Sends a message, and returns all responses after timeout
+            </summary>
+            <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
+            <param name="device">The device to target</param>
+            <param name="message">The message</param>
+            <param name="timeoutMs">How long before the call takes before the responses are returned</param>
+            <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
+            <returns>The returned messages</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponse``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32})">
+            <summary>
+            Sends a message, and returns the response
+            </summary>
+            <typeparam name="T">The returned <c>LifxMessage</c> message type</typeparam>
+            <param name="device">The device to target</param>
+            <param name="message">The message</param>
+            <param name="timeoutMs">How long before the call times out if there is no response</param>
+            <returns>The returned message</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithMultipleResponse``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32})">
+            <summary>
+            Sends a message, and returns all responses after timeout
+            </summary>
+            <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
+            <param name="device">The device to target</param>
+            <param name="message">The message</param>
+            <param name="timeoutMs">How long before the call takes before the responses are returned</param>
+            <returns>The returned messages</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithAcknowledgement(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32})">
+            <summary>
+            Sends a message, and awaits an acknowledgement
+            </summary>
+            <param name="device">The device to target</param>
+            <param name="message">The message</param>
+            <param name="timeoutMs">How long before the call times out if there is no response</param>
+        </member>
+        <member name="T:AydenIO.Lifx.MacAddress">
+            <summary>
+            Represents a MAC address
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.GetBytes">
+            <summary>
+            Get the MAC address as a byte array
+            </summary>
+            <returns>The MAC address as a byte array</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.#ctor(System.Byte[])">
+            <summary>
+            Creates a MAC address from a byte array
+            </summary>
+            <param name="bytes">The byte array</param>
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.TryParse(System.String,AydenIO.Lifx.MacAddress@)">
+            <summary>
+            Attempt to parse a string as a MAC address. Matches aabbccddeeff, aa:bb:cc:dd:ee:ff, aa-bb-cc-dd-ee-ff
+            </summary>
+            <param name="macAddress">The string representation of the MAC address</param>
+            <param name="destination">An out to the resulting <c>MacAddress</c></param>
+            <returns>Whether the parsing was successful</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.Parse(System.String)">
+            <summary>
+            Attempt to parse a string as a MAC address. Matches aabbccddeeff, aa:bb:cc:dd:ee:ff, aa-bb-cc-dd-ee-ff
+            </summary>
+            <param name="macAddress">The string representation of the MAC address</param>
+            <returns>The resulting MAC address</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.ToString(System.String,System.Boolean)">
+            <summary>
+            Convert the MAC address to a string
+            </summary>
+            <param name="style">Which style to use</param>
+            <param name="uppercase">Whether it should be uppercase</param>
+            <returns>A string representation of the MAC address</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.ToString">
+            <summary>
+            Convert the MAC address to a string
+            </summary>
+            <returns>A string representation of the MAC address</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxEcho.GetPayload">
+            <summary>
+            Gets the payload of the EchoRequest or EchoResponse
+            </summary>
+            <returns>The payload</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxEcho.SetPayload(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            Sets the payload of the EchoRequest or EchoResponse
+            </summary>
+            <param name="payload">The payload</param>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.Acknowledgement">
+            <summary>
+            Response to any message sent with _ack_required_ set to 1
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.EchoRequest">
+            <summary>
+            Request an arbitrary payload be echoed back.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.EchoResponse">
+            <summary>
+            Response to <c>EchoRequest</c> message.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetGroup">
+            <summary>
+            Ask the bulb to return its group membership information.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetHostFirmware">
+            <summary>
+            Gets Host MCU firmware information.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetHostInfo">
+            <summary>
+            Get Host MCU information.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetInfo">
+            <summary>
+            Get run-time information.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetLabel">
+            <summary>
+            Get device label.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetLocation">
+            <summary>
+            Ask the bulb to return its location information.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetPower">
+            <summary>
+            Get device power level.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetService">
+            <summary>
+            Sent by a client to acquire responses from all devices on the local network.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetVersion">
+            <summary>
+            Get the hardware version.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetWifiFirmware">
+            <summary>
+            Get Wifi subsystem firmware.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetWifiInfo">
+            <summary>
+            Get Wifi subsystem information.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightGet">
+            <summary>
+            Sent by a client to obtain the light state.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightGetInfrared">
+            <summary>
+            Gets the current maximum power level of the Infrared channel.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightGetPower">
+            <summary>
+            Sent by a client to obtain the power level.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightSetColor">
+            <summary>
+            Sent by a client to change the light state.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightSetInfrared">
+            <summary>
+            Send this message to alter the current maximum brightness for the infrared channel.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightSetPower">
+            <summary>
+            Sent by a client to change the light power level.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightSetWaveform">
+            <summary>
+            Apply an effect to the bulb.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightSetWaveformOptional">
+            <summary>
+            Optionally set effect parameters. Same as SetWaveform but allows some parameters to be set from the current value on device.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightState">
+            <summary>
+            Sent by a device to provide the current light state.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightStateInfrared">
+            <summary>
+            This message is returned from a GetInfrared message. It indicates the current maximum setting for the infrared channel.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.LightStatePower">
+            <summary>
+            Sent by a device to provide the current power level.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.SetGroup">
+            <summary>
+            Set the device group.
+            </summary>
+        </member>
+    </members>
+</doc>

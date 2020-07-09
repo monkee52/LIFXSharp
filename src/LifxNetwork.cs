@@ -12,14 +12,25 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
+    /// <summary>
+    /// Common class that connects C# to the LIFX protocol
+    /// </summary>
     public class LifxNetwork : IDisposable {
+        /// <summary>
+        /// The default LIFX LAN protocol port
+        /// </summary>
         public const int LIFX_PORT = 56700;
 
-        public static readonly uint[] LIFX_LIGHT_PRODUCT_IDS = new uint[] { 1, 3, 10, 11, 18, 20, 22, 27, 28, 29, 30, 31, 32, 36, 37, 43, 44, 45, 46, 49, 50, 51, 52, 55, 57, 59, 60, 61, 68 };
+        /// <summary>
+        /// A list of LIFX device product IDs that represent lights
+        /// </summary>
+        public static uint[] LIFX_LIGHT_PRODUCT_IDS = new uint[] { 1, 3, 10, 11, 18, 20, 22, 27, 28, 29, 30, 31, 32, 36, 37, 43, 44, 45, 46, 49, 50, 51, 52, 55, 57, 59, 60, 61, 68 };
 
         private UdpClient socket;
 
+        /// <value>An identifier to distinguish this <c>LifxNetwork</c> from others in the protocol</value>
         public int SourceId { get; private set; }
+
         private int sequenceCounter;
         private IDictionary<byte, LifxAwaiter> AwaitingSequences;
 
@@ -30,11 +41,19 @@ namespace AydenIO.Lifx {
 
         private IDictionary<MacAddress, LifxDevice> deviceLookup;
 
+        /// <value>Gets or sets how long to wait between sending out discovery packets</value>
         public int DiscoveryInterval { get; set; }
+
+        /// <value>Gets or sets the default time to wait before a call times out, in milliseconds</value>
         public int ReceiveTimeout { get; set; }
 
         private object discoverySyncRoot;
 
+        /// <summary>
+        /// Initializes the <c>LifxNetwork</c>
+        /// </summary>
+        /// <param name="discoveryInterval">The default discovery interval <see cref="DiscoveryInterval" /></param>
+        /// <param name="rxTimeout">The default receive timeout <see cref="ReceiveTimeout" /></param>
         public LifxNetwork(int discoveryInterval = 5000, int rxTimeout = 500) {
             // Set up discovery fields
             this.discoveryStopEvent = new ManualResetEventSlim(true);
@@ -200,9 +219,17 @@ namespace AydenIO.Lifx {
             }
         }
 
+        /// <summary>
+        /// Event handler for when a device has been discovered during discovery
+        /// </summary>
         public event EventHandler<LifxDeviceDiscoveredEventArgs> DeviceDiscovered;
+
+        /// <summary>
+        /// Event handler for when a device hasn't been seen for a while during discovery
+        /// </summary>
         public event EventHandler<LifxDeviceLostEventArgs> DeviceLost;
 
+        /// <value>Gets a list of all devices that have been discovered, or explicitly found</value>
         public IEnumerable<LifxDevice> Devices => this.deviceLookup.Values;
 
         /// <summary>
@@ -263,6 +290,11 @@ namespace AydenIO.Lifx {
             return Task.Run(() => this.StopDiscoverySync());
         }
 
+        /// <summary>
+        /// Returns whether a given MAC address has been found, and is a device
+        /// </summary>
+        /// <param name="macAddress">The MAC address to look up</param>
+        /// <returns>Whether the device has been found</returns>
         public bool HasDevice(MacAddress macAddress) {
             return this.deviceLookup.ContainsKey(macAddress);
         }
@@ -335,6 +367,7 @@ namespace AydenIO.Lifx {
         /// Gets a device with a specific <c>MacAddress</c>
         /// </summary>
         /// <param name="macAddress">The mac address to find</param>
+        /// <param name="port">The port to search</param>
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
         /// <returns>The device</returns>
         public async Task<LifxDevice> GetDevice(MacAddress macAddress, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null) {

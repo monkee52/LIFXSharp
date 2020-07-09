@@ -100,12 +100,14 @@ namespace AydenIO.Lifx {
         }
 
         // IEquatable implementation
+        /// <inheritdoc />
         public override int GetHashCode() {
             long hashCodeLong = 0xa26ceb579aL ^ ((this.bytes[5] << 40) | (this.bytes[4] << 32) | (this.bytes[3] << 24) | (this.bytes[2] << 16) | (this.bytes[1] << 8) | this.bytes[0]);
 
             return (int)((hashCodeLong >> 32 << 8) ^ hashCodeLong);
         }
 
+        /// <inheritdoc />
         public bool Equals(MacAddress other) {
             if (other == null) {
                 return false;
@@ -118,10 +120,12 @@ namespace AydenIO.Lifx {
             return this.GetBytes().SequenceEqual(other.GetBytes());
         }
 
+        /// <inheritdoc />
         public override bool Equals(Object obj) {
             return this.Equals(obj as MacAddress);
         }
 
+        /// <inheritdoc />
         public static bool operator ==(MacAddress first, MacAddress second) {
             if (Object.ReferenceEquals(first, second)) {
                 return true;
@@ -134,6 +138,7 @@ namespace AydenIO.Lifx {
             return first.Equals(second);
         }
 
+        /// <inheritdoc />
         public static bool operator !=(MacAddress first, MacAddress second) {
             return !(first == second);
         }

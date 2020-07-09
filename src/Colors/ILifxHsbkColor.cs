@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace AydenIO.Lifx {
+    /// <summary>
+    /// Represents a LIFX HSBK color type
+    /// </summary>
     public interface ILifxHsbkColor : ILifxColor {
         /// <summary>
         /// Hue, between 0 and 65535
