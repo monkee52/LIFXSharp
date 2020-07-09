@@ -11,5 +11,5 @@ namespace AydenIO.Lifx {
         }
     }
 
-    internal delegate void LifxExceptionEventHandler(object sneder, LifxExceptionEventArgs e);
+    internal delegate void LifxExceptionEventHandler(object sender, LifxExceptionEventArgs e);
 }

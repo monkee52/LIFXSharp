@@ -222,12 +222,12 @@ namespace AydenIO.Lifx {
         /// <summary>
         /// Event handler for when a device has been discovered during discovery
         /// </summary>
-        public event EventHandler<LifxDeviceDiscoveredEventArgs> DeviceDiscovered;
+        public event LifxDeviceDiscoveredEventHandler DeviceDiscovered;
 
         /// <summary>
         /// Event handler for when a device hasn't been seen for a while during discovery
         /// </summary>
-        public event EventHandler<LifxDeviceLostEventArgs> DeviceLost;
+        public event LifxDeviceLostEventHandler DeviceLost;
 
         /// <value>Gets a list of all devices that have been discovered, or explicitly found</value>
         public IEnumerable<LifxDevice> Devices => this.deviceLookup.Values;
@@ -680,6 +680,11 @@ namespace AydenIO.Lifx {
             await this.SendWithResponse<Messages.Acknowledgement>(device, message, timeoutMs, true);
         }
 
+        /// <summary>
+        /// Gets the features supported by a device, given a product ID
+        /// </summary>
+        /// <param name="productId">The product ID to look up</param>
+        /// <returns>An object containing the supported features for that product ID</returns>
         public ILifxDeviceFeatures GetFeaturesForProductId(uint productId) {
             return productId switch {
                  1 => new LifxDeviceFeatures() { Name = "Original 1000", SupportsColor = true, SupportsTemperature = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, MinKelvin = 2500, MaxKelvin = 9000 },
