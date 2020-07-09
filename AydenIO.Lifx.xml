@@ -4,6 +4,11 @@
         <name>AydenIO.Lifx</name>
     </assembly>
     <members>
+        <member name="T:AydenIO.Lifx.ILifxColor">
+            <summary>
+            Represents a generic color type
+            </summary>
+        </member>
         <member name="M:AydenIO.Lifx.ILifxColor.ToHsbk">
             <summary>
             Converts a color to the LIFX HSBK representation (Hue, Saturation, Brightness, Kelvin)
@@ -15,6 +20,11 @@
             Converts a LIFX HSBK color representation to a color.
             </summary>
             <param name="hsbk">The LIFX HSBK color</param>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxHsbkColor">
+            <summary>
+            Represents a LIFX HSBK color type
+            </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxHsbkColor.Hue">
             <summary>
@@ -36,6 +46,501 @@
             Kelvin, between a minimum and maximum kelvin depending on the device
             </summary>
         </member>
+        <member name="T:AydenIO.Lifx.LifxHsbkColor">
+            <summary>
+            Basic implementation of <c>ILifxHsbkColor</c>
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxHsbkColor.Hue">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxHsbkColor.Saturation">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxHsbkColor.Brightness">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxHsbkColor.Kelvin">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxHsbkColor.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxHsbkColor.ToHsbk">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxRgbColor">
+            <summary>
+            Represents an RGB color
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxRgbColor.Red">
+            <value>Gets or sets the red value for the color</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxRgbColor.Green">
+            <value>Gets or sets the green value for the color</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxRgbColor.Blue">
+            <value>Gets or sets the blue value for the color</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxRgbColor.Kelvin">
+            <value>Gets or sets the kelvin value for the color</value>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxRgbColor.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxRgbColor.ToHsbk">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxRgbColor16Bit">
+            <summary>
+            Represents an RGB color with 16-bits of precision per channel
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxRgbColor16Bit.Red">
+            <value>Gets or sets the red value for the color</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxRgbColor16Bit.Green">
+            <value>Gets or sets the green value for the color</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxRgbColor16Bit.Blue">
+            <value>Gets or sets the blue value for the color</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxRgbColor16Bit.Kelvin">
+            <value>Gets or sets the kelvin value for the color</value>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxRgbColor16Bit.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxRgbColor16Bit.ToHsbk">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxDeviceFeatures">
+            <summary>
+            Represents features of a device
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.Name">
+            <value>Gets the device product name</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.SupportsColor">
+            <value>Gets whether the device supports color</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.SupportsTemperature">
+            <value>Gets whether the device supports temperature</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.SupportsInfrared">
+            <value>Gets whether the device supports infrared</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.IsMultizone">
+            <value>Gets whether the device is a multizone device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.IsChain">
+            <value>Gets whether the device is a chained device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.MinKelvin">
+            <value>Gets the minimum kelvin value for the device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.MaxKelvin">
+            <value>Gets the maximum kelvin value for the device</value>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxDevice">
+            <summary>
+            Represents a LIFX device
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.Lifx">
+            <value>Gets the associated <c>LifxNetwork</c> for the device</value>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion)">
+            <summary>
+            Creates a LIFX device class
+            </summary>
+            <param name="lifx">The <c>LifxNetwork</c> the device belongs to</param>
+            <param name="macAddress">The MAC address of the device</param>
+            <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
+            <param name="version">The version of the device</param>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.SupportsColor">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.SupportsTemperature">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.SupportsInfrared">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.IsMultizone">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.IsChain">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.MinKelvin">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.MaxKelvin">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.EndPoint">
+            <value>Gets the <c>IPEndPoint</c> of the device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.MacAddress">
+            <value>Gets the MAC address of the device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.LastSeen">
+            <value>Gets the last time the device was seen by discovery</value>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetServices(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets a list of the services that the device supports
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>A list of services supported by the device</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetHostInfo(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets host info
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The host info</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetHostFirmware(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets host firmware
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The host firmware</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetWifiInfo(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets the wifi info
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The wifi info</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetWifiFirmware(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets the wifi firmware
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The wifi firmware</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetPower(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets the device power state
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The device power state</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.SetPower(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the device power state
+            </summary>
+            <param name="power">The power state</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.PowerOn(System.Nullable{System.Int32})">
+            <summary>
+            Powers on the device
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.PowerOff(System.Nullable{System.Int32})">
+            <summary>
+            Powers off the device
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetLabel(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets the device label
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The device label</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.SetLabel(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Sets the device label
+            </summary>
+            <param name="label">The device label</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetVersion(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets the device version
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The device version</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetInfo(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets the device info
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The device info</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetLocation(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets the device location
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The device location</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.SetLocation(AydenIO.Lifx.ILifxLocation,System.Nullable{System.Int32})">
+            <summary>
+            Sets the device location
+            </summary>
+            <param name="location">The location</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetGroup(System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets the device group
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The device group</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Collections.Generic.IEnumerable{System.Byte},System.Nullable{System.Int32})">
+            <summary>
+            Request a device to echo back a specific payload
+            </summary>
+            <param name="payload">The payload to be echoed</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>Whether the device responded, and whether the response matched the payload</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Nullable{System.Int32})">
+            <summary>
+            Request a device to echo back a random payload
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>Whether the device responded, and whether the response matched the payload</returns>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs">
+            <summary>
+            Event arguments for when a device is discovered
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs.Device">
+            <value>Gets the device that has been discovered</value>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxDeviceLostEventArgs">
+            <summary>
+            Event arguments for when a device has been lost
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDeviceLostEventArgs.MacAddress">
+            <value>Gets the MAC address of the device that has been lost</value>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxLight">
+            <summary>
+            Represents a LIFX light device
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion)">
+            <summary>
+            Creates a LIFX device class
+            </summary>
+            <param name="lifx">The <c>LifxNetwork</c> the device belongs to</param>
+            <param name="macAddress">The MAC address of the device</param>
+            <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
+            <param name="version">The version of the device</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.GetState(System.Nullable{System.Int32})">
+            <summary>
+            Gets the light's state
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The light's state</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the light's effect waveform
+            </summary>
+            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
+            <param name="color">The color of the effect</param>
+            <param name="period">Duration of a cycle</param>
+            <param name="cycles">Number of cycles</param>
+            <param name="skewRatio">Waveform skew</param>
+            <param name="waveform">Waveform to use for the effect</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the light's effect waveform
+            </summary>
+            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
+            <param name="color">The color of the effect</param>
+            <param name="periodMs">Duration of a cycle, in milliseconds</param>
+            <param name="cycles">Number of cycles</param>
+            <param name="skewRatio">Waveform skew</param>
+            <param name="waveform">Waveform to use for the effect</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns></returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the light's effect waveform
+            </summary>
+            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
+            <param name="color">The color of the effect</param>
+            <param name="period">Duration of a cycle</param>
+            <param name="cycles">Number of cycles</param>
+            <param name="skewRatio">Waveform skew</param>
+            <param name="waveform">Waveform to use for the effect</param>
+            <param name="setHue">Whether to use the hue value for the color</param>
+            <param name="setSaturation">Whether to use the saturation value for the color</param>
+            <param name="setBrightness">Whether to use the brightness value for the color</param>
+            <param name="setKelvin">Whether to use the kelvin value for the color</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the light's effect waveform
+            </summary>
+            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
+            <param name="color">The color of the effect</param>
+            <param name="periodMs">Duration of a cycle, in milliseconds</param>
+            <param name="cycles">Number of cycles</param>
+            <param name="skewRatio">Waveform skew</param>
+            <param name="waveform">Waveform to use for the effect</param>
+            <param name="setHue">Whether to use the hue value for the color</param>
+            <param name="setSaturation">Whether to use the saturation value for the color</param>
+            <param name="setBrightness">Whether to use the brightness value for the color</param>
+            <param name="setKelvin">Whether to use the kelvin value for the color</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.GetPower(System.Boolean,System.Nullable{System.Int32})">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.Nullable{System.Int32})">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.GetPower(System.Nullable{System.Int32})">
+            <summary>
+            Gets the light's power state
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The light's power state</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.Nullable{System.TimeSpan},System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the light's power state
+            </summary>
+            <param name="power">The power state</param>
+            <param name="duration">How long to transition over</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.Int32,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the light's power state
+            </summary>
+            <param name="power">The power state</param>
+            <param name="durationMs">How long to transition over, in milliseconds</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.GetInfrared(System.Nullable{System.Int32})">
+            <summary>
+            Gets the light's infrared state
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <returns>The light's infrared state</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetInfrared(System.UInt16,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the light's infrared state
+            </summary>
+            <param name="level">The brightness level of the infrared component</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.Nullable{System.TimeSpan},System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the light's color
+            </summary>
+            <param name="color">The color</param>
+            <param name="duration">How long to transition over</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.Int32,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Sets the light's color
+            </summary>
+            <param name="color">The color</param>
+            <param name="durationMs">How long to transition over, in milliseconds</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxMessageType">
+            <summary>
+            Possible message types for the LIFX protocol
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxNetwork">
+            <summary>
+            Common class that connects C# to the LIFX protocol
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxNetwork.LIFX_PORT">
+            <summary>
+            The default LIFX LAN protocol port
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxNetwork.LIFX_LIGHT_PRODUCT_IDS">
+            <summary>
+            A list of LIFX device product IDs that represent lights
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxNetwork.SourceId">
+            <value>An identifier to distinguish this <c>LifxNetwork</c> from others in the protocol</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxNetwork.DiscoveryInterval">
+            <value>Gets or sets how long to wait between sending out discovery packets</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxNetwork.ReceiveTimeout">
+            <value>Gets or sets the default time to wait before a call times out, in milliseconds</value>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes the <c>LifxNetwork</c>
+            </summary>
+            <param name="discoveryInterval">The default discovery interval <see cref="P:AydenIO.Lifx.LifxNetwork.DiscoveryInterval" /></param>
+            <param name="rxTimeout">The default receive timeout <see cref="P:AydenIO.Lifx.LifxNetwork.ReceiveTimeout" /></param>
+        </member>
+        <member name="E:AydenIO.Lifx.LifxNetwork.DeviceDiscovered">
+            <summary>
+            Event handler for when a device has been discovered during discovery
+            </summary>
+        </member>
+        <member name="E:AydenIO.Lifx.LifxNetwork.DeviceLost">
+            <summary>
+            Event handler for when a device hasn't been seen for a while during discovery
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxNetwork.Devices">
+            <value>Gets a list of all devices that have been discovered, or explicitly found</value>
+        </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.StartDiscovery">
             <summary>
             Starts the discovery thread
@@ -54,6 +559,13 @@
             </summary>
             <returns>True if the call stopped the thread, otherwise the thread was already stopped.</returns>
         </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.HasDevice(AydenIO.Lifx.MacAddress)">
+            <summary>
+            Returns whether a given MAC address has been found, and is a device
+            </summary>
+            <param name="macAddress">The MAC address to look up</param>
+            <returns>Whether the device has been found</returns>
+        </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.DiscoverOnce">
             <summary>
             Sends a single discovery packet
@@ -64,6 +576,7 @@
             Gets a device with a specific <c>MacAddress</c>
             </summary>
             <param name="macAddress">The mac address to find</param>
+            <param name="port">The port to search</param>
             <param name="timeoutMs">How long to wait for a response before the call times out</param>
             <returns>The device</returns>
         </member>
@@ -213,6 +726,17 @@
             <param name="message">The message</param>
             <param name="timeoutMs">How long before the call times out if there is no response</param>
         </member>
+        <member name="T:AydenIO.Lifx.LifxService">
+            <summary>
+            Possible (public) service types for devices
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxWaveform">
+            <summary>
+            Possible waveform types for LIFX light bulb effects
+            <see href="https://lan.developer.lifx.com/docs/waveforms" />
+            </summary>
+        </member>
         <member name="T:AydenIO.Lifx.MacAddress">
             <summary>
             Represents a MAC address
@@ -259,6 +783,26 @@
             </summary>
             <returns>A string representation of the MAC address</returns>
         </member>
+        <member name="M:AydenIO.Lifx.MacAddress.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.Equals(AydenIO.Lifx.MacAddress)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.op_Equality(AydenIO.Lifx.MacAddress,AydenIO.Lifx.MacAddress)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.op_Inequality(AydenIO.Lifx.MacAddress,AydenIO.Lifx.MacAddress)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxEcho">
+            <summary>
+            Common properties for <c>EchoRequest</c> and <c>EchoResponse</c>
+            </summary>
+        </member>
         <member name="M:AydenIO.Lifx.ILifxEcho.GetPayload">
             <summary>
             Gets the payload of the EchoRequest or EchoResponse
@@ -270,6 +814,81 @@
             Sets the payload of the EchoRequest or EchoResponse
             </summary>
             <param name="payload">The payload</param>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxHostFirmware">
+            <summary>
+            Common properties for <c>Messages.StateHostFirmware</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxHostInfo">
+            <summary>
+            Common properties for <c>Messages.StateHostInfo</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxInfo">
+            <summary>
+            Common properties for <c>Messages.StateInfo</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxInfrared">
+            <summary>
+            Common properties for <c>Messages.SetInfrared</c> and <c>Messages.StateInfrared</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxLabel">
+            <summary>
+            Common properties for <c>Messages.SetLabel</c> and <c>Messages.StateLabel</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxLightState">
+            <summary>
+            Common properties for <c>Messages.LightState</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxLocation">
+            <summary>
+            Common properties for <c>Messages.SetLocation</c> and <c>Messages.StateLocation</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxPower">
+            <summary>
+            Common properties for <c>Messages.SetPower</c>, <c>Messages.StatePower</c>, <c>Messages.LightSetPower</c>, <c>Messages.LightStatePower</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxService">
+            <summary>
+            Common properties for <c>Messages.StateService</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxTransition">
+            <summary>
+            Common properties for transitionable messages <c>Messages.LightSetPower</c> and <c>Messages.LightSetColor</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxVersion">
+            <summary>
+            Common properties for <c>Messages.StateVersion</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxWaveform">
+            <summary>
+            Common properties for <c>Messages.LightSetWaveform</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxWaveformOptional">
+            <summary>
+            Common properties for <c>Messages.LightSetWaveformOptional</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxWifiFirmware">
+            <summary>
+            Common properties for <c>Messages.StateWifiFirmware</c>
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxWifiInfo">
+            <summary>
+            Common properties for <c>Messages.StateWifiInfo</c>
+            </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.Acknowledgement">
             <summary>
