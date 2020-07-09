@@ -185,7 +185,7 @@ namespace AydenIO.Lifx {
                             awaitingResponse.OnResponseReceived(this, endPoint, message);
                         } else {
                             // TODO: ???
-                            Console.WriteLine($"Received: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}]");
+                            Console.WriteLine($"Received: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}] from {endPoint}");
                         }
                     } catch (InvalidDataException e) {
                         if (found) {
