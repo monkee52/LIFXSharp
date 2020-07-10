@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a client to change the light power level.
     /// </summary>
-    internal class LightSetPower : LifxMessage, Lifx.ILifxPower, ILifxTransition {
+    internal class LightSetPower : LifxMessage, ILifxPower, ILifxTransition {
         public const LifxMessageType TYPE = LifxMessageType.LightSetPower;
 
         public LightSetPower() : base(TYPE) {

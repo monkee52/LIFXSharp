@@ -822,6 +822,17 @@
             </summary>
             <param name="payload">The payload</param>
         </member>
+        <member name="T:AydenIO.Lifx.ILifxExtendedColorZones">
+            <summary>
+            Common properties for set, and state messages for multizone lights
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxExtendedColorZones.Index">
+            <value>The index field is the zone we start applying the colors from. The first zone is 0.</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxExtendedColorZones.Colors">
+            <value>The colors is 82 HSBK values and number of colors from this array will be applied sequentially from the <c>Index</c>'d zone on the device.</value>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxHostFirmware">
             <summary>
             Common properties for <c>Messages.StateHostFirmware</c>
@@ -910,6 +921,11 @@
         <member name="T:AydenIO.Lifx.Messages.EchoResponse">
             <summary>
             Response to <c>EchoRequest</c> message.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetExtendedColorZones">
+            <summary>
+            This message will ask the device to return a StateExtendedColorZones containing all of it's colors.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.GetGroup">
@@ -1020,6 +1036,11 @@
         <member name="T:AydenIO.Lifx.Messages.LightStatePower">
             <summary>
             Sent by a device to provide the current power level.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.SetExtendedColorZones">
+            <summary>
+            This messages lets you change all the zones on your device in one message.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.SetGroup">

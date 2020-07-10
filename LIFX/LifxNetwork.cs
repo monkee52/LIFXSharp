@@ -153,6 +153,9 @@ namespace AydenIO.Lifx {
                         LifxMessageType.LightState => new Messages.LightState(),
                         LifxMessageType.LightStatePower => new Messages.LightStatePower(),
                         LifxMessageType.LightStateInfrared => new Messages.LightStateInfrared(),
+                        // MultiZone messages
+                        LifxMessageType.StateExtendedColorZones => new Messages.StateExtendedColorZones(),
+
                         _ => origMessage,
                     };
                 }
