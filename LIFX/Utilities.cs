@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx {
@@ -34,6 +35,18 @@ namespace AydenIO.Lifx {
             }
 
             return result.ToString();
+        }
+
+        public static byte[] StringToFixedBuffer(string str, int bufferSize) {
+            byte[] buffer = new byte[bufferSize];
+
+            Encoding.UTF8.GetBytes(str).CopyTo(buffer, 0);
+
+            return buffer;
+        }
+
+        public static string BufferToString(byte[] buffer) {
+            return Encoding.UTF8.GetString(buffer.TakeWhile(x => x != 0).ToArray());
         }
     }
 }

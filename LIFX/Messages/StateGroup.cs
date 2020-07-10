@@ -17,15 +17,9 @@ namespace AydenIO.Lifx.Messages {
         public DateTime UpdatedAt { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            /* uint8_t[16] guid */
-            writer.Write(this.Group.ToByteArray());
+            /* uint8_t[16] guid */ writer.Write(this.Group.ToByteArray());
 
-            byte[] label = new byte[32];
-
-            Encoding.UTF8.GetBytes(this.Label).CopyTo(label, 0);
-
-            /* uint8_t[32] label */
-            writer.Write(label, 0, 32);
+            /* uint8_t[32] label */ writer.Write(Utilities.StringToFixedBuffer(this.Label, 32));
 
             ulong updatedAt = (ulong)(this.UpdatedAt - LifxNetwork.UNIX_EPOCH).Ticks * 100;
 
@@ -40,7 +34,7 @@ namespace AydenIO.Lifx.Messages {
 
             byte[] label = reader.ReadBytes(32);
 
-            this.Label = Encoding.UTF8.GetString(label.TakeWhile(x => x != 0).ToArray());
+            this.Label = Utilities.BufferToString(label);
 
             ulong updatedAt = reader.ReadUInt64();
 

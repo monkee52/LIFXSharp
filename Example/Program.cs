@@ -125,7 +125,6 @@ namespace AydenIO.Examples.Lifx {
             result.AppendLine($"Found device {e.Device.GetType().Name}: {{");
             result.AppendLine($"    Name: {e.Device.Name};");
             result.AppendLine($"    SupportsColor: {e.Device.SupportsColor};");
-            result.AppendLine($"    SupportsTemperature: {e.Device.SupportsTemperature};");
             result.AppendLine($"    SupportsInfrared: {e.Device.SupportsInfrared};");
             result.AppendLine($"    IsMultizone: {e.Device.IsMultizone};");
             result.AppendLine($"    IsChain: {e.Device.IsChain};");
@@ -219,7 +218,7 @@ namespace AydenIO.Examples.Lifx {
             }
 
             if (e.Device is LifxLight light) {
-                if (light.SupportsColor || light.SupportsTemperature) {
+                if (light.SupportsColor) {
                     ILifxLightState lightState = null;
 
                     try {

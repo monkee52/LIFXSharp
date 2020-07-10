@@ -144,6 +144,26 @@
         <member name="P:AydenIO.Lifx.ILifxProduct.MaxKelvin">
             <value>Gets the maximum kelvin value for the device</value>
         </member>
+        <member name="T:AydenIO.Lifx.LifxApplicationRequest">
+            <summary>
+            Controls how/when multizone devices apply color changes
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxApplicationRequest.NoApply">
+            <summary>
+            Don't apply the requested changes until a message with Apply or ApplyOnly is sent
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxApplicationRequest.Apply">
+            <summary>
+            Apply the changes immediately and apply any pending changes
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxApplicationRequest.ApplyOnly">
+            <summary>
+            Ignore the requested changes in this message and only apply pending changes
+            </summary>
+        </member>
         <member name="T:AydenIO.Lifx.LifxDevice">
             <summary>
             Represents a LIFX device
@@ -721,12 +741,20 @@
             <param name="message">The message</param>
             <param name="timeoutMs">How long before the call times out if there is no response</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.GetFeaturesForProductId(System.UInt32)">
+        <member name="M:AydenIO.Lifx.LifxNetwork.GeatFeaturesForProduct(System.UInt32,System.UInt32)">
             <summary>
-            Gets the features supported by a device, given a product ID
+            Gets the features supported by a device, given a vendor and product ID
             </summary>
+            <param name="vendorId">The vendor ID to look up</param>
             <param name="productId">The product ID to look up</param>
-            <returns>An object containing the supported features for that product ID</returns>
+            <returns>An object containing the supported features for that product</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetFeaturesForProduct(AydenIO.Lifx.ILifxVersion)">
+            <summary>
+            Gets the features supported by a device, given a vendor and product ID
+            </summary>
+            <param name="version">The LIFX version</param>
+            <returns>An object containing the supported features for that product</returns>
         </member>
         <member name="T:AydenIO.Lifx.LifxService">
             <summary>

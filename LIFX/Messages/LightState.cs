@@ -34,11 +34,7 @@ namespace AydenIO.Lifx.Messages {
             /* uint16_t le power */ writer.Write((ushort)(this.PoweredOn ? 65535 : 0));
 
             // Label
-            byte[] label = new byte[64];
-            
-            Encoding.UTF8.GetBytes(this.Label).CopyTo(label, 0);
-
-            /* uint8_t[32] label */ writer.Write(label);
+            /* uint8_t[32] label */ writer.Write(Utilities.StringToFixedBuffer(this.Label, 32));
 
             // Reserved
             /* uint64_t le reserved */ writer.Write((ulong)0);
@@ -47,9 +43,20 @@ namespace AydenIO.Lifx.Messages {
         protected override void ReadPayload(BinaryReader reader) {
             // HSBK
             ushort hue = reader.ReadUInt16();
+
+            this.Hue = hue;
+
             ushort saturation = reader.ReadUInt16();
+
+            this.Saturation = saturation;
+
             ushort brightness = reader.ReadUInt16();
+
+            this.Brightness = brightness;
+
             ushort kelvin = reader.ReadUInt16();
+
+            this.Kelvin = kelvin;
 
             /* int16_t le reserved */ reader.ReadInt16();
 
@@ -59,7 +66,7 @@ namespace AydenIO.Lifx.Messages {
 
             byte[] label = reader.ReadBytes(32);
 
-            this.Label = Encoding.UTF8.GetString(label.TakeWhile(x => x != 0).ToArray());
+            this.Label = Utilities.BufferToString(label);
 
             /* uint64_t le reserved */ reader.ReadUInt64();
         }
