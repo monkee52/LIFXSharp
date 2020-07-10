@@ -115,33 +115,33 @@
         <member name="M:AydenIO.Lifx.LifxRgbColor16Bit.ToHsbk">
             <inheritdoc />
         </member>
-        <member name="T:AydenIO.Lifx.ILifxDeviceFeatures">
+        <member name="T:AydenIO.Lifx.ILifxProduct">
             <summary>
             Represents features of a device
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.Name">
+        <member name="P:AydenIO.Lifx.ILifxProduct.Name">
             <value>Gets the device product name</value>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.SupportsColor">
+        <member name="P:AydenIO.Lifx.ILifxProduct.SupportsColor">
             <value>Gets whether the device supports color</value>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.SupportsTemperature">
-            <value>Gets whether the device supports temperature</value>
-        </member>
-        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.SupportsInfrared">
+        <member name="P:AydenIO.Lifx.ILifxProduct.SupportsInfrared">
             <value>Gets whether the device supports infrared</value>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.IsMultizone">
+        <member name="P:AydenIO.Lifx.ILifxProduct.IsMultizone">
             <value>Gets whether the device is a multizone device</value>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.IsChain">
+        <member name="P:AydenIO.Lifx.ILifxProduct.IsChain">
             <value>Gets whether the device is a chained device</value>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.MinKelvin">
+        <member name="P:AydenIO.Lifx.ILifxProduct.IsMatrix">
+            <value>Gets whether the device is a matrix device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxProduct.MinKelvin">
             <value>Gets the minimum kelvin value for the device</value>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.MaxKelvin">
+        <member name="P:AydenIO.Lifx.ILifxProduct.MaxKelvin">
             <value>Gets the maximum kelvin value for the device</value>
         </member>
         <member name="T:AydenIO.Lifx.LifxDevice">
@@ -167,9 +167,6 @@
         <member name="P:AydenIO.Lifx.LifxDevice.SupportsColor">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxDevice.SupportsTemperature">
-            <inheritdoc />
-        </member>
         <member name="P:AydenIO.Lifx.LifxDevice.SupportsInfrared">
             <inheritdoc />
         </member>
@@ -177,6 +174,9 @@
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.IsChain">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.IsMatrix">
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.MinKelvin">
@@ -505,11 +505,6 @@
         <member name="F:AydenIO.Lifx.LifxNetwork.LIFX_PORT">
             <summary>
             The default LIFX LAN protocol port
-            </summary>
-        </member>
-        <member name="F:AydenIO.Lifx.LifxNetwork.LIFX_LIGHT_PRODUCT_IDS">
-            <summary>
-            A list of LIFX device product IDs that represent lights
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxNetwork.SourceId">

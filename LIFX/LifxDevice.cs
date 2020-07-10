@@ -12,7 +12,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Represents a LIFX device
     /// </summary>
-    public class LifxDevice : ILifxDeviceFeatures {
+    public class LifxDevice : ILifxProduct {
         /// <value>Gets the associated <c>LifxNetwork</c> for the device</value>
         protected LifxNetwork Lifx { get; private set; }
 
@@ -33,16 +33,16 @@ namespace AydenIO.Lifx {
             this.LastSeen = DateTime.MinValue;
 
             // Get product features
-            ILifxDeviceFeatures features = LifxNetwork.GetFeaturesForProductId(version.ProductId);
+            ILifxProduct features = LifxNetwork.GetFeaturesForProductId(version.ProductId);
 
             this.Name = features.Name;
 
             this.SupportsColor = features.SupportsColor;
-            this.SupportsTemperature = features.SupportsTemperature;
             this.SupportsInfrared = features.SupportsInfrared;
 
             this.IsMultizone = features.IsMultizone;
             this.IsChain = features.IsChain;
+            this.IsMatrix = features.IsMatrix;
 
             this.MinKelvin = features.MinKelvin;
             this.MaxKelvin = features.MaxKelvin;
@@ -55,8 +55,6 @@ namespace AydenIO.Lifx {
         /// <inheritdoc />
         public bool SupportsColor { get; private set; }
 
-        /// <inheritdoc />
-        public bool SupportsTemperature { get; private set; }
 
         /// <inheritdoc />
         public bool SupportsInfrared { get; private set; }
@@ -66,6 +64,9 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public bool IsChain { get; private set; }
+
+        /// <inheritdoc />
+        public bool IsMatrix { get; private set; }
 
         /// <inheritdoc />
         public ushort MinKelvin { get; private set; }

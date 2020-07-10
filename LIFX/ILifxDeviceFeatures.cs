@@ -6,15 +6,12 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Represents features of a device
     /// </summary>
-    public interface ILifxDeviceFeatures {
+    public interface ILifxProduct {
         /// <value>Gets the device product name</value>
         public string Name { get; }
 
         /// <value>Gets whether the device supports color</value>
         public bool SupportsColor { get; }
-
-        /// <value>Gets whether the device supports temperature</value>
-        public bool SupportsTemperature { get; }
 
         /// <value>Gets whether the device supports infrared</value>
         public bool SupportsInfrared { get; }
@@ -24,6 +21,9 @@ namespace AydenIO.Lifx {
 
         /// <value>Gets whether the device is a chained device</value>
         public bool IsChain { get; }
+
+        /// <value>Gets whether the device is a matrix device</value>
+        public bool IsMatrix { get; }
 
         /// <value>Gets the minimum kelvin value for the device</value>
         public ushort MinKelvin { get; }
