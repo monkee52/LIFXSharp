@@ -647,7 +647,7 @@ namespace AydenIO.Lifx {
         /// <param name="vendorId">The vendor ID to look up</param>
         /// <param name="productId">The product ID to look up</param>
         /// <returns>An object containing the supported features for that product</returns>
-        public static ILifxProduct GeatFeaturesForProduct(uint vendorId, uint productId) {
+        public static ILifxProduct GetFeaturesForProduct(uint vendorId, uint productId) {
             // https://raw.githubusercontent.com/LIFX/products/master/products.json
             // [0].products.map(x => `${x.pid} => new LifxProduct() { Name = ${JSON.stringify(x.name)}, SupportsColor = ${x.features.color}, SupportsInfrared = ${x.features.infrared}, IsMultizone = ${x.features.multizone}, IsChain = ${x.features.chain}, IsMatrix = ${x.features.matrix}, MinKelvin = ${x.features.temperature_range[0]}, MaxKelvin = ${x.features.temperature_range[1]} },`);
 
@@ -698,7 +698,7 @@ namespace AydenIO.Lifx {
         /// <param name="version">The LIFX version</param>
         /// <returns>An object containing the supported features for that product</returns>
         public static ILifxProduct GetFeaturesForProduct(ILifxVersion version) {
-            return LifxNetwork.GeatFeaturesForProduct(version.VendorId, version.ProductId);
+            return LifxNetwork.GetFeaturesForProduct(version.VendorId, version.ProductId);
         }
 
         #region IDisposable Support
