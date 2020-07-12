@@ -21,9 +21,7 @@ namespace AydenIO.Lifx.Messages {
 
             /* uint8_t[32] label */ writer.Write(Utilities.StringToFixedBuffer(this.Label, 32));
 
-            ulong updatedAt = (ulong)(this.UpdatedAt - DateTime.UnixEpoch).Ticks * 100;
-
-            /* uint64_t le updated_at */ writer.Write(updatedAt);
+            /* uint64_t le updated_at */ writer.Write(Utilities.DateTimeToNanoseconds(this.UpdatedAt));
         }
 
         protected override void ReadPayload(BinaryReader reader) {
@@ -40,7 +38,7 @@ namespace AydenIO.Lifx.Messages {
             // Updated at
             ulong updatedAt = reader.ReadUInt64();
 
-            this.UpdatedAt = DateTime.UnixEpoch + TimeSpan.FromTicks((long)(updatedAt / 100));
+            this.UpdatedAt = Utilities.NanosecondsToDateTime(updatedAt);
         }
     }
 }

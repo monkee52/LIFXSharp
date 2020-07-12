@@ -17,31 +17,23 @@ namespace AydenIO.Lifx.Messages {
         public TimeSpan Downtime { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            ulong time = (ulong)(this.Time - DateTime.UnixEpoch).Ticks * 100;
-
-            /* uint64_t le time */ writer.Write(time);
-
-            ulong uptime = (ulong)this.Uptime.Ticks * 100;
-
-            /* uint64_t le uptime */ writer.Write(uptime);
-
-            ulong downtime = (ulong)this.Downtime.Ticks * 100;
-
-            /* uint64_t le downtime */ writer.Write(downtime);
+            /* uint64_t le time */ writer.Write(Utilities.DateTimeToNanoseconds(this.Time));
+            /* uint64_t le uptime */ writer.Write(Utilities.TimeSpanToNanoseconds(this.Uptime));
+            /* uint64_t le downtime */ writer.Write(Utilities.TimeSpanToNanoseconds(this.Downtime));
         }
 
         protected override void ReadPayload(BinaryReader reader) {
             ulong time = reader.ReadUInt64();
 
-            this.Time = DateTime.UnixEpoch + TimeSpan.FromTicks((long)(time / 100));
+            this.Time = Utilities.NanosecondsToDateTime(time);
 
             ulong uptime = reader.ReadUInt64();
 
-            this.Uptime = TimeSpan.FromTicks((long)(uptime / 100));
+            this.Uptime = Utilities.NanosecondsToTimeSpan(uptime);
 
             ulong downtime = reader.ReadUInt64();
 
-            this.Downtime = TimeSpan.FromTicks((long)(downtime / 100));
+            this.Downtime = Utilities.NanosecondsToTimeSpan(downtime);
         }
     }
 }

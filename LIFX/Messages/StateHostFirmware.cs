@@ -19,7 +19,7 @@ namespace AydenIO.Lifx.Messages {
         protected override void WritePayload(BinaryWriter writer) {
             TimeSpan build = this.Build - DateTime.UnixEpoch;
 
-            /* uint64_t le build */ writer.Write((ulong)build.Ticks * 100);
+            /* uint64_t le build */ writer.Write(Utilities.DateTimeToNanoseconds(this.Build));
             /* uint16_t le minor */ writer.Write(this.VersionMinor);
             /* uint16_t le major */ writer.Write(this.VersionMajor);
         }
@@ -27,7 +27,7 @@ namespace AydenIO.Lifx.Messages {
         protected override void ReadPayload(BinaryReader reader) {
             ulong build = reader.ReadUInt64();
 
-            this.Build = DateTime.UnixEpoch + TimeSpan.FromTicks((long)(build / 100));
+            this.Build = Utilities.NanosecondsToDateTime(build);
 
             _ = reader.ReadUInt64();
 

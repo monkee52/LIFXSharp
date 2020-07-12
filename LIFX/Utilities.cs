@@ -48,5 +48,13 @@ namespace AydenIO.Lifx {
         public static string BufferToString(byte[] buffer) {
             return Encoding.UTF8.GetString(buffer.TakeWhile(x => x != 0).ToArray());
         }
+
+        public static TimeSpan NanosecondsToTimeSpan(ulong ns) => TimeSpan.FromTicks((long)(ns / 100));
+
+        public static ulong TimeSpanToNanoseconds(TimeSpan ts) => (ulong)(ts.Ticks * 100);
+
+        public static DateTime NanosecondsToDateTime(ulong ns) => DateTime.UnixEpoch + Utilities.NanosecondsToTimeSpan(ns);
+
+        public static ulong DateTimeToNanoseconds(DateTime dt) => Utilities.TimeSpanToNanoseconds(dt - DateTime.UnixEpoch);
     }
 }
