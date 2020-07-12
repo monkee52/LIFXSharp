@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace AydenIO.Lifx {
-    public interface ILifxExtendedColorZonesState : ILifxExtendedColorZones {
+    public interface ILifxColorZoneCount {
         public ushort ZoneCount { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace AydenIO.Lifx.Messages {
         public TimeSpan Downtime { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            ulong time = (ulong)(this.Time - LifxNetwork.UNIX_EPOCH).Ticks * 100;
+            ulong time = (ulong)(this.Time - DateTime.UnixEpoch).Ticks * 100;
 
             /* uint64_t le time */ writer.Write(time);
 
@@ -33,7 +33,7 @@ namespace AydenIO.Lifx.Messages {
         protected override void ReadPayload(BinaryReader reader) {
             ulong time = reader.ReadUInt64();
 
-            this.Time = LifxNetwork.UNIX_EPOCH + TimeSpan.FromTicks((long)(time / 100));
+            this.Time = DateTime.UnixEpoch + TimeSpan.FromTicks((long)(time / 100));
 
             ulong uptime = reader.ReadUInt64();
 

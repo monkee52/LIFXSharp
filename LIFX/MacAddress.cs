@@ -121,7 +121,7 @@ namespace AydenIO.Lifx {
         }
 
         /// <inheritdoc />
-        public override bool Equals(Object obj) {
+        public override bool Equals(object obj) {
             return this.Equals(obj as MacAddress);
         }
 

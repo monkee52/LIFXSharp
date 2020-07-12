@@ -21,8 +21,6 @@ namespace AydenIO.Lifx {
         /// </summary>
         public const int LIFX_PORT = 56700;
 
-        internal static readonly DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
         private UdpClient socket;
 
         /// <value>An identifier to distinguish this <c>LifxNetwork</c> from others in the protocol</value>
@@ -150,8 +148,10 @@ namespace AydenIO.Lifx {
                         LifxMessageType.LightStateInfrared => new Messages.LightStateInfrared(),
                         // MultiZone messages
                         LifxMessageType.StateExtendedColorZones => new Messages.StateExtendedColorZones(),
+                        LifxMessageType.StateZone => new Messages.StateZone(),
+                        LifxMessageType.StateMultiZone => new Messages.StateMultiZone(),
 
-                        _ => origMessage,
+                        _ => origMessage
                     };
                 }
 
@@ -260,13 +260,24 @@ namespace AydenIO.Lifx {
             return this.deviceLookup.ContainsKey(macAddress);
         }
 
-        private LifxDevice CreateAndAddDevice(LifxResponse<Messages.StateVersion> response) {
+        private async Task<LifxDevice> CreateAndAddDevice(LifxResponse<Messages.StateVersion> response) {
             LifxDevice device;
 
             ILifxProduct product = LifxNetwork.GetFeaturesForProduct(response.Message);
 
             if (product.IsMultizone) {
-                device = new LifxMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message);
+                Messages.GetHostFirmware getHostFirmware = new Messages.GetHostFirmware() {
+                    Target = response.Message.Target
+                };
+
+                ILifxHostFirmware hostFirmware = (await this.SendWithResponse<Messages.StateHostFirmware>(response.EndPoint, getHostFirmware)).Message;
+
+                // Firmware version's greater than 2.77 support the extended API
+                if (hostFirmware.VersionMajor >= 2 && hostFirmware.VersionMajor >= 77) {
+                    device = new LifxExtendedMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message);
+                } else {
+                    device = new LifxStandardMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message);
+                }
             } else if (product.SupportsColor || product.SupportsInfrared) {
                 device = new LifxLight(this, response.Message.Target, response.EndPoint, response.Message);
             } else {
@@ -300,7 +311,7 @@ namespace AydenIO.Lifx {
                 if (this.HasDevice(response.Message.Target)) {
                     this.deviceLookup[response.Message.Target].LastSeen = DateTime.UtcNow;
                 } else {
-                    this.CreateAndAddDevice(response);
+                    await this.CreateAndAddDevice(response);
                 }
             }
 
@@ -348,7 +359,7 @@ namespace AydenIO.Lifx {
             // Send message
             LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(new IPEndPoint(IPAddress.Broadcast, port), getVersion, timeoutMs);
 
-            LifxDevice device = this.CreateAndAddDevice(response);
+            LifxDevice device = await this.CreateAndAddDevice(response);
 
             return device;
         }
@@ -556,7 +567,7 @@ namespace AydenIO.Lifx {
             // Await received messages
             LifxResponse<LifxMessage> receivedMessage = await taskCompletionSource.Task;
 
-            return LifxResponse<T>.From(receivedMessage);
+            return (LifxResponse<T>)receivedMessage;
         }
 
         /// <summary>
@@ -591,7 +602,7 @@ namespace AydenIO.Lifx {
             // Await received messages
             IEnumerable<LifxResponse<LifxMessage>> receivedMessages = await taskCompletionSource.Task;
 
-            return receivedMessages.Select((LifxResponse<LifxMessage> response) => LifxResponse<T>.From(response));
+            return receivedMessages.Select((LifxResponse<LifxMessage> response) => (LifxResponse<T>)response);
         }
 
         /// <summary>

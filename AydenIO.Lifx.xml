@@ -69,6 +69,17 @@
         <member name="M:AydenIO.Lifx.LifxHsbkColor.ToHsbk">
             <inheritdoc />
         </member>
+        <member name="T:AydenIO.Lifx.Colors.LifxHsbkColorComparer">
+            <summary>
+            Compares <c>ILifxHsbkColor</c>s
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Colors.LifxHsbkColorComparer.GetHashCode(AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Colors.LifxHsbkColorComparer.Equals(AydenIO.Lifx.ILifxHsbkColor,AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.LifxRgbColor">
             <summary>
             Represents an RGB color
@@ -741,7 +752,7 @@
             <param name="message">The message</param>
             <param name="timeoutMs">How long before the call times out if there is no response</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.GeatFeaturesForProduct(System.UInt32,System.UInt32)">
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetFeaturesForProduct(System.UInt32,System.UInt32)">
             <summary>
             Gets the features supported by a device, given a vendor and product ID
             </summary>
@@ -828,6 +839,17 @@
         <member name="M:AydenIO.Lifx.MacAddress.op_Inequality(AydenIO.Lifx.MacAddress,AydenIO.Lifx.MacAddress)">
             <inheritdoc />
         </member>
+        <member name="P:AydenIO.Lifx.ILifxColorZoneIndex.Index">
+            <value>The index field is the zone we start applying the colors from. The first zone is 0.</value>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxColorZones">
+            <summary>
+            Common properties for set, and state messages for multizone lights
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxColorZones.Colors">
+            <value>The colors is 8/82 HSBK values and number of colors from this array will be applied sequentially from the <c>Index</c>'d zone on the device.</value>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxEcho">
             <summary>
             Common properties for <c>EchoRequest</c> and <c>EchoResponse</c>
@@ -844,17 +866,6 @@
             Sets the payload of the EchoRequest or EchoResponse
             </summary>
             <param name="payload">The payload</param>
-        </member>
-        <member name="T:AydenIO.Lifx.ILifxExtendedColorZones">
-            <summary>
-            Common properties for set, and state messages for multizone lights
-            </summary>
-        </member>
-        <member name="P:AydenIO.Lifx.ILifxExtendedColorZones.Index">
-            <value>The index field is the zone we start applying the colors from. The first zone is 0.</value>
-        </member>
-        <member name="P:AydenIO.Lifx.ILifxExtendedColorZones.Colors">
-            <value>The colors is 82 HSBK values and number of colors from this array will be applied sequentially from the <c>Index</c>'d zone on the device.</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxHostFirmware">
             <summary>
@@ -944,6 +955,11 @@
         <member name="T:AydenIO.Lifx.Messages.EchoResponse">
             <summary>
             Response to <c>EchoRequest</c> message.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetColorZones">
+            <summary>
+            GetColorZones is used to request the zone colors for a range of zones.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.GetExtendedColorZones">
