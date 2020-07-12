@@ -8,6 +8,10 @@ namespace AydenIO.Lifx {
             this.Colors = new List<ILifxHsbkColor>();
         }
 
+        public LifxColorMultizoneState(int size) {
+            this.Colors = new List<ILifxHsbkColor>(size);
+        }
+
         public ushort ZoneCount { get; set; }
 
         public ushort Index { get; set; }
