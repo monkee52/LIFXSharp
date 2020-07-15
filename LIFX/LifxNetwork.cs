@@ -121,7 +121,7 @@ namespace AydenIO.Lifx {
                 }
 
                 // Find awaiters
-                bool found = this.awaitingSequences.TryGetValue(origMessage.SequenceNumber, out LifxAwaiter awaitingResponse);
+                bool found = this.awaitingSequences.TryGetValue(origMessage.SequenceNumber, out LifxAwaiter responseAwaiter);
 
                 LifxMessage message = origMessage;
 
@@ -165,14 +165,14 @@ namespace AydenIO.Lifx {
 
                     // Trigger awaiter
                     if (found) {
-                        awaitingResponse.HandleResponse(endPoint, message);
+                        responseAwaiter.HandleResponse(endPoint, message);
                     } else {
                         // TODO: ???
                         Debug.WriteLine($"Received: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}] from {endPoint}");
                     }
                 } catch (Exception e) {
                     if (found) {
-                        awaitingResponse.HandleException(e);
+                        responseAwaiter.HandleException(e);
                     } else {
                         // TODO: ???
                     }
@@ -556,9 +556,9 @@ namespace AydenIO.Lifx {
             TaskCompletionSource<LifxResponse<LifxMessage>> taskCompletionSource = new TaskCompletionSource<LifxResponse<LifxMessage>>();
 
             // Create awaiter for task
-            LifxAwaiter awaitingResponse = new LifxAwaiter(taskCompletionSource);
+            LifxAwaiter awaiter = new LifxAwaiter(taskCompletionSource);
 
-            await this.SendWithResponseCommon(endPoint, message, awaitingResponse, timeoutMs, isAcknowledgement, cancellationToken);
+            await this.SendWithResponseCommon(endPoint, message, awaiter, timeoutMs, isAcknowledgement, cancellationToken);
 
             // Await received messages
             LifxResponse<LifxMessage> receivedMessage = await taskCompletionSource.Task;
@@ -578,9 +578,9 @@ namespace AydenIO.Lifx {
         private async Task<IEnumerable<LifxResponse<T>>> SendWithMultipleResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
             TaskCompletionSource<IEnumerable<LifxResponse<LifxMessage>>> taskCompletionSource = new TaskCompletionSource<IEnumerable<LifxResponse<LifxMessage>>>();
 
-            LifxAwaiter awaitingResponse = new LifxAwaiter(taskCompletionSource);
+            LifxAwaiter awaiter = new LifxAwaiter(taskCompletionSource);
 
-            await this.SendWithResponseCommon(endPoint, message, awaitingResponse, timeoutMs, false, cancellationToken);
+            await this.SendWithResponseCommon(endPoint, message, awaiter, timeoutMs, false, cancellationToken);
 
             // Await received messages
             IEnumerable<LifxResponse<LifxMessage>> receivedMessages = await taskCompletionSource.Task;
