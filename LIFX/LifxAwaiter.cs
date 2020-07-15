@@ -46,7 +46,7 @@ namespace AydenIO.Lifx {
         }
 
         internal void HandleException(Exception exception) {
-            if (this.messages != null && exception is TimeoutException) {
+            if (this.messages != null && (exception is TimeoutException || exception is OperationCanceledException)) {
                 this.setResultMultiple(this.messages);
             } else {
                 this.setException(exception);

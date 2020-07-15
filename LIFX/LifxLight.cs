@@ -31,7 +31,7 @@ namespace AydenIO.Lifx {
         public virtual async Task<ILifxLightState> GetState(int? timeoutMs = null) {
             Messages.LightGet get = new Messages.LightGet();
 
-            Messages.LightState state = (await this.Lifx.SendWithResponse<Messages.LightState>(this, get, timeoutMs)).Message;
+            Messages.LightState state = await this.Lifx.SendWithResponse<Messages.LightState>(this, get, timeoutMs);
 
             return state;
         }
@@ -160,7 +160,7 @@ namespace AydenIO.Lifx {
         public virtual async Task<bool> GetPower(int? timeoutMs = null) {
             Messages.LightGetPower getPower = new Messages.LightGetPower();
 
-            Messages.LightStatePower power = (await this.Lifx.SendWithResponse<Messages.LightStatePower>(this, getPower, timeoutMs)).Message;
+            Messages.LightStatePower power = await this.Lifx.SendWithResponse<Messages.LightStatePower>(this, getPower, timeoutMs);
 
             return power.PoweredOn;
         }
@@ -207,7 +207,7 @@ namespace AydenIO.Lifx {
         public virtual async Task<ushort> GetInfrared(int? timeoutMs = null) {
             Messages.LightGetInfrared getInfrared = new Messages.LightGetInfrared();
 
-            Messages.LightStateInfrared infrared = (await this.Lifx.SendWithResponse<Messages.LightStateInfrared>(this, getInfrared, timeoutMs)).Message;
+            Messages.LightStateInfrared infrared = await this.Lifx.SendWithResponse<Messages.LightStateInfrared>(this, getInfrared, timeoutMs);
 
             return infrared.Level;
         }

@@ -11,25 +11,25 @@ namespace AydenIO.Lifx {
         }
 
         public override async Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null) {
-            ILifxColorMultiZoneState state = new LifxColorMultizoneState(length);
-
-            state.Index = startAt;
+            ILifxColorMultiZoneState state = new LifxColorMultizoneState(length) {
+                Index = startAt
+            };
 
             Messages.GetColorZones getColorZones = new Messages.GetColorZones() {
                 StartIndex = (byte)startAt,
                 EndIndex = (byte)(Math.Min(255, startAt + length))
             };
 
-            IEnumerable<LifxResponse<LifxMessage>> responses = await this.Lifx.SendWithMultipleResponse<LifxMessage>(this, getColorZones, timeoutMs);
+            IEnumerable<LifxMessage> responses = await this.Lifx.SendWithMultipleResponse<LifxMessage>(this, getColorZones, timeoutMs);
 
-            foreach (LifxResponse<LifxMessage> response in responses) {
-                if (response.Message is Messages.StateZone singleZone) {
+            foreach (LifxMessage response in responses) {
+                if (response is Messages.StateZone singleZone) {
                     // Copy zone count property
                     state.ZoneCount = singleZone.ZoneCount;
 
                     // Copy color
                     state.Colors[singleZone.Index - startAt] = singleZone;
-                } else if (response.Message is Messages.StateMultiZone multiZone) {
+                } else if (response is Messages.StateMultiZone multiZone) {
                     // Copy zone count property
                     state.ZoneCount = multiZone.ZoneCount;
 

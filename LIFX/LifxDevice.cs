@@ -99,7 +99,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetService getService = new Messages.GetService();
 
-            IEnumerable<ILifxService> services = (await this.Lifx.SendWithMultipleResponse<Messages.StateService>(this, getService, timeoutMs)).Select(x => x.Message);
+            IEnumerable<ILifxService> services = await this.Lifx.SendWithMultipleResponse<Messages.StateService>(this, getService, timeoutMs);
 
             this.services = services;
 
@@ -122,7 +122,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetHostInfo getInfo = new Messages.GetHostInfo();
 
-            Messages.StateHostInfo info = (await this.Lifx.SendWithResponse<Messages.StateHostInfo>(this, getInfo, timeoutMs)).Message;
+            Messages.StateHostInfo info = await this.Lifx.SendWithResponse<Messages.StateHostInfo>(this, getInfo, timeoutMs);
 
             this.hostInfo = info;
 
@@ -145,7 +145,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetHostFirmware getHostFirmware = new Messages.GetHostFirmware();
 
-            Messages.StateHostFirmware hostFirmware = (await this.Lifx.SendWithResponse<Messages.StateHostFirmware>(this, getHostFirmware, timeoutMs)).Message;
+            Messages.StateHostFirmware hostFirmware = await this.Lifx.SendWithResponse<Messages.StateHostFirmware>(this, getHostFirmware, timeoutMs);
 
             this.hostFirmware = hostFirmware;
 
@@ -168,7 +168,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetWifiInfo getWifiInfo = new Messages.GetWifiInfo();
 
-            Messages.StateWifiInfo wifiInfo = (await this.Lifx.SendWithResponse<Messages.StateWifiInfo>(this, getWifiInfo, timeoutMs)).Message;
+            Messages.StateWifiInfo wifiInfo = await this.Lifx.SendWithResponse<Messages.StateWifiInfo>(this, getWifiInfo, timeoutMs);
 
             this.wifiInfo = wifiInfo;
 
@@ -191,7 +191,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetWifiFirmware getWifiFirmware = new Messages.GetWifiFirmware();
 
-            Messages.StateWifiFirmware wifiFirmware = (await this.Lifx.SendWithResponse<Messages.StateWifiFirmware>(this, getWifiFirmware, timeoutMs)).Message;
+            Messages.StateWifiFirmware wifiFirmware = await this.Lifx.SendWithResponse<Messages.StateWifiFirmware>(this, getWifiFirmware, timeoutMs);
 
             this.wifiFirmware = wifiFirmware;
 
@@ -214,7 +214,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetPower getPower = new Messages.GetPower();
 
-            Messages.StatePower powerMessage = (await this.Lifx.SendWithResponse<Messages.StatePower>(this, getPower, timeoutMs)).Message;
+            Messages.StatePower powerMessage = await this.Lifx.SendWithResponse<Messages.StatePower>(this, getPower, timeoutMs);
 
             this.power = powerMessage.PoweredOn;
 
@@ -266,7 +266,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetLabel getLabel = new Messages.GetLabel();
 
-            Messages.StateLabel label = (await this.Lifx.SendWithResponse<Messages.StateLabel>(this, getLabel, timeoutMs)).Message;
+            Messages.StateLabel label = await this.Lifx.SendWithResponse<Messages.StateLabel>(this, getLabel, timeoutMs);
 
             this.label = label.Label;
 
@@ -302,7 +302,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetVersion getVersion = new Messages.GetVersion();
 
-            Messages.StateVersion version = (await this.Lifx.SendWithResponse<Messages.StateVersion>(this, getVersion, timeoutMs)).Message;
+            Messages.StateVersion version = await this.Lifx.SendWithResponse<Messages.StateVersion>(this, getVersion, timeoutMs);
 
             this.version = version;
 
@@ -325,7 +325,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetInfo getInfo = new Messages.GetInfo();
 
-            Messages.StateInfo info = (await this.Lifx.SendWithResponse<Messages.StateInfo>(this, getInfo, timeoutMs)).Message;
+            Messages.StateInfo info = await this.Lifx.SendWithResponse<Messages.StateInfo>(this, getInfo, timeoutMs);
 
             this.info = info;
 
@@ -348,7 +348,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetLocation getLocation = new Messages.GetLocation();
 
-            Messages.StateLocation location = (await this.Lifx.SendWithResponse<Messages.StateLocation>(this, getLocation, timeoutMs)).Message;
+            Messages.StateLocation location = await this.Lifx.SendWithResponse<Messages.StateLocation>(this, getLocation, timeoutMs);
 
             this.location = location;
 
@@ -386,7 +386,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetGroup getGroup = new Messages.GetGroup();
 
-            Messages.StateGroup group = (await this.Lifx.SendWithResponse<Messages.StateGroup>(this, getGroup, timeoutMs)).Message;
+            Messages.StateGroup group = await this.Lifx.SendWithResponse<Messages.StateGroup>(this, getGroup, timeoutMs);
 
             this.group = group;
 
@@ -406,7 +406,7 @@ namespace AydenIO.Lifx {
             echoRequest.SetPayload(payload);
 
             try {
-                Messages.EchoResponse response = (await this.Lifx.SendWithResponse<Messages.EchoResponse>(this, echoRequest, timeoutMs)).Message;
+                Messages.EchoResponse response = await this.Lifx.SendWithResponse<Messages.EchoResponse>(this, echoRequest, timeoutMs);
 
                 // Get payload from echoRequest to ensure lengths equal
                 return response.GetPayload().SequenceEqual(echoRequest.GetPayload());

@@ -14,13 +14,13 @@ namespace AydenIO.Lifx {
         public override async Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null) {
             Messages.GetExtendedColorZones getExtendedColorZones = new Messages.GetExtendedColorZones();
 
-            Messages.StateExtendedColorZones extendedColorZones = (await this.Lifx.SendWithResponse<Messages.StateExtendedColorZones>(this, getExtendedColorZones, timeoutMs)).Message;
+            Messages.StateExtendedColorZones extendedColorZones = await this.Lifx.SendWithResponse<Messages.StateExtendedColorZones>(this, getExtendedColorZones, timeoutMs);
 
             // Create state
-            ILifxColorMultiZoneState state = new LifxColorMultizoneState(length);
-
-            state.ZoneCount = extendedColorZones.ZoneCount;
-            state.Index = startAt;
+            ILifxColorMultiZoneState state = new LifxColorMultizoneState(length) {
+                ZoneCount = extendedColorZones.ZoneCount,
+                Index = startAt
+            };
 
             // Keep track of index
             int ctr = 0;

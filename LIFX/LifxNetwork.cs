@@ -270,7 +270,7 @@ namespace AydenIO.Lifx {
                     Target = response.Message.Target
                 };
 
-                ILifxHostFirmware hostFirmware = (await this.SendWithResponse<Messages.StateHostFirmware>(response.EndPoint, getHostFirmware)).Message;
+                ILifxHostFirmware hostFirmware = (await this.SendWithResponse<Messages.StateHostFirmware>(response.EndPoint, getHostFirmware, null, CancellationToken.None)).Message;
 
                 // Firmware version's greater than 2.77 support the extended API
                 if (hostFirmware.VersionMajor >= 2 && hostFirmware.VersionMajor >= 77) {
@@ -303,7 +303,7 @@ namespace AydenIO.Lifx {
             LifxMessage getVersion = new Messages.GetVersion();
 
             // Send message
-            IEnumerable<LifxResponse<Messages.StateVersion>> responses = await this.SendWithMultipleResponse<Messages.StateVersion>(null, getVersion, this.DiscoveryInterval);
+            IEnumerable<LifxResponse<Messages.StateVersion>> responses = await this.SendWithMultipleResponse<Messages.StateVersion>(null, getVersion, this.DiscoveryInterval, CancellationToken.None);
 
             // Iterate over returned messages
             foreach (LifxResponse<Messages.StateVersion> response in responses) {
@@ -357,7 +357,7 @@ namespace AydenIO.Lifx {
             };
 
             // Send message
-            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(new IPEndPoint(IPAddress.Broadcast, port), getVersion, timeoutMs);
+            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(new IPEndPoint(IPAddress.Broadcast, port), getVersion, timeoutMs, CancellationToken.None);
 
             LifxDevice device = await this.CreateAndAddDevice(response);
 
@@ -381,7 +381,7 @@ namespace AydenIO.Lifx {
             LifxMessage getVersion = new Messages.GetVersion();
 
             // Send message
-            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(endPoint, getVersion, timeoutMs);
+            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(endPoint, getVersion, timeoutMs, CancellationToken.None);
 
             return await this.GetDevice(response.Message.Target);
         }
@@ -488,10 +488,11 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="endPoint">The endpoint to target</param>
         /// <param name="message">The message</param>
-        /// <param name="awaitingResponse">The awaiter that handles the response</param>
+        /// <param name="awaiter">The awaiter that handles the response</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <param name="timeoutMs">How long before the call times out if there is no response</param>
         /// <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
-        private async Task SendWithResponseCommon(IPEndPoint endPoint, LifxMessage message, LifxAwaiter awaitingResponse, int? timeoutMs = null, bool isAcknowledgement = false) {
+        private async Task SendWithResponseCommon(IPEndPoint endPoint, LifxMessage message, LifxAwaiter awaiter, int? timeoutMs, bool isAcknowledgement, CancellationToken cancellationToken) {
             // Determine responseFlags
             LifxeResponseFlags responseFlags = isAcknowledgement ? LifxeResponseFlags.AcknowledgementRequired : LifxeResponseFlags.ResponseRequired;
 
@@ -499,51 +500,44 @@ namespace AydenIO.Lifx {
             byte seq = this.SetMessageHeaderCommon(null, message, responseFlags);
 
             // Determine if message can be sent
-            bool canAwaitResponse = this.awaitingSequences.TryAdd(seq, awaitingResponse);
+            bool canAwaitResponse = this.awaitingSequences.TryAdd(seq, awaiter);
 
             if (!canAwaitResponse) {
                 // TODO: Throw unqueued message because queue is full
-                awaitingResponse.HandleException(new OverflowException("The queue is already awaiting a response with the same sequence number."));
+                awaiter.HandleException(new OverflowException("The queue is already awaiting a response with the same sequence number."));
 
-                await awaitingResponse.Task;
+                await awaiter.Task;
 
                 return;
             }
 
             // Remove message from queue when finished
-            _ = awaitingResponse.Task.ContinueWith(_ => {
+            _ = awaiter.Task.ContinueWith(_ => {
                 this.awaitingSequences.Remove(seq);
             });
 
             await this.SendCommon(endPoint, message);
 
-            // Time out
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            // Allow timeout exception to be cancelled
+            using CancellationTokenSource timeoutCancellationSource = new CancellationTokenSource();
+
+            // Create a cancellation token from the timeout token and the user-provided token
+            using CancellationTokenSource linkedCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(timeoutCancellationSource.Token, cancellationToken);
 
             // Handle timeout
-            _ = Task.Delay(timeoutMs ?? this.ReceiveTimeout, cancellationTokenSource.Token).ContinueWith(_ => {
-                if (!cancellationTokenSource.IsCancellationRequested) {
-                    awaitingResponse.HandleException(new TimeoutException("Time out while waiting for response."));
+            _ = Task.Delay(timeoutMs ?? this.ReceiveTimeout, linkedCancellationSource.Token).ContinueWith(_ => {
+                if (cancellationToken.IsCancellationRequested) {
+                    awaiter.HandleException(new OperationCanceledException(cancellationToken));
+                } else if (!timeoutCancellationSource.Token.IsCancellationRequested) {
+                    awaiter.HandleException(new TimeoutException("Time out while waiting for response."));
                 }
-            }, cancellationTokenSource.Token);
+            }, linkedCancellationSource.Token);
 
             // Await received messages
-            await awaitingResponse.Task;
+            await awaiter.Task;
 
-            // Cancel timeout task
-            cancellationTokenSource.Cancel();
-        }
-
-        /// <summary>
-        /// Sends a message, and returns the response
-        /// </summary>
-        /// <param name="device">The device to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="awaitingResponse">The awaiter that handles the response</param>
-        /// <param name="timeoutMs">How long before the call times out if there is no response</param>
-        /// <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
-        private Task SendWithResponseCommon(LifxDevice device, LifxMessage message, LifxAwaiter awaitingResponse, int? timeoutMs = null, bool isAcknowledgement = false) {
-            return this.SendWithResponseCommon(device?.EndPoint, message, awaitingResponse, timeoutMs, isAcknowledgement);
+            // Prevent timeout exception from happening
+            timeoutCancellationSource.Cancel();
         }
 
         /// <summary>
@@ -552,17 +546,19 @@ namespace AydenIO.Lifx {
         /// <typeparam name="T">The returned <c>LifxMessage</c> message type</typeparam>
         /// <param name="endPoint">The endpoint to target</param>
         /// <param name="message">The message</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <param name="timeoutMs">How long before the call times out if there is no response</param>
-        /// <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
         /// <returns>The returned message</returns>
-        private async Task<LifxResponse<T>> SendWithResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs = null, bool isAcknowledgement = false) where T : LifxMessage {
+        private async Task<LifxResponse<T>> SendWithResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
+            bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
+
             // Create task
             TaskCompletionSource<LifxResponse<LifxMessage>> taskCompletionSource = new TaskCompletionSource<LifxResponse<LifxMessage>>();
 
             // Create awaiter for task
             LifxAwaiter awaitingResponse = new LifxAwaiter(taskCompletionSource);
 
-            await this.SendWithResponseCommon(endPoint, message, awaitingResponse, timeoutMs, isAcknowledgement);
+            await this.SendWithResponseCommon(endPoint, message, awaitingResponse, timeoutMs, isAcknowledgement, cancellationToken);
 
             // Await received messages
             LifxResponse<LifxMessage> receivedMessage = await taskCompletionSource.Task;
@@ -571,33 +567,20 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Sends a message, and returns the response
-        /// </summary>
-        /// <typeparam name="T">The returned <c>LifxMessage</c> message type</typeparam>
-        /// <param name="device">The device to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="timeoutMs">How long before the call times out if there is no response</param>
-        /// <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
-        /// <returns>The returned message</returns>
-        private Task<LifxResponse<T>> SendWithResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, bool isAcknowledgement = false) where T : LifxMessage {
-            return this.SendWithResponse<T>(device?.EndPoint, message, timeoutMs, isAcknowledgement);
-        }
-
-        /// <summary>
         /// Sends a message, and returns all responses after timeout
         /// </summary>
         /// <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
         /// <param name="endPoint">The endpoint to target</param>
         /// <param name="message">The message</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <param name="timeoutMs">How long before the call takes before the responses are returned</param>
-        /// <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
         /// <returns>The returned messages</returns>
-        private async Task<IEnumerable<LifxResponse<T>>> SendWithMultipleResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs = null, bool isAcknowledgement = false) where T : LifxMessage {
+        private async Task<IEnumerable<LifxResponse<T>>> SendWithMultipleResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
             TaskCompletionSource<IEnumerable<LifxResponse<LifxMessage>>> taskCompletionSource = new TaskCompletionSource<IEnumerable<LifxResponse<LifxMessage>>>();
 
             LifxAwaiter awaitingResponse = new LifxAwaiter(taskCompletionSource);
 
-            await this.SendWithResponseCommon(endPoint, message, awaitingResponse, timeoutMs, isAcknowledgement);
+            await this.SendWithResponseCommon(endPoint, message, awaitingResponse, timeoutMs, false, cancellationToken);
 
             // Await received messages
             IEnumerable<LifxResponse<LifxMessage>> receivedMessages = await taskCompletionSource.Task;
@@ -606,28 +589,20 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Sends a message, and returns all responses after timeout
-        /// </summary>
-        /// <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
-        /// <param name="device">The device to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="timeoutMs">How long before the call takes before the responses are returned</param>
-        /// <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
-        /// <returns>The returned messages</returns>
-        private Task<IEnumerable<LifxResponse<T>>> SendWithMultipleResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, bool isAcknowledgement = false) where T : LifxMessage {
-            return this.SendWithMultipleResponse<T>(device?.EndPoint, message, timeoutMs, isAcknowledgement);
-        }
-
-        /// <summary>
         /// Sends a message, and returns the response
         /// </summary>
         /// <typeparam name="T">The returned <c>LifxMessage</c> message type</typeparam>
         /// <param name="device">The device to target</param>
         /// <param name="message">The message</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <param name="timeoutMs">How long before the call times out if there is no response</param>
         /// <returns>The returned message</returns>
-        internal Task<LifxResponse<T>> SendWithResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null) where T : LifxMessage {
-            return this.SendWithResponse<T>(device, message, timeoutMs, false);
+        internal async Task<T> SendWithResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken? cancellationToken = null) where T : LifxMessage {
+            //return this.SendWithResponse<T>(device, message, timeoutMs, cancellationToken ?? CancellationToken.None);
+
+            LifxResponse<T> response = await this.SendWithResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken ?? CancellationToken.None);
+
+            return response.Message;
         }
 
         /// <summary>
@@ -636,10 +611,13 @@ namespace AydenIO.Lifx {
         /// <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
         /// <param name="device">The device to target</param>
         /// <param name="message">The message</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <param name="timeoutMs">How long before the call takes before the responses are returned</param>
         /// <returns>The returned messages</returns>
-        internal Task<IEnumerable<LifxResponse<T>>> SendWithMultipleResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null) where T : LifxMessage {
-            return this.SendWithMultipleResponse<T>(device, message, timeoutMs, false);
+        internal async Task<IEnumerable<T>> SendWithMultipleResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken? cancellationToken = null) where T : LifxMessage {
+            IEnumerable<LifxResponse<T>> responses = await this.SendWithMultipleResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken ?? CancellationToken.None);
+            
+            return responses.Select((LifxResponse<T> response) => response.Message);
         }
 
         /// <summary>
@@ -647,9 +625,10 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="device">The device to target</param>
         /// <param name="message">The message</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <param name="timeoutMs">How long before the call times out if there is no response</param>
-        internal async Task SendWithAcknowledgement(LifxDevice device, LifxMessage message, int? timeoutMs = null) {
-            await this.SendWithResponse<Messages.Acknowledgement>(device, message, timeoutMs, true);
+        internal async Task SendWithAcknowledgement(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
+            await this.SendWithResponse<Messages.Acknowledgement>(device?.EndPoint, message, timeoutMs, cancellationToken ?? CancellationToken.None);
         }
 
         /// <summary>
@@ -660,7 +639,7 @@ namespace AydenIO.Lifx {
         /// <returns>An object containing the supported features for that product</returns>
         public static ILifxProduct GetFeaturesForProduct(uint vendorId, uint productId) {
             // https://raw.githubusercontent.com/LIFX/products/master/products.json
-            // [0].products.map(x => `${x.pid} => new LifxProduct() { Name = ${JSON.stringify(x.name)}, SupportsColor = ${x.features.color}, SupportsInfrared = ${x.features.infrared}, IsMultizone = ${x.features.multizone}, IsChain = ${x.features.chain}, IsMatrix = ${x.features.matrix}, MinKelvin = ${x.features.temperature_range[0]}, MaxKelvin = ${x.features.temperature_range[1]} },`);
+            // PRODUCTS.map(vendor => vendor.products.map(product => `(${vendor.vid}, ${product.pid}) => new LifxProduct() { Name = ${JSON.stringify(product.name)}, SupportsColor = ${product.features.color}, SupportsInfrared = ${product.features.infrared}, IsMultizone = ${product.features.multizone}, IsChain = ${product.features.chain}, IsMatrix = ${product.features.matrix}, MinKelvin = ${product.features.temperature_range[0]}, MaxKelvin = ${product.features.temperature_range[1]} }`)).reduce((a, b) => b.concat(a), ["_ => new LifxProduct()"]).join(",\n");
 
             return (vendorId, productId) switch {
                 (1,  1) => new LifxProduct() { Name = "Original 1000", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
