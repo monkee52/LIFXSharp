@@ -260,7 +260,7 @@ namespace AydenIO.Lifx {
             return this.deviceLookup.ContainsKey(macAddress);
         }
 
-        private async Task<LifxDevice> CreateAndAddDevice(LifxResponse<Messages.StateVersion> response) {
+        private async Task<LifxDevice> CreateAndAddDevice(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
             LifxDevice device;
 
             ILifxProduct product = LifxNetwork.GetFeaturesForProduct(response.Message);
@@ -270,7 +270,7 @@ namespace AydenIO.Lifx {
                     Target = response.Message.Target
                 };
 
-                ILifxHostFirmware hostFirmware = (await this.SendWithResponse<Messages.StateHostFirmware>(response.EndPoint, getHostFirmware, null, CancellationToken.None)).Message;
+                ILifxHostFirmware hostFirmware = (await this.SendWithResponse<Messages.StateHostFirmware>(response.EndPoint, getHostFirmware, null, cancellationToken)).Message;
 
                 // Firmware version's greater than 2.77 support the extended API
                 if (hostFirmware.VersionMajor >= 2 && hostFirmware.VersionMajor >= 77) {
@@ -298,12 +298,14 @@ namespace AydenIO.Lifx {
         /// <summary>
         /// Sends a single discovery packet
         /// </summary>
-        public async Task DiscoverOnce() {
+        public async Task DiscoverOnce(CancellationToken? cancellationToken = null) {
+            CancellationToken realCancellationToken = cancellationToken ?? CancellationToken.None;
+
             // Create message
             LifxMessage getVersion = new Messages.GetVersion();
 
             // Send message
-            IEnumerable<LifxResponse<Messages.StateVersion>> responses = await this.SendWithMultipleResponse<Messages.StateVersion>(null, getVersion, this.DiscoveryInterval, CancellationToken.None);
+            IEnumerable<LifxResponse<Messages.StateVersion>> responses = await this.SendWithMultipleResponse<Messages.StateVersion>(null, getVersion, this.DiscoveryInterval, realCancellationToken);
 
             // Iterate over returned messages
             foreach (LifxResponse<Messages.StateVersion> response in responses) {
@@ -311,7 +313,7 @@ namespace AydenIO.Lifx {
                 if (this.HasDevice(response.Message.Target)) {
                     this.deviceLookup[response.Message.Target].LastSeen = DateTime.UtcNow;
                 } else {
-                    await this.CreateAndAddDevice(response);
+                    await this.CreateAndAddDevice(response, realCancellationToken);
                 }
             }
 
@@ -345,11 +347,14 @@ namespace AydenIO.Lifx {
         /// <param name="macAddress">The mac address to find</param>
         /// <param name="port">The port to search</param>
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device</returns>
-        public async Task<LifxDevice> GetDevice(MacAddress macAddress, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null) {
+        public async Task<LifxDevice> GetDevice(MacAddress macAddress, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (this.deviceLookup.ContainsKey(macAddress)) {
                 return this.deviceLookup[macAddress];
             }
+
+            CancellationToken realCancellationToken = cancellationToken ?? CancellationToken.None;
 
             // Create message
             LifxMessage getVersion = new Messages.GetVersion() {
@@ -357,9 +362,9 @@ namespace AydenIO.Lifx {
             };
 
             // Send message
-            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(new IPEndPoint(IPAddress.Broadcast, port), getVersion, timeoutMs, CancellationToken.None);
+            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(new IPEndPoint(IPAddress.Broadcast, port), getVersion, timeoutMs, realCancellationToken);
 
-            LifxDevice device = await this.CreateAndAddDevice(response);
+            LifxDevice device = await this.CreateAndAddDevice(response, realCancellationToken);
 
             return device;
         }
@@ -369,21 +374,24 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="endPoint">The endpoint to search</param>
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device</returns>
-        public async Task<LifxDevice> GetDevice(IPEndPoint endPoint, int? timeoutMs = null) {
+        public async Task<LifxDevice> GetDevice(IPEndPoint endPoint, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             LifxDevice device = this.Devices.FirstOrDefault(x => x.EndPoint.Equals(endPoint));
 
             if (device != null) {
                 return device;
             }
 
+            CancellationToken realCancellationToken = cancellationToken ?? CancellationToken.None;
+
             // Create message
             LifxMessage getVersion = new Messages.GetVersion();
 
             // Send message
-            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(endPoint, getVersion, timeoutMs, CancellationToken.None);
+            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(endPoint, getVersion, timeoutMs, realCancellationToken);
 
-            return await this.GetDevice(response.Message.Target);
+            return await this.GetDevice(response.Message.Target, (ushort)endPoint.Port, timeoutMs, cancellationToken);
         }
 
         /// <summary>
@@ -392,9 +400,10 @@ namespace AydenIO.Lifx {
         /// <param name="address">IP address to search</param>
         /// <param name="port">The port to search</param>
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns></returns>
-        public Task<LifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null) {
-            return this.GetDevice(new IPEndPoint(address, port), timeoutMs);
+        public Task<LifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
+            return this.GetDevice(new IPEndPoint(address, port), timeoutMs, cancellationToken);
         }
 
         /// <summary>
@@ -403,18 +412,19 @@ namespace AydenIO.Lifx {
         /// <param name="address">The IP or MAC address to search</param>
         /// <param name="port">The port to search</param>
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns></returns>
-        public Task<LifxDevice> GetDevice(string address, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null) {
+        public Task<LifxDevice> GetDevice(string address, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             bool isIpAddress = IPAddress.TryParse(address, out IPAddress ipAddress);
 
             if (isIpAddress) {
-                return this.GetDevice(ipAddress, port, timeoutMs);
+                return this.GetDevice(ipAddress, port, timeoutMs, cancellationToken);
             }
 
             bool isMacAddress = MacAddress.TryParse(address, out MacAddress macAddress);
 
             if (isMacAddress) {
-                return this.GetDevice(macAddress, port, timeoutMs);
+                return this.GetDevice(macAddress, port, timeoutMs, cancellationToken);
             }
 
             throw new ArgumentException($"{nameof(address)} is not a valid {nameof(IPAddress)} or {nameof(MacAddress)}.", nameof(address));
