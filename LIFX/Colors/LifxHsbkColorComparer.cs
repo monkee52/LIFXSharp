@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AydenIO.Lifx.Colors {
+namespace AydenIO.Lifx {
     /// <summary>
     /// Compares <c>ILifxHsbkColor</c>s
     /// </summary>

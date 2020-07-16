@@ -56,5 +56,35 @@ namespace AydenIO.Lifx {
         public static DateTime NanosecondsToDateTime(ulong ns) => DateTime.UnixEpoch + Utilities.NanosecondsToTimeSpan(ns);
 
         public static ulong DateTimeToNanoseconds(DateTime dt) => Utilities.TimeSpanToNanoseconds(dt - DateTime.UnixEpoch);
+
+        public static LifxSignalStrength GetSignalStrength(float signal) {
+            double val = Math.Floor(10.0 * Math.Log10(signal) + 0.5);
+
+            if (val < 0.0 || val == 200.0) { // Value if RSSI
+                if (val == 200.0) {
+                    return LifxSignalStrength.None;
+                } else if (val <= -80.0) {
+                    return LifxSignalStrength.Poor;
+                } else if (val <= -70.0) {
+                    return LifxSignalStrength.Fair;
+                } else if (val <= -60.0) {
+                    return LifxSignalStrength.Good;
+                } else {
+                    return LifxSignalStrength.Excellent;
+                }
+            } else { // Value is SNR
+                if (val == 4.0 || val == 5.0) {
+                    return LifxSignalStrength.Poor;
+                } else if (val >= 7.0 && val <= 11.0) {
+                    return LifxSignalStrength.Fair;
+                } else if (val >= 12.0 && val <= 16.0) {
+                    return LifxSignalStrength.Good;
+                } else if (val > 16) {
+                    return LifxSignalStrength.Excellent;
+                } else {
+                    return LifxSignalStrength.None;
+                }
+            }
+        }
     }
 }

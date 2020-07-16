@@ -14,8 +14,14 @@ namespace AydenIO.Lifx {
             this.Message = message;
         }
 
-        public static explicit operator LifxResponse<T>(LifxResponse<LifxMessage> from) {
+        public static explicit operator LifxResponse<T>(LifxResponse from) {
             return new LifxResponse<T>(from.EndPoint, (T)from.Message);
+        }
+    }
+
+    internal class LifxResponse : LifxResponse<LifxMessage> {
+        public LifxResponse(IPEndPoint endPoint, LifxMessage message) : base(endPoint, message) {
+
         }
     }
 }

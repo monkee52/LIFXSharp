@@ -40,5 +40,7 @@ namespace AydenIO.Lifx.Messages {
 
             _ = reader.ReadInt16();
         }
+
+        public virtual LifxSignalStrength GetSignalStrength() => Utilities.GetSignalStrength(this.Signal);
     }
 }

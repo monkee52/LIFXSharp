@@ -165,7 +165,7 @@ namespace AydenIO.Lifx {
 
                     // Trigger awaiter
                     if (found) {
-                        responseAwaiter.HandleResponse(new LifxResponse<LifxMessage>(endPoint, message));
+                        responseAwaiter.HandleResponse(new LifxResponse(endPoint, message));
                     } else {
                         // TODO: ???
                         Debug.WriteLine($"Received: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}] from {endPoint}");

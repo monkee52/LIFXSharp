@@ -6,5 +6,7 @@
         public float Signal { get; }
         public uint TransmittedBytes { get; }
         public uint ReceivedBytes { get; }
+
+        public LifxSignalStrength GetSignalStrength();
     }
 }

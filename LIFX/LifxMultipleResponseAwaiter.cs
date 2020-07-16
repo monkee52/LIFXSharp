@@ -28,7 +28,7 @@ namespace AydenIO.Lifx {
         }
 
         /// <inheritdoc />
-        public void HandleResponse(LifxResponse<LifxMessage> response) {
+        public void HandleResponse(LifxResponse response) {
             this.responses.Add((LifxResponse<T>)response);
         }
 

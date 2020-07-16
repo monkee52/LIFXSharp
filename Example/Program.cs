@@ -126,7 +126,7 @@ namespace AydenIO.Examples.Lifx {
 
             result.AppendLine(DateTime.Now.ToLongTimeString());
 
-            result.AppendLine($"Found device {e.Device.GetType().Name} @ {e.Device.EndPoint} (MAC: {e.Device.MacAddress}): "); /* {{");
+            result.AppendLine($"Found device {e.Device.GetType().Name} @ {e.Device.EndPoint} (MAC: {e.Device.MacAddress}): {{");
             result.AppendLine($"    Name: {e.Device.Name};");
             result.AppendLine($"    SupportsColor: {e.Device.SupportsColor};");
             result.AppendLine($"    SupportsInfrared: {e.Device.SupportsInfrared};");
@@ -167,7 +167,7 @@ namespace AydenIO.Examples.Lifx {
 
             if (hostInfo != null) {
                 result.AppendLine($"    HostInfo: {{");
-                result.AppendLine($"        Signal: {hostInfo.Signal};");
+                result.AppendLine($"        Signal: {hostInfo.Signal} ({hostInfo.GetSignalStrength()});");
                 result.AppendLine($"        TxBytes: {hostInfo.TransmittedBytes};");
                 result.AppendLine($"        RxBytes: {hostInfo.ReceivedBytes};");
                 result.AppendLine($"    }};");
@@ -183,7 +183,7 @@ namespace AydenIO.Examples.Lifx {
 
             if (wifiInfo != null) {
                 result.AppendLine($"    WifiInfo: {{");
-                result.AppendLine($"        Signal: {wifiInfo.Signal};");
+                result.AppendLine($"        Signal: {wifiInfo.Signal} ({wifiInfo.GetSignalStrength()});");
                 result.AppendLine($"        TxBytes: {wifiInfo.TransmittedBytes};");
                 result.AppendLine($"        RxBytes: {wifiInfo.ReceivedBytes};");
                 result.AppendLine($"    }};");
@@ -196,8 +196,6 @@ namespace AydenIO.Examples.Lifx {
                 result.AppendLine($"        MinorVersion: {wifiFirmware.VersionMinor};");
                 result.AppendLine($"    }};");
             }
-
-            
             
             if (poweredOn != null) {
                 result.AppendLine();
@@ -257,12 +255,12 @@ namespace AydenIO.Examples.Lifx {
                 }
             }
 
-            result.AppendLine($"];");*/
+            result.AppendLine($"];");
 
             Console.WriteLine(result.ToString());
         }
 
-        private static async void DeviceLost(object sender, LifxDeviceLostEventArgs e) {
+        private static void DeviceLost(object sender, LifxDeviceLostEventArgs e) {
             Console.WriteLine($"Lost device (MAC: {e.MacAddress})");
         }
     }
