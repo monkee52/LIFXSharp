@@ -155,6 +155,14 @@ namespace AydenIO.Lifx {
             return hostFirmware;
         }
 
+        /// <summary>
+        /// Sets the internal cached value for host firmware, used when different firmware versions have different APIs
+        /// </summary>
+        /// <param name="hostFirmware">The host firmware for the device</param>
+        protected void SetHostFirmwareCachedValue(ILifxHostFirmware hostFirmware) {
+            this.hostFirmware = hostFirmware;
+        }
+
         // Wifi Info
         private ILifxWifiInfo wifiInfo;
 

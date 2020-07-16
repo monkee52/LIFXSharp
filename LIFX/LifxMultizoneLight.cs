@@ -10,8 +10,8 @@ namespace AydenIO.Lifx {
     public abstract class LifxMultizoneLight : LifxLight {
         public const int MAX_MULTIZONE = 82;
 
-        protected internal LifxMultizoneLight(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version) : base(lifx, macAddress, endPoint, version) {
-
+        protected internal LifxMultizoneLight(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version, ILifxHostFirmware hostFirmware) : base(lifx, macAddress, endPoint, version) {
+            this.SetHostFirmwareCachedValue(hostFirmware);
         }
 
         public abstract Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null, CancellationToken? cancellationToken = null);

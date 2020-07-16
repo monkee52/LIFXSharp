@@ -274,9 +274,9 @@ namespace AydenIO.Lifx {
 
                 // Firmware version's greater than 2.77 support the extended API
                 if (hostFirmware.VersionMajor >= 2 && hostFirmware.VersionMajor >= 77) {
-                    device = new LifxExtendedMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message);
+                    device = new LifxExtendedMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message, hostFirmware);
                 } else {
-                    device = new LifxStandardMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message);
+                    device = new LifxStandardMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message, hostFirmware);
                 }
             } else if (product.SupportsColor || product.SupportsInfrared) {
                 device = new LifxLight(this, response.Message.Target, response.EndPoint, response.Message);

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     internal class LifxExtendedMultizoneLight : LifxMultizoneLight {
-        protected internal LifxExtendedMultizoneLight(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version) : base(lifx, macAddress, endPoint, version) {
+        protected internal LifxExtendedMultizoneLight(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version, ILifxHostFirmware hostFirmware) : base(lifx, macAddress, endPoint, version, hostFirmware) {
 
         }
 
