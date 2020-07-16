@@ -295,6 +295,16 @@ namespace AydenIO.Lifx {
             return device;
         }
 
+        private Action<LifxResponse<Messages.StateVersion>> CreateDiscoverResponseHandler(CancellationToken cancellationToken) => (LifxResponse<Messages.StateVersion> response) => {
+            bool didFind = this.deviceLookup.TryGetValue(response.Message.Target, out LifxDevice device);
+
+            if (didFind) {
+                device.LastSeen = DateTime.UtcNow;
+            } else {
+                this.CreateAndAddDevice(response, cancellationToken).Wait();
+            }
+        };
+
         /// <summary>
         /// Sends a single discovery packet
         /// </summary>
@@ -305,17 +315,9 @@ namespace AydenIO.Lifx {
             LifxMessage getVersion = new Messages.GetVersion();
 
             // Send message
-            IEnumerable<LifxResponse<Messages.StateVersion>> responses = await this.SendWithMultipleResponse<Messages.StateVersion>(null, getVersion, this.DiscoveryInterval, realCancellationToken);
+            Action<LifxResponse<Messages.StateVersion>> discoverResponseHandler = this.CreateDiscoverResponseHandler(realCancellationToken);
 
-            // Iterate over returned messages
-            foreach (LifxResponse<Messages.StateVersion> response in responses) {
-                // Update last seen time
-                if (this.HasDevice(response.Message.Target)) {
-                    this.deviceLookup[response.Message.Target].LastSeen = DateTime.UtcNow;
-                } else {
-                    await this.CreateAndAddDevice(response, realCancellationToken);
-                }
-            }
+            await this.SendWithMultipleResponseDelegated<Messages.StateVersion>(null, getVersion, discoverResponseHandler, this.DiscoveryInterval, realCancellationToken);
 
             // Remove "lost" devices
             DateTime now = DateTime.UtcNow;
