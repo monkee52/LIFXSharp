@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -48,7 +49,7 @@ namespace AydenIO.Examples.Lifx {
             }
 
             // Services
-            IEnumerable<ILifxService> services = new ILifxService[0];
+            IEnumerable<ILifxService> services = Enumerable.Empty<ILifxService>();
 
             try {
                 services = await e.Device.GetServices();

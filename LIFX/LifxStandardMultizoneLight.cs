@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
@@ -10,7 +11,7 @@ namespace AydenIO.Lifx {
 
         }
 
-        public override async Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null) {
+        public override async Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             ILifxColorMultiZoneState state = new LifxColorMultizoneState(length) {
                 Index = startAt
             };
@@ -20,7 +21,7 @@ namespace AydenIO.Lifx {
                 EndIndex = (byte)(Math.Min(255, startAt + length))
             };
 
-            IEnumerable<LifxMessage> responses = await this.Lifx.SendWithMultipleResponse<LifxMessage>(this, getColorZones, timeoutMs);
+            IEnumerable<LifxMessage> responses = await this.Lifx.SendWithMultipleResponse<LifxMessage>(this, getColorZones, timeoutMs, cancellationToken);
 
             foreach (LifxMessage response in responses) {
                 if (response is Messages.StateZone singleZone) {
@@ -48,7 +49,7 @@ namespace AydenIO.Lifx {
             return state;
         }
 
-        public override async Task SetMultizoneState(TimeSpan duration, LifxApplicationRequest apply, ushort startAt, IEnumerable<ILifxColor> colors, int? timeoutMs = null) {
+        public override async Task SetMultizoneState(TimeSpan duration, LifxApplicationRequest apply, ushort startAt, IEnumerable<ILifxColor> colors, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             ushort index = startAt;
 
             IEnumerator<ILifxColor> colorEnumerator = colors.GetEnumerator();
@@ -67,13 +68,13 @@ namespace AydenIO.Lifx {
 
                 setColorZones.FromHsbk(color.ToHsbk());
 
-                await this.Lifx.SendWithAcknowledgement(this, setColorZones, timeoutMs);
+                await this.Lifx.SendWithAcknowledgement(this, setColorZones, timeoutMs, cancellationToken);
 
                 index++;
             }
         }
 
-        public override async Task SetMultizoneState(TimeSpan duration, ushort startAt, IEnumerable<ILifxColor> colors, bool rapid = false, int? timeoutMs = null) {
+        public override async Task SetMultizoneState(TimeSpan duration, ushort startAt, IEnumerable<ILifxColor> colors, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             ushort index = startAt;
 
             IEnumerator<ILifxColor> colorEnumerator = colors.GetEnumerator();
@@ -95,7 +96,7 @@ namespace AydenIO.Lifx {
                 if (rapid) {
                     await this.Lifx.Send(this, setColorZones);
                 } else {
-                    await this.Lifx.SendWithAcknowledgement(this, setColorZones, timeoutMs);
+                    await this.Lifx.SendWithAcknowledgement(this, setColorZones, timeoutMs, cancellationToken);
                 }
 
                 index++;

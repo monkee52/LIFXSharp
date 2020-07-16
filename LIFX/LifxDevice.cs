@@ -91,15 +91,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>A list of services supported by the device</returns>
-        public virtual async Task<IEnumerable<ILifxService>> GetServices(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<IEnumerable<ILifxService>> GetServices(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.services != null) {
                 return this.services;
             }
 
             Messages.GetService getService = new Messages.GetService();
 
-            IEnumerable<ILifxService> services = await this.Lifx.SendWithMultipleResponse<Messages.StateService>(this, getService, timeoutMs);
+            IEnumerable<ILifxService> services = await this.Lifx.SendWithMultipleResponse<Messages.StateService>(this, getService, timeoutMs, cancellationToken);
 
             this.services = services;
 
@@ -114,15 +115,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The host info</returns>
-        public virtual async Task<ILifxHostInfo> GetHostInfo(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<ILifxHostInfo> GetHostInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.hostInfo != null) {
                 return this.hostInfo;
             }
 
             Messages.GetHostInfo getInfo = new Messages.GetHostInfo();
 
-            Messages.StateHostInfo info = await this.Lifx.SendWithResponse<Messages.StateHostInfo>(this, getInfo, timeoutMs);
+            Messages.StateHostInfo info = await this.Lifx.SendWithResponse<Messages.StateHostInfo>(this, getInfo, timeoutMs, cancellationToken);
 
             this.hostInfo = info;
 
@@ -137,15 +139,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The host firmware</returns>
-        public virtual async Task<ILifxHostFirmware> GetHostFirmware(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<ILifxHostFirmware> GetHostFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.hostFirmware != null) {
                 return this.hostFirmware;
             }
 
             Messages.GetHostFirmware getHostFirmware = new Messages.GetHostFirmware();
 
-            Messages.StateHostFirmware hostFirmware = await this.Lifx.SendWithResponse<Messages.StateHostFirmware>(this, getHostFirmware, timeoutMs);
+            Messages.StateHostFirmware hostFirmware = await this.Lifx.SendWithResponse<Messages.StateHostFirmware>(this, getHostFirmware, timeoutMs, cancellationToken);
 
             this.hostFirmware = hostFirmware;
 
@@ -160,15 +163,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The wifi info</returns>
-        public virtual async Task<ILifxWifiInfo> GetWifiInfo(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<ILifxWifiInfo> GetWifiInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.wifiInfo != null) {
                 return this.wifiInfo;
             }
 
             Messages.GetWifiInfo getWifiInfo = new Messages.GetWifiInfo();
 
-            Messages.StateWifiInfo wifiInfo = await this.Lifx.SendWithResponse<Messages.StateWifiInfo>(this, getWifiInfo, timeoutMs);
+            Messages.StateWifiInfo wifiInfo = await this.Lifx.SendWithResponse<Messages.StateWifiInfo>(this, getWifiInfo, timeoutMs, cancellationToken);
 
             this.wifiInfo = wifiInfo;
 
@@ -183,15 +187,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The wifi firmware</returns>
-        public virtual async Task<ILifxWifiFirmware> GetWifiFirmware(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<ILifxWifiFirmware> GetWifiFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.wifiFirmware != null) {
                 return this.wifiFirmware;
             }
 
             Messages.GetWifiFirmware getWifiFirmware = new Messages.GetWifiFirmware();
 
-            Messages.StateWifiFirmware wifiFirmware = await this.Lifx.SendWithResponse<Messages.StateWifiFirmware>(this, getWifiFirmware, timeoutMs);
+            Messages.StateWifiFirmware wifiFirmware = await this.Lifx.SendWithResponse<Messages.StateWifiFirmware>(this, getWifiFirmware, timeoutMs, cancellationToken);
 
             this.wifiFirmware = wifiFirmware;
 
@@ -206,15 +211,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device power state</returns>
-        public virtual async Task<bool> GetPower(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<bool> GetPower(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.power != null) {
                 return (bool)this.power;
             }
 
             Messages.GetPower getPower = new Messages.GetPower();
 
-            Messages.StatePower powerMessage = await this.Lifx.SendWithResponse<Messages.StatePower>(this, getPower, timeoutMs);
+            Messages.StatePower powerMessage = await this.Lifx.SendWithResponse<Messages.StatePower>(this, getPower, timeoutMs, cancellationToken);
 
             this.power = powerMessage.PoweredOn;
 
@@ -226,19 +232,21 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="power">The power state</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual async Task SetPower(bool power, int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual async Task SetPower(bool power, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.SetPower setPower = new Messages.SetPower() {
                 PoweredOn = power
             };
 
-            await this.Lifx.SendWithAcknowledgement(this, setPower, timeoutMs);
+            await this.Lifx.SendWithAcknowledgement(this, setPower, timeoutMs, cancellationToken);
         }
 
         /// <summary>
         /// Powers on the device
         /// </summary>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual Task PowerOn(int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual Task PowerOn(int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             return this.SetPower(true, timeoutMs);
         }
 
@@ -246,8 +254,9 @@ namespace AydenIO.Lifx {
         /// Powers off the device
         /// </summary>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual Task PowerOff(int? timeoutMs = null) {
-            return this.SetPower(false, timeoutMs);
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual Task PowerOff(int? timeoutMs = null, CancellationToken? cancellationToken = null) {
+            return this.SetPower(false, timeoutMs, cancellationToken);
         }
 
         // Label
@@ -258,15 +267,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device label</returns>
-        public virtual async Task<string> GetLabel(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<string> GetLabel(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.label != null) {
                 return this.label;
             }
 
             Messages.GetLabel getLabel = new Messages.GetLabel();
 
-            Messages.StateLabel label = await this.Lifx.SendWithResponse<Messages.StateLabel>(this, getLabel, timeoutMs);
+            Messages.StateLabel label = await this.Lifx.SendWithResponse<Messages.StateLabel>(this, getLabel, timeoutMs, cancellationToken);
 
             this.label = label.Label;
 
@@ -278,12 +288,13 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="label">The device label</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual async Task SetLabel(string label, int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual async Task SetLabel(string label, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.SetLabel setLabel = new Messages.SetLabel() {
                 Label = label
             };
 
-            await this.Lifx.SendWithAcknowledgement(this, setLabel, timeoutMs);
+            await this.Lifx.SendWithAcknowledgement(this, setLabel, timeoutMs, cancellationToken);
         }
 
         // Version
@@ -294,15 +305,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device version</returns>
-        public virtual async Task<ILifxVersion> GetVersion(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<ILifxVersion> GetVersion(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.version != null) {
                 return this.version;
             }
 
             Messages.GetVersion getVersion = new Messages.GetVersion();
 
-            Messages.StateVersion version = await this.Lifx.SendWithResponse<Messages.StateVersion>(this, getVersion, timeoutMs);
+            Messages.StateVersion version = await this.Lifx.SendWithResponse<Messages.StateVersion>(this, getVersion, timeoutMs, cancellationToken);
 
             this.version = version;
 
@@ -317,15 +329,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device info</returns>
-        public virtual async Task<ILifxInfo> GetInfo(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<ILifxInfo> GetInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.info != null) {
                 return this.info;
             }
 
             Messages.GetInfo getInfo = new Messages.GetInfo();
 
-            Messages.StateInfo info = await this.Lifx.SendWithResponse<Messages.StateInfo>(this, getInfo, timeoutMs);
+            Messages.StateInfo info = await this.Lifx.SendWithResponse<Messages.StateInfo>(this, getInfo, timeoutMs, cancellationToken);
 
             this.info = info;
 
@@ -340,15 +353,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device location</returns>
-        public virtual async Task<ILifxLocation> GetLocation(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<ILifxLocation> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.location != null) {
                 return this.location;
             }
 
             Messages.GetLocation getLocation = new Messages.GetLocation();
 
-            Messages.StateLocation location = await this.Lifx.SendWithResponse<Messages.StateLocation>(this, getLocation, timeoutMs);
+            Messages.StateLocation location = await this.Lifx.SendWithResponse<Messages.StateLocation>(this, getLocation, timeoutMs, cancellationToken);
 
             this.location = location;
 
@@ -360,14 +374,15 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="location">The location</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual async Task SetLocation(ILifxLocation location, int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual async Task SetLocation(ILifxLocation location, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.SetLocation setLocation = new Messages.SetLocation() {
                 Location = location.Location,
                 Label = location.Label,
                 UpdatedAt = DateTime.UtcNow
             };
 
-            await this.Lifx.SendWithAcknowledgement(this, setLocation, timeoutMs);
+            await this.Lifx.SendWithAcknowledgement(this, setLocation, timeoutMs, cancellationToken);
         }
 
         // Group
@@ -378,15 +393,16 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device group</returns>
-        public virtual async Task<ILifxGroup> GetGroup(bool forceRefresh = false, int? timeoutMs = null) {
+        public virtual async Task<ILifxGroup> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             if (!forceRefresh && this.group != null) {
                 return this.group;
             }
 
             Messages.GetGroup getGroup = new Messages.GetGroup();
 
-            Messages.StateGroup group = await this.Lifx.SendWithResponse<Messages.StateGroup>(this, getGroup, timeoutMs);
+            Messages.StateGroup group = await this.Lifx.SendWithResponse<Messages.StateGroup>(this, getGroup, timeoutMs, cancellationToken);
 
             this.group = group;
 
@@ -399,14 +415,15 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="payload">The payload to be echoed</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>Whether the device responded, and whether the response matched the payload</returns>
-        public virtual async Task<bool> Ping(IEnumerable<byte> payload, int? timeoutMs = null) {
+        public virtual async Task<bool> Ping(IEnumerable<byte> payload, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.EchoRequest echoRequest = new Messages.EchoRequest();
 
             echoRequest.SetPayload(payload);
 
             try {
-                Messages.EchoResponse response = await this.Lifx.SendWithResponse<Messages.EchoResponse>(this, echoRequest, timeoutMs);
+                Messages.EchoResponse response = await this.Lifx.SendWithResponse<Messages.EchoResponse>(this, echoRequest, timeoutMs, cancellationToken);
 
                 // Get payload from echoRequest to ensure lengths equal
                 return response.GetPayload().SequenceEqual(echoRequest.GetPayload());
@@ -419,13 +436,14 @@ namespace AydenIO.Lifx {
         /// Request a device to echo back a random payload
         /// </summary>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>Whether the device responded, and whether the response matched the payload</returns>
-        public virtual Task<bool> Ping(int? timeoutMs = null) {
+        public virtual Task<bool> Ping(int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             byte[] payload = new byte[64];
 
             new Random().NextBytes(payload);
 
-            return this.Ping(payload, timeoutMs);
+            return this.Ping(payload, timeoutMs, cancellationToken);
         }
     }
 }

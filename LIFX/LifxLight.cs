@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
@@ -28,10 +29,10 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
         /// <returns>The light's state</returns>
-        public virtual async Task<ILifxLightState> GetState(int? timeoutMs = null) {
+        public virtual async Task<ILifxLightState> GetState(int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.LightGet get = new Messages.LightGet();
 
-            Messages.LightState state = await this.Lifx.SendWithResponse<Messages.LightState>(this, get, timeoutMs);
+            Messages.LightState state = await this.Lifx.SendWithResponse<Messages.LightState>(this, get, timeoutMs, cancellationToken);
 
             return state;
         }
@@ -48,7 +49,8 @@ namespace AydenIO.Lifx {
         /// <param name="waveform">Waveform to use for the effect</param>
         /// <param name="rapid">Whether an acknowledgement is required</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual async Task SetWaveform(bool transient, ILifxColor color, TimeSpan period, float cycles, short skewRatio, LifxWaveform waveform, bool rapid = false, int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual async Task SetWaveform(bool transient, ILifxColor color, TimeSpan period, float cycles, short skewRatio, LifxWaveform waveform, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.LightSetWaveform setWaveform = new Messages.LightSetWaveform() {
                 Transient = transient,
 
@@ -63,7 +65,7 @@ namespace AydenIO.Lifx {
             if (rapid) {
                 await this.Lifx.Send(this, setWaveform);
             } else {
-                await this.Lifx.SendWithAcknowledgement(this, setWaveform, timeoutMs);
+                await this.Lifx.SendWithAcknowledgement(this, setWaveform, timeoutMs, cancellationToken);
             }
         }
 
@@ -78,9 +80,10 @@ namespace AydenIO.Lifx {
         /// <param name="waveform">Waveform to use for the effect</param>
         /// <param name="rapid">Whether an acknowledgement is required</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns></returns>
-        public virtual Task SetWaveform(bool transient, ILifxColor color, uint periodMs, float cycles, short skewRatio, LifxWaveform waveform, bool rapid = false, int? timeoutMs = null) {
-            return this.SetWaveform(transient, color, TimeSpan.FromMilliseconds(periodMs), cycles, skewRatio, waveform, rapid, timeoutMs);
+        public virtual Task SetWaveform(bool transient, ILifxColor color, uint periodMs, float cycles, short skewRatio, LifxWaveform waveform, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
+            return this.SetWaveform(transient, color, TimeSpan.FromMilliseconds(periodMs), cycles, skewRatio, waveform, rapid, timeoutMs, cancellationToken);
         }
 
         /// <summary>
@@ -98,7 +101,8 @@ namespace AydenIO.Lifx {
         /// <param name="setKelvin">Whether to use the kelvin value for the color</param>
         /// <param name="rapid">Whether an acknowledgement is required</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual async Task SetWaveformOptional(bool transient, ILifxColor color, TimeSpan period, float cycles, short skewRatio, LifxWaveform waveform, bool setHue, bool setSaturation, bool setBrightness, bool setKelvin, bool rapid = false, int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual async Task SetWaveformOptional(bool transient, ILifxColor color, TimeSpan period, float cycles, short skewRatio, LifxWaveform waveform, bool setHue, bool setSaturation, bool setBrightness, bool setKelvin, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.LightSetWaveformOptional setWaveformOptional = new Messages.LightSetWaveformOptional() {
                 Transient = transient,
 
@@ -118,7 +122,7 @@ namespace AydenIO.Lifx {
             if (rapid) {
                 await this.Lifx.Send(this, setWaveformOptional);
             } else {
-                await this.Lifx.SendWithAcknowledgement(this, setWaveformOptional, timeoutMs);
+                await this.Lifx.SendWithAcknowledgement(this, setWaveformOptional, timeoutMs, cancellationToken);
             }
         }
 
@@ -137,30 +141,32 @@ namespace AydenIO.Lifx {
         /// <param name="setKelvin">Whether to use the kelvin value for the color</param>
         /// <param name="rapid">Whether an acknowledgement is required</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual Task SetWaveformOptional(bool transient, ILifxColor color, uint periodMs, float cycles, short skewRatio, LifxWaveform waveform, bool setHue, bool setSaturation, bool setBrightness, bool setKelvin, bool rapid = false, int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual Task SetWaveformOptional(bool transient, ILifxColor color, uint periodMs, float cycles, short skewRatio, LifxWaveform waveform, bool setHue, bool setSaturation, bool setBrightness, bool setKelvin, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             return this.SetWaveformOptional(transient, color, TimeSpan.FromMilliseconds(periodMs), cycles, skewRatio, waveform, setHue, setSaturation, setBrightness, setKelvin, rapid, timeoutMs);
         }
 
         // Power
         /// <inheritdoc />
-        public override Task<bool> GetPower(bool forceRefresh, int? timeoutMs = null) {
-            return this.GetPower(timeoutMs);
+        public override Task<bool> GetPower(bool forceRefresh, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
+            return this.GetPower(timeoutMs, cancellationToken);
         }
 
         /// <inheritdoc />
-        public override Task SetPower(bool power, int? timeoutMs = null) {
-            return this.SetPower(power, 0, false, timeoutMs);
+        public override Task SetPower(bool power, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
+            return this.SetPower(power, 0, false, timeoutMs, cancellationToken);
         }
 
         /// <summary>
         /// Gets the light's power state
         /// </summary>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The light's power state</returns>
-        public virtual async Task<bool> GetPower(int? timeoutMs = null) {
+        public virtual async Task<bool> GetPower(int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.LightGetPower getPower = new Messages.LightGetPower();
 
-            Messages.LightStatePower power = await this.Lifx.SendWithResponse<Messages.LightStatePower>(this, getPower, timeoutMs);
+            Messages.LightStatePower power = await this.Lifx.SendWithResponse<Messages.LightStatePower>(this, getPower, timeoutMs, cancellationToken);
 
             return power.PoweredOn;
         }
@@ -172,7 +178,8 @@ namespace AydenIO.Lifx {
         /// <param name="duration">How long to transition over</param>
         /// <param name="rapid">Whether an acknowledgement is required</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual async Task SetPower(bool power, TimeSpan? duration, bool rapid = false, int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual async Task SetPower(bool power, TimeSpan? duration, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             duration ??= TimeSpan.Zero;
 
             Messages.LightSetPower setPower = new Messages.LightSetPower() {
@@ -183,7 +190,7 @@ namespace AydenIO.Lifx {
             if (rapid) {
                 await this.Lifx.Send(this, setPower);
             } else {
-                await this.Lifx.SendWithAcknowledgement(this, setPower, timeoutMs);
+                await this.Lifx.SendWithAcknowledgement(this, setPower, timeoutMs, cancellationToken);
             }
         }
 
@@ -194,8 +201,9 @@ namespace AydenIO.Lifx {
         /// <param name="durationMs">How long to transition over, in milliseconds</param>
         /// <param name="rapid">Whether an acknowledgement is required</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual Task SetPower(bool power, int durationMs = 0, bool rapid = false, int? timeoutMs = null) {
-            return this.SetPower(power, TimeSpan.FromMilliseconds(durationMs), rapid, timeoutMs);
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual Task SetPower(bool power, int durationMs = 0, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
+            return this.SetPower(power, TimeSpan.FromMilliseconds(durationMs), rapid, timeoutMs, cancellationToken);
         }
 
         // Infrared
@@ -203,11 +211,12 @@ namespace AydenIO.Lifx {
         /// Gets the light's infrared state
         /// </summary>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The light's infrared state</returns>
-        public virtual async Task<ushort> GetInfrared(int? timeoutMs = null) {
+        public virtual async Task<ushort> GetInfrared(int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.LightGetInfrared getInfrared = new Messages.LightGetInfrared();
 
-            Messages.LightStateInfrared infrared = await this.Lifx.SendWithResponse<Messages.LightStateInfrared>(this, getInfrared, timeoutMs);
+            Messages.LightStateInfrared infrared = await this.Lifx.SendWithResponse<Messages.LightStateInfrared>(this, getInfrared, timeoutMs, cancellationToken);
 
             return infrared.Level;
         }
@@ -218,7 +227,8 @@ namespace AydenIO.Lifx {
         /// <param name="level">The brightness level of the infrared component</param>
         /// <param name="rapid">Whether an acknowledgement is required</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual async Task SetInfrared(ushort level, bool rapid = false, int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual async Task SetInfrared(ushort level, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             Messages.LightSetInfrared setInfrared = new Messages.LightSetInfrared() {
                 Level = level
             };
@@ -226,7 +236,7 @@ namespace AydenIO.Lifx {
             if (rapid) {
                 await this.Lifx.Send(this, setInfrared);
             } else {
-                await this.Lifx.SendWithAcknowledgement(this, setInfrared, timeoutMs);
+                await this.Lifx.SendWithAcknowledgement(this, setInfrared, timeoutMs, cancellationToken);
             }
         }
 
@@ -238,7 +248,8 @@ namespace AydenIO.Lifx {
         /// <param name="duration">How long to transition over</param>
         /// <param name="rapid">Whether an acknowledgement is required</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual async Task SetColor(ILifxColor color, TimeSpan? duration, bool rapid = false, int? timeoutMs = null) {
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual async Task SetColor(ILifxColor color, TimeSpan? duration, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
             duration ??= TimeSpan.Zero;
 
             Messages.LightSetColor setColor = new Messages.LightSetColor() {
@@ -250,7 +261,7 @@ namespace AydenIO.Lifx {
             if (rapid) {
                 await this.Lifx.Send(this, setColor);
             } else {
-                await this.Lifx.SendWithAcknowledgement(this, setColor, timeoutMs);
+                await this.Lifx.SendWithAcknowledgement(this, setColor, timeoutMs, cancellationToken);
             }
         }
 
@@ -261,8 +272,9 @@ namespace AydenIO.Lifx {
         /// <param name="durationMs">How long to transition over, in milliseconds</param>
         /// <param name="rapid">Whether an acknowledgement is required</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        public virtual Task SetColor(ILifxColor color, int durationMs = 0, bool rapid = false, int? timeoutMs = null) {
-            return this.SetColor(color, TimeSpan.FromMilliseconds(durationMs), rapid, timeoutMs);
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        public virtual Task SetColor(ILifxColor color, int durationMs = 0, bool rapid = false, int? timeoutMs = null, CancellationToken? cancellationToken = null) {
+            return this.SetColor(color, TimeSpan.FromMilliseconds(durationMs), rapid, timeoutMs, cancellationToken);
         }
     }
 }
