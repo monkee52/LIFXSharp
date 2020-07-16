@@ -21,7 +21,7 @@ namespace AydenIO.Lifx {
                 EndIndex = (byte)(Math.Min(255, startAt + length))
             };
 
-            IEnumerable<LifxMessage> responses = await this.Lifx.SendWithMultipleResponse<LifxMessage>(this, getColorZones, timeoutMs, cancellationToken);
+            IReadOnlyCollection<LifxMessage> responses = await this.Lifx.SendWithMultipleResponse<LifxMessage>(this, getColorZones, timeoutMs, cancellationToken);
 
             foreach (LifxMessage response in responses) {
                 if (response is Messages.StateZone singleZone) {

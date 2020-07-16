@@ -84,7 +84,7 @@ namespace AydenIO.Lifx {
         public DateTime LastSeen { get; internal set; }
 
         // Service
-        private IEnumerable<ILifxService> services;
+        private IReadOnlyCollection<ILifxService> services;
 
         /// <summary>
         /// Gets a list of the services that the device supports
@@ -100,7 +100,7 @@ namespace AydenIO.Lifx {
 
             Messages.GetService getService = new Messages.GetService();
 
-            IEnumerable<ILifxService> services = await this.Lifx.SendWithMultipleResponse<Messages.StateService>(this, getService, timeoutMs, cancellationToken);
+            IReadOnlyCollection<ILifxService> services = await this.Lifx.SendWithMultipleResponse<Messages.StateService>(this, getService, timeoutMs, cancellationToken);
 
             this.services = services;
 
