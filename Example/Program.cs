@@ -11,7 +11,8 @@ namespace AydenIO.Examples.Lifx {
         static void Main(string[] args) {
             LifxNetwork lifx = new LifxNetwork();
 
-            lifx.DeviceDiscovered += DeviceDiscovered;
+            lifx.DeviceDiscovered += Program.DeviceDiscovered;
+            lifx.DeviceLost += Program.DeviceLost;
 
             lifx.StartDiscovery();
 
@@ -123,7 +124,7 @@ namespace AydenIO.Examples.Lifx {
             // 
             StringBuilder result = new StringBuilder();
 
-            result.AppendLine($"Found device {e.Device.GetType().Name}: {{");
+            result.AppendLine($"Found device {e.Device.GetType().Name} @ {e.Device.EndPoint} (MAC: {e.Device.MacAddress}): {{");
             result.AppendLine($"    Name: {e.Device.Name};");
             result.AppendLine($"    SupportsColor: {e.Device.SupportsColor};");
             result.AppendLine($"    SupportsInfrared: {e.Device.SupportsInfrared};");
@@ -257,6 +258,10 @@ namespace AydenIO.Examples.Lifx {
             result.AppendLine($"];");
 
             Console.WriteLine(result.ToString());
+        }
+
+        private static async void DeviceLost(object sender, LifxDeviceLostEventArgs e) {
+            Console.WriteLine($"Lost device (MAC: {e.MacAddress})");
         }
     }
 }

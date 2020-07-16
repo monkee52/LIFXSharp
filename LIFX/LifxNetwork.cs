@@ -586,16 +586,38 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call takes before the responses are returned</param>
         /// <returns>The returned messages</returns>
         private async Task<IEnumerable<LifxResponse<T>>> SendWithMultipleResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
+            bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
+
             TaskCompletionSource<IEnumerable<LifxResponse<LifxMessage>>> taskCompletionSource = new TaskCompletionSource<IEnumerable<LifxResponse<LifxMessage>>>();
 
             LifxAwaiter awaiter = new LifxAwaiter(taskCompletionSource);
 
-            await this.SendWithResponseCommon(endPoint, message, awaiter, timeoutMs, false, cancellationToken);
+            await this.SendWithResponseCommon(endPoint, message, awaiter, timeoutMs, isAcknowledgement, cancellationToken);
 
             // Await received messages
             IEnumerable<LifxResponse<LifxMessage>> receivedMessages = await taskCompletionSource.Task;
 
             return receivedMessages.Select((LifxResponse<LifxMessage> response) => (LifxResponse<T>)response);
+        }
+
+        /// <summary>
+        /// Sends a message, and invokes a handler for each response received
+        /// </summary>
+        /// <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
+        /// <param name="endPoint">The endpoint to target</param>
+        /// <param name="message">The message</param>
+        /// <param name="handler">The delegate to invoke for each response</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <param name="timeoutMs">How long before the call takes before the call completes</param>
+        private async Task SendWithMultipleResponseDelegated<T>(IPEndPoint endPoint, LifxMessage message, Action<LifxResponse<T>> handler, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
+            bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
+
+            LifxAwaiter awaiter = new LifxAwaiter((LifxResponse<LifxMessage> response) => handler?.Invoke((LifxResponse<T>)response));
+
+            await this.SendWithResponseCommon(endPoint, message, awaiter, timeoutMs, isAcknowledgement, cancellationToken);
+
+            // Await result
+            await awaiter.Task;
         }
 
         /// <summary>
@@ -608,8 +630,6 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call times out if there is no response</param>
         /// <returns>The returned message</returns>
         internal async Task<T> SendWithResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken? cancellationToken = null) where T : LifxMessage {
-            //return this.SendWithResponse<T>(device, message, timeoutMs, cancellationToken ?? CancellationToken.None);
-
             LifxResponse<T> response = await this.SendWithResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken ?? CancellationToken.None);
 
             return response.Message;
@@ -628,6 +648,20 @@ namespace AydenIO.Lifx {
             IEnumerable<LifxResponse<T>> responses = await this.SendWithMultipleResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken ?? CancellationToken.None);
             
             return responses.Select((LifxResponse<T> response) => response.Message);
+        }
+
+        /// <summary>
+        /// Sends a message, and invokes a handler for each response received
+        /// </summary>
+        /// <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
+        /// <param name="device">The device to target</param>
+        /// <param name="message">The message</param>
+        /// <param name="handler">The delegate to invoke for each response</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <param name="timeoutMs">How long before the call takes before the responses are returned</param>
+        /// <returns>The returned messages</returns>
+        internal Task SendWithMultipleResponseDelegated<T>(LifxDevice device, LifxMessage message, Action<T> handler, int? timeoutMs = null, CancellationToken? cancellationToken = null) where T : LifxMessage {
+            return this.SendWithMultipleResponseDelegated<T>(device?.EndPoint, message, (LifxResponse<T> response) => handler?.Invoke(response.Message), timeoutMs, cancellationToken ?? CancellationToken.None);
         }
 
         /// <summary>
