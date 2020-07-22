@@ -35,6 +35,7 @@ namespace AydenIO.Lifx {
             // Get product features
             ILifxProduct features = LifxNetwork.GetFeaturesForProduct(version);
 
+            this.VendorName = features.VendorName;
             this.Name = features.Name;
 
             this.SupportsColor = features.SupportsColor;
@@ -49,6 +50,9 @@ namespace AydenIO.Lifx {
         }
 
         // Properties
+        /// <inheritdoc />
+        public string VendorName { get; private set; }
+
         /// <inheritdoc />
         public string Name { get; private set; }
 

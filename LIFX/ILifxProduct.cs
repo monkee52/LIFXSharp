@@ -7,6 +7,9 @@ namespace AydenIO.Lifx {
     /// Represents features of a device
     /// </summary>
     public interface ILifxProduct {
+        /// <value>Gets the vendor name</value>
+        public string VendorName { get; }
+
         /// <value>Gets the device product name</value>
         public string Name { get; }
 

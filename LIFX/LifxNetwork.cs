@@ -640,7 +640,7 @@ namespace AydenIO.Lifx {
         /// <returns>The returned messages</returns>
         internal async Task<IReadOnlyCollection<T>> SendWithMultipleResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken? cancellationToken = null) where T : LifxMessage {
             IReadOnlyCollection<LifxResponse<T>> responses = await this.SendWithMultipleResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken ?? CancellationToken.None);
-            
+
             return responses.Select((LifxResponse<T> response) => response.Message).ToList().AsReadOnly();
         }
 
@@ -677,45 +677,46 @@ namespace AydenIO.Lifx {
         /// <returns>An object containing the supported features for that product</returns>
         public static ILifxProduct GetFeaturesForProduct(uint vendorId, uint productId) {
             // https://raw.githubusercontent.com/LIFX/products/master/products.json
-            // PRODUCTS.map(vendor => vendor.products.map(product => `(${vendor.vid}, ${product.pid}) => new LifxProduct() { Name = ${JSON.stringify(product.name)}, SupportsColor = ${product.features.color}, SupportsInfrared = ${product.features.infrared}, IsMultizone = ${product.features.multizone}, IsChain = ${product.features.chain}, IsMatrix = ${product.features.matrix}, MinKelvin = ${product.features.temperature_range[0]}, MaxKelvin = ${product.features.temperature_range[1]} }`)).reduce((a, b) => b.concat(a), ["_ => new LifxProduct()"]).join(",\n");
+            // PRODUCTS.map(vendor => vendor.products.map(product => `(${vendor.vid}, ${product.pid}) => new LifxProduct() { VendorName = ${JSON.stringify(vendor.name)}, Name = ${JSON.stringify(product.name)}, SupportsColor = ${product.features.color}, SupportsInfrared = ${product.features.infrared}, IsMultizone = ${product.features.multizone}, IsChain = ${product.features.chain}, IsMatrix = ${product.features.matrix}, MinKelvin = ${product.features.temperature_range[0]}, MaxKelvin = ${product.features.temperature_range[1]} }`)).reduce((a, b) => b.concat(a), ["_ => new LifxProduct()"]).join(",\n");
 
-            return (vendorId, productId) switch {
-                (1,  1) => new LifxProduct() { Name = "Original 1000", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1,  3) => new LifxProduct() { Name = "Color 650", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 10) => new LifxProduct() { Name = "White 800 (Low Voltage)", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 6500 },
-                (1, 11) => new LifxProduct() { Name = "White 800 (High Voltage)", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 6500 },
-                (1, 18) => new LifxProduct() { Name = "White 900 BR30 (Low Voltage)", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 6500 },
-                (1, 20) => new LifxProduct() { Name = "Color 1000 BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 22) => new LifxProduct() { Name = "Color 1000", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 27) => new LifxProduct() { Name = "LIFX A19", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 28) => new LifxProduct() { Name = "LIFX BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 29) => new LifxProduct() { Name = "LIFX+ A19", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 30) => new LifxProduct() { Name = "LIFX+ BR30", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 31) => new LifxProduct() { Name = "LIFX Z", SupportsColor = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 32) => new LifxProduct() { Name = "LIFX Z 2", SupportsColor = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 36) => new LifxProduct() { Name = "LIFX Downlight", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 37) => new LifxProduct() { Name = "LIFX Downlight", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 38) => new LifxProduct() { Name = "LIFX Beam", SupportsColor = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 43) => new LifxProduct() { Name = "LIFX A19", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 44) => new LifxProduct() { Name = "LIFX BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 45) => new LifxProduct() { Name = "LIFX+ A19", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 46) => new LifxProduct() { Name = "LIFX+ BR30", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 49) => new LifxProduct() { Name = "LIFX Mini", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 50) => new LifxProduct() { Name = "LIFX Mini Warm to White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 1500, MaxKelvin = 4000 },
-                (1, 51) => new LifxProduct() { Name = "LIFX Mini White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 2700 },
-                (1, 52) => new LifxProduct() { Name = "LIFX GU10", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 55) => new LifxProduct() { Name = "LIFX Tile", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = true, IsMatrix = true, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 57) => new LifxProduct() { Name = "LIFX Candle", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = true, MinKelvin = 1500, MaxKelvin = 9000 },
-                (1, 59) => new LifxProduct() { Name = "LIFX Mini Color", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 60) => new LifxProduct() { Name = "LIFX Mini Warm to White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 1500, MaxKelvin = 4000 },
-                (1, 61) => new LifxProduct() { Name = "LIFX Mini White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 2700 },
-                (1, 62) => new LifxProduct() { Name = "LIFX A19", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 63) => new LifxProduct() { Name = "LIFX BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 64) => new LifxProduct() { Name = "LIFX+ A19", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 65) => new LifxProduct() { Name = "LIFX+ BR30", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 68) => new LifxProduct() { Name = "LIFX Candle", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = true, MinKelvin = 1500, MaxKelvin = 9000 },
-                (1, 81) => new LifxProduct() { Name = "LIFX Candle Warm to White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2200, MaxKelvin = 6500 },
-                (1, 82) => new LifxProduct() { Name = "LIFX Filament", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2000, MaxKelvin = 2000 },
+            return (vendorId, productId) switch
+            {
+                (1,  1) => new LifxProduct() { VendorName = "LIFX", Name = "Original 1000", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1,  3) => new LifxProduct() { VendorName = "LIFX", Name = "Color 650", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 10) => new LifxProduct() { VendorName = "LIFX", Name = "White 800 (Low Voltage)", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 6500 },
+                (1, 11) => new LifxProduct() { VendorName = "LIFX", Name = "White 800 (High Voltage)", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 6500 },
+                (1, 18) => new LifxProduct() { VendorName = "LIFX", Name = "White 900 BR30 (Low Voltage)", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 6500 },
+                (1, 20) => new LifxProduct() { VendorName = "LIFX", Name = "Color 1000 BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 22) => new LifxProduct() { VendorName = "LIFX", Name = "Color 1000", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 27) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX A19", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 28) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 29) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ A19", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 30) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ BR30", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 31) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Z", SupportsColor = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 32) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Z 2", SupportsColor = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 36) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Downlight", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 37) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Downlight", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 38) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Beam", SupportsColor = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 43) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX A19", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 44) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 45) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ A19", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 46) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ BR30", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 49) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 50) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini Warm to White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 1500, MaxKelvin = 4000 },
+                (1, 51) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 2700 },
+                (1, 52) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX GU10", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 55) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Tile", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = true, IsMatrix = true, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 57) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Candle", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = true, MinKelvin = 1500, MaxKelvin = 9000 },
+                (1, 59) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini Color", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 60) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini Warm to White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 1500, MaxKelvin = 4000 },
+                (1, 61) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 2700 },
+                (1, 62) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX A19", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 63) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 64) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ A19", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 65) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ BR30", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
+                (1, 68) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Candle", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = true, MinKelvin = 1500, MaxKelvin = 9000 },
+                (1, 81) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Candle Warm to White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2200, MaxKelvin = 6500 },
+                (1, 82) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Filament", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2000, MaxKelvin = 2000 },
                 _ => new LifxProduct()
             };
         }

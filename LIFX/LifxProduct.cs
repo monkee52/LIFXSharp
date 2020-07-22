@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace AydenIO.Lifx {
-    class LifxProduct : ILifxProduct {
+    internal class LifxProduct : ILifxProduct {
+        public string VendorName { get; set; }
+
         public string Name { get; set; }
 
         public bool SupportsColor { get; set; }
