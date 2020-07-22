@@ -9,23 +9,20 @@ namespace AydenIO.Lifx {
     internal class LifxMultipleResponseDelegatedAwaiter<T> : ILifxResponseAwaiter where T : LifxMessage {
         private TaskCompletionSource<bool> taskCompletionSource;
 
-        private Action<LifxResponse<T>> responseHandler;
+        public event Action<LifxResponse<T>> ResponseReceived;
 
         public Task Task => this.taskCompletionSource.Task;
 
         /// <summary>
         /// Creates an awaiter that calls a delegate when responses are received before cancelled or timed out
         /// </summary>
-        /// <param name="responseHandler">The delegate to invoke for each response</param>
-        public LifxMultipleResponseDelegatedAwaiter(Action<LifxResponse<T>> responseHandler) {
+        public LifxMultipleResponseDelegatedAwaiter() {
             this.taskCompletionSource = new TaskCompletionSource<bool>(false);
-
-            this.responseHandler = responseHandler;
         }
 
         /// <inheritdoc />
         public void HandleResponse(LifxResponse response) {
-            this.responseHandler?.Invoke((LifxResponse<T>)response);
+            this.ResponseReceived?.Invoke((LifxResponse<T>)response);
         }
 
         /// <inheritdoc />

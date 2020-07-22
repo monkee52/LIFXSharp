@@ -604,7 +604,9 @@ namespace AydenIO.Lifx {
         private async Task SendWithMultipleResponseDelegated<T>(IPEndPoint endPoint, LifxMessage message, Action<LifxResponse<T>> handler, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
             bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
 
-            LifxMultipleResponseDelegatedAwaiter<T> awaiter = new LifxMultipleResponseDelegatedAwaiter<T>(handler);
+            LifxMultipleResponseDelegatedAwaiter<T> awaiter = new LifxMultipleResponseDelegatedAwaiter<T>();
+
+            awaiter.ResponseReceived += handler;
 
             await this.SendWithResponseCommon(endPoint, message, awaiter, timeoutMs, isAcknowledgement, cancellationToken);
 
