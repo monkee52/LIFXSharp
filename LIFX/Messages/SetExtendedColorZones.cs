@@ -33,7 +33,7 @@ namespace AydenIO.Lifx.Messages {
 
             ILifxHsbkColor defaultColor = new LifxHsbkColor();
 
-            for (int i = 0; i < LifxMultizoneLight.MAX_MULTIZONE; i++) {
+            for (int i = 0; i < ILifxMultizoneLight.MAX_MULTIZONE; i++) {
                 ILifxHsbkColor color;
 
                 if (i < count) {
@@ -71,7 +71,7 @@ namespace AydenIO.Lifx.Messages {
             // Empty list
             this.Colors.Clear();
 
-            for (int i = 0; i < LifxMultizoneLight.MAX_MULTIZONE; i++) {
+            for (int i = 0; i < ILifxMultizoneLight.MAX_MULTIZONE; i++) {
                 // Read HSBK
                 ushort hue = reader.ReadUInt16();
                 ushort saturation = reader.ReadUInt16();

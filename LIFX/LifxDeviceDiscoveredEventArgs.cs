@@ -8,9 +8,9 @@ namespace AydenIO.Lifx {
     /// </summary>
     public class LifxDeviceDiscoveredEventArgs : EventArgs {
         /// <value>Gets the device that has been discovered</value>
-        public LifxDevice Device { get; private set; }
+        public ILifxDevice Device { get; private set; }
 
-        internal LifxDeviceDiscoveredEventArgs(LifxDevice device) {
+        internal LifxDeviceDiscoveredEventArgs(ILifxDevice device) {
             this.Device = device;
         }
     }

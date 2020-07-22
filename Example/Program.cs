@@ -15,6 +15,7 @@ namespace AydenIO.Examples.Lifx {
             lifx.DeviceLost += Program.DeviceLost;
 
             lifx.StartDiscovery();
+            lifx.StopDiscoverySync();
 
             Console.ReadKey();
 
@@ -219,7 +220,7 @@ namespace AydenIO.Examples.Lifx {
                 result.AppendLine($"    }};");
             }
 
-            if (e.Device is LifxLight light) {
+            if (e.Device is ILifxLight light) {
                 if (light.SupportsColor) {
                     ILifxLightState lightState = null;
 
@@ -239,11 +240,11 @@ namespace AydenIO.Examples.Lifx {
                     }
                 }
 
-                if (light.SupportsInfrared) {
+                if (light is ILifxInfraredLight infraredLight) {
                     ushort? infrared = null;
 
                     try {
-                        infrared = await light.GetInfrared();
+                        infrared = await infraredLight.GetInfrared();
                     } catch (TimeoutException) {
                         
                     }

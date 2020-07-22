@@ -126,6 +126,331 @@
         <member name="M:AydenIO.Lifx.LifxRgbColor16Bit.ToHsbk">
             <inheritdoc />
         </member>
+        <member name="T:AydenIO.Lifx.ILifxDevice">
+            <summary>
+            Represents a LIFX device
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDevice.EndPoint">
+            <value>Gets the <c>IPEndPoint</c> of the device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxDevice.MacAddress">
+            <value>Gets the MAC address of the device</value>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetServices(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets a list of the services that the device supports
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>A list of services supported by the device</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetHostInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets host info
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The host info</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetHostFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets host firmware
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The host firmware</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetWifiInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the wifi info
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The wifi info</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetWifiFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the wifi firmware
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The wifi firmware</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the device power state
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The device power state</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.SetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the device power state
+            </summary>
+            <param name="power">The power state</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.PowerOn(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Powers on the device
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.PowerOff(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Powers off the device
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetLabel(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the device label
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The device label</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.SetLabel(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the device label
+            </summary>
+            <param name="label">The device label</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetVersion(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the device version
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The device version</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the device info
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The device info</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetLocation(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the device location
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The device location</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.SetLocation(AydenIO.Lifx.ILifxLocation,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the device location
+            </summary>
+            <param name="location">The location</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetGroup(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the device group
+            </summary>
+            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The device group</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.SetGroup(AydenIO.Lifx.ILifxGroup,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the device group
+            </summary>
+            <param name="group">The group</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.Ping(System.Collections.Generic.IEnumerable{System.Byte},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Request a device to echo back a specific payload
+            </summary>
+            <param name="payload">The payload to be echoed</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>Whether the device responded, and whether the response matched the payload</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxDevice.Ping(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Request a device to echo back a random payload
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>Whether the device responded, and whether the response matched the payload</returns>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxInfraredLight">
+            <summary>
+            Represents a LIFX light device with infrared
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxInfraredLight.GetInfrared(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the light's infrared state
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The light's infrared state</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxInfraredLight.SetInfrared(System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the light's infrared state
+            </summary>
+            <param name="level">The brightness level of the infrared component</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxLight">
+            <summary>
+            Represents a LIFX light device
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.GetState(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the light's state
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The light's state</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the light's effect waveform
+            </summary>
+            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
+            <param name="color">The color of the effect</param>
+            <param name="period">Duration of a cycle</param>
+            <param name="cycles">Number of cycles</param>
+            <param name="skewRatio">Waveform skew</param>
+            <param name="waveform">Waveform to use for the effect</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the light's effect waveform
+            </summary>
+            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
+            <param name="color">The color of the effect</param>
+            <param name="periodMs">Duration of a cycle, in milliseconds</param>
+            <param name="cycles">Number of cycles</param>
+            <param name="skewRatio">Waveform skew</param>
+            <param name="waveform">Waveform to use for the effect</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns></returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the light's effect waveform
+            </summary>
+            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
+            <param name="color">The color of the effect</param>
+            <param name="period">Duration of a cycle</param>
+            <param name="cycles">Number of cycles</param>
+            <param name="skewRatio">Waveform skew</param>
+            <param name="waveform">Waveform to use for the effect</param>
+            <param name="setHue">Whether to use the hue value for the color</param>
+            <param name="setSaturation">Whether to use the saturation value for the color</param>
+            <param name="setBrightness">Whether to use the brightness value for the color</param>
+            <param name="setKelvin">Whether to use the kelvin value for the color</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the light's effect waveform
+            </summary>
+            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
+            <param name="color">The color of the effect</param>
+            <param name="periodMs">Duration of a cycle, in milliseconds</param>
+            <param name="cycles">Number of cycles</param>
+            <param name="skewRatio">Waveform skew</param>
+            <param name="waveform">Waveform to use for the effect</param>
+            <param name="setHue">Whether to use the hue value for the color</param>
+            <param name="setSaturation">Whether to use the saturation value for the color</param>
+            <param name="setBrightness">Whether to use the brightness value for the color</param>
+            <param name="setKelvin">Whether to use the kelvin value for the color</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.GetPower(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Gets the light's power state
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>The light's power state</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.SetPower(System.Boolean,System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the light's power state
+            </summary>
+            <param name="power">The power state</param>
+            <param name="duration">How long to transition over</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.SetPower(System.Boolean,System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the light's power state
+            </summary>
+            <param name="power">The power state</param>
+            <param name="durationMs">How long to transition over, in milliseconds</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the light's color
+            </summary>
+            <param name="color">The color</param>
+            <param name="duration">How long to transition over</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Sets the light's color
+            </summary>
+            <param name="color">The color</param>
+            <param name="durationMs">How long to transition over, in milliseconds</param>
+            <param name="rapid">Whether an acknowledgement is required</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxMultizoneLight">
+            <summary>
+            Represents a LIFX multizone light device
+            </summary>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxProduct">
             <summary>
             Represents features of a device
@@ -243,40 +568,22 @@
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.EndPoint">
-            <value>Gets the <c>IPEndPoint</c> of the device</value>
+            <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.MacAddress">
-            <value>Gets the MAC address of the device</value>
+            <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.LastSeen">
             <value>Gets the last time the device was seen by discovery</value>
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetServices(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets a list of the services that the device supports
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>A list of services supported by the device</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetServices(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetHostInfo(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets host info
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The host info</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetHostInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetHostFirmware(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets host firmware
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The host firmware</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetHostFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.SetHostFirmwareCachedValue(AydenIO.Lifx.ILifxHostFirmware)">
             <summary>
@@ -284,132 +591,53 @@
             </summary>
             <param name="hostFirmware">The host firmware for the device</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetWifiInfo(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the wifi info
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The wifi info</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetWifiInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetWifiFirmware(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the wifi firmware
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The wifi firmware</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetWifiFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetPower(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the device power state
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The device power state</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.SetPower(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the device power state
-            </summary>
-            <param name="power">The power state</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxDevice.SetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.PowerOn(System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Powers on the device
-            </summary>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxDevice.PowerOn(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.PowerOff(System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Powers off the device
-            </summary>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxDevice.PowerOff(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetLabel(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the device label
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The device label</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetLabel(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.SetLabel(System.String,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the device label
-            </summary>
-            <param name="label">The device label</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxDevice.SetLabel(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetVersion(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the device version
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The device version</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetVersion(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetInfo(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the device info
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The device info</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetLocation(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the device location
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The device location</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetLocation(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.SetLocation(AydenIO.Lifx.ILifxLocation,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the device location
-            </summary>
-            <param name="location">The location</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxDevice.SetLocation(AydenIO.Lifx.ILifxLocation,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetGroup(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the device group
-            </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The device group</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.GetGroup(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Collections.Generic.IEnumerable{System.Byte},System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Request a device to echo back a specific payload
-            </summary>
-            <param name="payload">The payload to be echoed</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>Whether the device responded, and whether the response matched the payload</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.SetGroup(AydenIO.Lifx.ILifxGroup,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Request a device to echo back a random payload
-            </summary>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>Whether the device responded, and whether the response matched the payload</returns>
+        <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Collections.Generic.IEnumerable{System.Byte},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs">
             <summary>
@@ -427,6 +655,26 @@
         <member name="P:AydenIO.Lifx.LifxDeviceLostEventArgs.MacAddress">
             <value>Gets the MAC address of the device that has been lost</value>
         </member>
+        <member name="T:AydenIO.Lifx.LifxInfraredLight">
+            <summary>
+            Represents a LIFX light device with infrared
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxInfraredLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion)">
+            <summary>
+            Creates a LIFX light class that supports infrared
+            </summary>
+            <param name="lifx">The <c>LifxNetwork</c> the device belongs to</param>
+            <param name="macAddress">The MAC address of the device</param>
+            <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
+            <param name="version">The version of the device</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxInfraredLight.GetInfrared(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxInfraredLight.SetInfrared(System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.LifxLight">
             <summary>
             Represents a LIFX light device
@@ -441,148 +689,41 @@
             <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
             <param name="version">The version of the device</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.GetState(System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the light's state
-            </summary>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <returns>The light's state</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the light's effect waveform
-            </summary>
-            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
-            <param name="color">The color of the effect</param>
-            <param name="period">Duration of a cycle</param>
-            <param name="cycles">Number of cycles</param>
-            <param name="skewRatio">Waveform skew</param>
-            <param name="waveform">Waveform to use for the effect</param>
-            <param name="rapid">Whether an acknowledgement is required</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the light's effect waveform
-            </summary>
-            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
-            <param name="color">The color of the effect</param>
-            <param name="periodMs">Duration of a cycle, in milliseconds</param>
-            <param name="cycles">Number of cycles</param>
-            <param name="skewRatio">Waveform skew</param>
-            <param name="waveform">Waveform to use for the effect</param>
-            <param name="rapid">Whether an acknowledgement is required</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns></returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the light's effect waveform
-            </summary>
-            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
-            <param name="color">The color of the effect</param>
-            <param name="period">Duration of a cycle</param>
-            <param name="cycles">Number of cycles</param>
-            <param name="skewRatio">Waveform skew</param>
-            <param name="waveform">Waveform to use for the effect</param>
-            <param name="setHue">Whether to use the hue value for the color</param>
-            <param name="setSaturation">Whether to use the saturation value for the color</param>
-            <param name="setBrightness">Whether to use the brightness value for the color</param>
-            <param name="setKelvin">Whether to use the kelvin value for the color</param>
-            <param name="rapid">Whether an acknowledgement is required</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the light's effect waveform
-            </summary>
-            <param name="transient">True if the color is temporary, otherwise effect ends with light being the color</param>
-            <param name="color">The color of the effect</param>
-            <param name="periodMs">Duration of a cycle, in milliseconds</param>
-            <param name="cycles">Number of cycles</param>
-            <param name="skewRatio">Waveform skew</param>
-            <param name="waveform">Waveform to use for the effect</param>
-            <param name="setHue">Whether to use the hue value for the color</param>
-            <param name="setSaturation">Whether to use the saturation value for the color</param>
-            <param name="setBrightness">Whether to use the brightness value for the color</param>
-            <param name="setKelvin">Whether to use the kelvin value for the color</param>
-            <param name="rapid">Whether an acknowledgement is required</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxLight.GetPower(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxLight.GetState(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.GetPower(System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the light's power state
-            </summary>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The light's power state</returns>
+        <member name="M:AydenIO.Lifx.LifxLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.Nullable{System.TimeSpan},System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the light's power state
-            </summary>
-            <param name="power">The power state</param>
-            <param name="duration">How long to transition over</param>
-            <param name="rapid">Whether an acknowledgement is required</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.Int32,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the light's power state
-            </summary>
-            <param name="power">The power state</param>
-            <param name="durationMs">How long to transition over, in milliseconds</param>
-            <param name="rapid">Whether an acknowledgement is required</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.GetInfrared(System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Gets the light's infrared state
-            </summary>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The light's infrared state</returns>
+        <member name="M:AydenIO.Lifx.LifxLight.GetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetInfrared(System.UInt16,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the light's infrared state
-            </summary>
-            <param name="level">The brightness level of the infrared component</param>
-            <param name="rapid">Whether an acknowledgement is required</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.Nullable{System.TimeSpan},System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the light's color
-            </summary>
-            <param name="color">The color</param>
-            <param name="duration">How long to transition over</param>
-            <param name="rapid">Whether an acknowledgement is required</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxLight.GetPower(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.Int32,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sets the light's color
-            </summary>
-            <param name="color">The color</param>
-            <param name="durationMs">How long to transition over, in milliseconds</param>
-            <param name="rapid">Whether an acknowledgement is required</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxMessageType">
             <summary>
@@ -693,12 +834,12 @@
             <param name="macAddress">The MAC address to look up</param>
             <returns>Whether the device has been found</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoverOnce(System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoverOnce(System.Threading.CancellationToken)">
             <summary>
             Sends a single discovery packet
             </summary>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(AydenIO.Lifx.MacAddress,System.UInt16,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(AydenIO.Lifx.MacAddress,System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets a device with a specific <c>MacAddress</c>
             </summary>
@@ -708,7 +849,7 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <returns>The device</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(System.Net.IPEndPoint,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(System.Net.IPEndPoint,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets a device with a specific <c>MacAddress</c>
             </summary>
@@ -717,7 +858,7 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <returns>The device</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(System.Net.IPAddress,System.UInt16,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(System.Net.IPAddress,System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets a device with at an IP address and port
             </summary>
@@ -727,7 +868,7 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <returns></returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(System.String,System.UInt16,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(System.String,System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets a device using an IP or MAC address, and a port
             </summary>
@@ -809,7 +950,7 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <param name="timeoutMs">How long before the call takes before the call completes</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponse``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponse``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Sends a message, and returns the response
             </summary>
@@ -820,7 +961,7 @@
             <param name="timeoutMs">How long before the call times out if there is no response</param>
             <returns>The returned message</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithMultipleResponse``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithMultipleResponse``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Sends a message, and returns all responses after timeout
             </summary>
@@ -831,7 +972,7 @@
             <param name="timeoutMs">How long before the call takes before the responses are returned</param>
             <returns>The returned messages</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithMultipleResponseDelegated``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Action{``0},System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithMultipleResponseDelegated``1(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Action{``0},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Sends a message, and invokes a handler for each response received
             </summary>
@@ -843,7 +984,7 @@
             <param name="timeoutMs">How long before the call takes before the responses are returned</param>
             <returns>The returned messages</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithAcknowledgement(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithAcknowledgement(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Sends a message, and awaits an acknowledgement
             </summary>
