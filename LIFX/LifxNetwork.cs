@@ -34,7 +34,7 @@ namespace AydenIO.Lifx {
         private CancellationTokenSource discoveryCancellationTokenSource;
         private Thread discoveryThread;
 
-        private readonly IDictionary<MacAddress, LifxDevice> deviceLookup;
+        private readonly IDictionary<MacAddress, ILifxDevice> deviceLookup;
 
         /// <value>Gets or sets how long to wait between sending out discovery packets</value>
         public int DiscoveryInterval { get; set; }
@@ -78,7 +78,7 @@ namespace AydenIO.Lifx {
 
             // Set up internals
             this.sequenceCounter = -1; // Start at -1 because Interlocked.Increment returns the incremented value
-            this.deviceLookup = new Dictionary<MacAddress, LifxDevice>();
+            this.deviceLookup = new Dictionary<MacAddress, ILifxDevice>();
             this.awaitingSequences = new Dictionary<byte, ILifxResponseAwaiter>();
 
             // Set up config
@@ -115,66 +115,68 @@ namespace AydenIO.Lifx {
                     continue;
                 }
 
-                // Skip messages not intended for us
-                if (origMessage.SourceId != this.SourceId) {
-                    continue;
-                }
+                // Determine if acting as client or "server"
+                bool isClient = origMessage.SourceId != this.SourceId;
 
-                // Find awaiters
-                bool found = this.awaitingSequences.TryGetValue(origMessage.SequenceNumber, out ILifxResponseAwaiter responseAwaiter);
+                if (isClient) {
+                    // TODO: Find device by target field, determine message
+                } else {
+                    // Find awaiters
+                    bool found = this.awaitingSequences.TryGetValue(origMessage.SequenceNumber, out ILifxResponseAwaiter responseAwaiter);
 
-                LifxMessage message = origMessage;
+                    LifxMessage message = origMessage;
 
-                // Decode message as appropriate type
-                if (found) {
-                    message = origMessage.Type switch {
-                        // Device messages
-                        LifxMessageType.StateService => new Messages.StateService(),
-                        LifxMessageType.StateHostInfo => new Messages.StateHostInfo(),
-                        LifxMessageType.StateHostFirmware => new Messages.StateHostFirmware(),
-                        LifxMessageType.StateWifiInfo => new Messages.StateWifiInfo(),
-                        LifxMessageType.StateWifiFirmware => new Messages.StateWifiFirmware(),
-                        LifxMessageType.StatePower => new Messages.StatePower(),
-                        LifxMessageType.StateLabel => new Messages.StateLabel(),
-                        LifxMessageType.StateVersion => new Messages.StateVersion(),
-                        LifxMessageType.StateInfo => new Messages.StateInfo(),
-                        LifxMessageType.Acknowledgement => new Messages.Acknowledgement(),
-                        LifxMessageType.StateLocation => new Messages.StateLocation(),
-                        LifxMessageType.StateGroup => new Messages.StateGroup(),
-                        LifxMessageType.EchoResponse => new Messages.EchoResponse(),
-                        // Light messages
-                        LifxMessageType.LightState => new Messages.LightState(),
-                        LifxMessageType.LightStatePower => new Messages.LightStatePower(),
-                        LifxMessageType.LightStateInfrared => new Messages.LightStateInfrared(),
-                        // MultiZone messages
-                        LifxMessageType.StateExtendedColorZones => new Messages.StateExtendedColorZones(),
-                        LifxMessageType.StateZone => new Messages.StateZone(),
-                        LifxMessageType.StateMultiZone => new Messages.StateMultiZone(),
+                    // Decode message as appropriate type
+                    if (found) {
+                        message = origMessage.Type switch {
+                            // Device messages
+                            LifxMessageType.StateService => new Messages.StateService(),
+                            LifxMessageType.StateHostInfo => new Messages.StateHostInfo(),
+                            LifxMessageType.StateHostFirmware => new Messages.StateHostFirmware(),
+                            LifxMessageType.StateWifiInfo => new Messages.StateWifiInfo(),
+                            LifxMessageType.StateWifiFirmware => new Messages.StateWifiFirmware(),
+                            LifxMessageType.StatePower => new Messages.StatePower(),
+                            LifxMessageType.StateLabel => new Messages.StateLabel(),
+                            LifxMessageType.StateVersion => new Messages.StateVersion(),
+                            LifxMessageType.StateInfo => new Messages.StateInfo(),
+                            LifxMessageType.Acknowledgement => new Messages.Acknowledgement(),
+                            LifxMessageType.StateLocation => new Messages.StateLocation(),
+                            LifxMessageType.StateGroup => new Messages.StateGroup(),
+                            LifxMessageType.EchoResponse => new Messages.EchoResponse(),
+                            // Light messages
+                            LifxMessageType.LightState => new Messages.LightState(),
+                            LifxMessageType.LightStatePower => new Messages.LightStatePower(),
+                            LifxMessageType.LightStateInfrared => new Messages.LightStateInfrared(),
+                            // MultiZone messages
+                            LifxMessageType.StateExtendedColorZones => new Messages.StateExtendedColorZones(),
+                            LifxMessageType.StateZone => new Messages.StateZone(),
+                            LifxMessageType.StateMultiZone => new Messages.StateMultiZone(),
 
-                        _ => origMessage
-                    };
-                }
-
-                try {
-                    // Decode message again if needed
-                    if (message != origMessage) {
-                        message.SourceId = this.SourceId;
-
-                        message.FromBytes(buffer);
+                            _ => origMessage
+                        };
                     }
 
-                    // Trigger awaiter
-                    if (found) {
-                        responseAwaiter.HandleResponse(new LifxResponse(endPoint, message));
-                    } else {
-                        // TODO: ???
-                        Debug.WriteLine($"Received: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}] from {endPoint}");
-                    }
-                } catch (Exception e) {
-                    if (found) {
-                        responseAwaiter.HandleException(e);
-                    } else {
-                        // TODO: ???
+                    try {
+                        // Decode message again if needed
+                        if (message != origMessage) {
+                            message.SourceId = this.SourceId;
+
+                            message.FromBytes(buffer);
+                        }
+
+                        // Trigger awaiter
+                        if (found) {
+                            responseAwaiter.HandleResponse(new LifxResponse(endPoint, message));
+                        } else {
+                            // TODO: ??
+                            Debug.WriteLine($"Received: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}] from {endPoint}");
+                        }
+                    } catch (Exception e) {
+                        if (found) {
+                            responseAwaiter.HandleException(e);
+                        } else {
+                            throw;
+                        }
                     }
                 }
             }
@@ -306,10 +308,12 @@ namespace AydenIO.Lifx {
         }
 
         private void DiscoveryResponseHandler(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
-            bool didFind = this.deviceLookup.TryGetValue(response.Message.Target, out LifxDevice device);
+            bool didFind = this.deviceLookup.TryGetValue(response.Message.Target, out ILifxDevice device);
 
             if (didFind) {
-                device.LastSeen = DateTime.UtcNow;
+                if (device is LifxDevice clientDevice) {
+                    clientDevice.LastSeen = DateTime.UtcNow;
+                }
             } else {
                 this.CreateAndAddDevice(response, cancellationToken).Wait();
             }
@@ -331,14 +335,16 @@ namespace AydenIO.Lifx {
             IList<MacAddress> devicesToRemove = new List<MacAddress>(); // Store list of devices that are lost
 
             // Iterate over all devices
-            foreach (KeyValuePair<MacAddress, LifxDevice> devicePair in this.deviceLookup) {
-                // Check if device was last seen more than lostTimeout ago
-                if (now - devicePair.Value.LastSeen > lostTimeout) {
-                    // Add to lost list
-                    devicesToRemove.Add(devicePair.Key);
+            foreach (KeyValuePair<MacAddress, ILifxDevice> devicePair in this.deviceLookup) {
+                if (devicePair.Value is LifxDevice clientDevice) {
+                    // Check if device was last seen more than lostTimeout ago
+                    if (now - clientDevice.LastSeen > lostTimeout) {
+                        // Add to lost list
+                        devicesToRemove.Add(devicePair.Key);
 
-                    // Fire event
-                    this.DeviceLost?.Invoke(this, new LifxDeviceLostEventArgs(devicePair.Key));
+                        // Fire event
+                        this.DeviceLost?.Invoke(this, new LifxDeviceLostEventArgs(devicePair.Key));
+                    }
                 }
             }
 
