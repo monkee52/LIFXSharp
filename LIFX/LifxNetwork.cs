@@ -59,8 +59,6 @@ namespace AydenIO.Lifx {
                 EnableBroadcast = true
             };
 
-            this.socket.Client.ReceiveTimeout = rxTimeout;
-
             // Set up socket thread
             this.socketReceiveThread = new Thread(new ThreadStart(this.SocketReceiveWorker)) {
                 IsBackground = true,
