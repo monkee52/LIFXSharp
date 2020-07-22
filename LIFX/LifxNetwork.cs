@@ -226,7 +226,7 @@ namespace AydenIO.Lifx {
         /// Synchronous version of <c>StopDiscovery</c>
         /// </summary>
         /// <returns>True if the call stopped the thread, otherwise the thread was not in a state to stop</returns>
-        public bool StopDiscoverySync() {
+        public bool StopDiscovery() {
             bool shouldStop = false;
 
             lock (this.discoverySyncRoot) {
@@ -255,54 +255,8 @@ namespace AydenIO.Lifx {
         /// Stops the discovery thread
         /// </summary>
         /// <returns>True if the call stopped the thread, otherwise the thread was already stopped.</returns>
-        public Task<bool> StopDiscovery() {
-            return Task.Run(() => this.StopDiscoverySync());
-        }
-
-        /// <summary>
-        /// Returns whether a given MAC address has been found, and is a device
-        /// </summary>
-        /// <param name="macAddress">The MAC address to look up</param>
-        /// <returns>Whether the device has been found</returns>
-        public bool HasDevice(MacAddress macAddress) {
-            return this.deviceLookup.ContainsKey(macAddress);
-        }
-
-        private async Task<LifxDevice> CreateAndAddDevice(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
-            LifxDevice device;
-
-            ILifxProduct product = LifxNetwork.GetFeaturesForProduct(response.Message);
-
-            if (product.IsMultizone) {
-                Messages.GetHostFirmware getHostFirmware = new Messages.GetHostFirmware() {
-                    Target = response.Message.Target
-                };
-
-                ILifxHostFirmware hostFirmware = (await this.SendWithResponse<Messages.StateHostFirmware>(response.EndPoint, getHostFirmware, null, cancellationToken)).Message;
-
-                // Firmware version's greater than 2.77 support the extended API
-                if (hostFirmware.VersionMajor >= 2 && hostFirmware.VersionMajor >= 77) {
-                    device = new LifxExtendedMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message, hostFirmware);
-                } else {
-                    device = new LifxStandardMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message, hostFirmware);
-                }
-            } else if (product.SupportsInfrared) {
-                device = new LifxInfraredLight(this, response.Message.Target, response.EndPoint, response.Message);
-            } else if (product.SupportsColor) {
-                device = new LifxLight(this, response.Message.Target, response.EndPoint, response.Message);
-            } else {
-                device = new LifxDevice(this, response.Message.Target, response.EndPoint, response.Message);
-            }
-
-            // Save reference to device
-            this.deviceLookup[response.Message.Target] = device;
-
-            device.LastSeen = DateTime.UtcNow;
-
-            // Fire discovered event
-            this.DeviceDiscovered?.Invoke(this, new LifxDeviceDiscoveredEventArgs(device));
-
-            return device;
+        public Task<bool> StopDiscoveryAsync() {
+            return Task.Run(() => this.StopDiscovery());
         }
 
         private void DiscoveryResponseHandler(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
@@ -351,6 +305,63 @@ namespace AydenIO.Lifx {
                 // Remove device
                 this.deviceLookup.Remove(deviceId);
             }
+        }
+
+        /// <summary>
+        /// Thread worker that calls DiscoverOnce repeatedly every <c>DiscoveryInterval</c> milliseconds
+        /// </summary>
+        private void DiscoveryWorker() {
+            // Only discover every DiscoverInterval milliseconds
+            while (!this.discoveryCancellationTokenSource.IsCancellationRequested) {
+                // Call DiscoverOnce synchronously
+                this.DiscoverOnce(this.discoveryCancellationTokenSource.Token).Wait();
+            }
+        }
+
+        /// <summary>
+        /// Returns whether a given MAC address has been found, and is a device
+        /// </summary>
+        /// <param name="macAddress">The MAC address to look up</param>
+        /// <returns>Whether the device has been found</returns>
+        public bool HasDevice(MacAddress macAddress) {
+            return this.deviceLookup.ContainsKey(macAddress);
+        }
+
+        private async Task<LifxDevice> CreateAndAddDevice(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
+            LifxDevice device;
+
+            ILifxProduct product = LifxNetwork.GetFeaturesForProduct(response.Message);
+
+            if (product.IsMultizone) {
+                Messages.GetHostFirmware getHostFirmware = new Messages.GetHostFirmware() {
+                    Target = response.Message.Target
+                };
+
+                ILifxHostFirmware hostFirmware = (await this.SendWithResponse<Messages.StateHostFirmware>(response.EndPoint, getHostFirmware, null, cancellationToken)).Message;
+
+                // Firmware version's greater than 2.77 support the extended API
+                if (hostFirmware.VersionMajor >= 2 && hostFirmware.VersionMajor >= 77) {
+                    device = new LifxExtendedMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message, hostFirmware);
+                } else {
+                    device = new LifxStandardMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message, hostFirmware);
+                }
+            } else if (product.SupportsInfrared) {
+                device = new LifxInfraredLight(this, response.Message.Target, response.EndPoint, response.Message);
+            } else if (product.SupportsColor) {
+                device = new LifxLight(this, response.Message.Target, response.EndPoint, response.Message);
+            } else {
+                device = new LifxDevice(this, response.Message.Target, response.EndPoint, response.Message);
+            }
+
+            // Save reference to device
+            this.deviceLookup[response.Message.Target] = device;
+
+            device.LastSeen = DateTime.UtcNow;
+
+            // Fire discovered event
+            this.DeviceDiscovered?.Invoke(this, new LifxDeviceDiscoveredEventArgs(device));
+
+            return device;
         }
 
         /// <summary>
@@ -436,17 +447,6 @@ namespace AydenIO.Lifx {
             }
 
             throw new ArgumentException($"{nameof(address)} is not a valid {nameof(IPAddress)} or {nameof(MacAddress)}.", nameof(address));
-        }
-
-        /// <summary>
-        /// Thread worker that calls DiscoverOnce repeatedly every <c>DiscoveryInterval</c> milliseconds
-        /// </summary>
-        private void DiscoveryWorker() {
-            // Only discover every DiscoverInterval milliseconds
-            while (!this.discoveryCancellationTokenSource.IsCancellationRequested) {
-                // Call DiscoverOnce synchronously
-                this.DiscoverOnce(this.discoveryCancellationTokenSource.Token).Wait();
-            }
         }
 
         /// <summary>
@@ -745,7 +745,7 @@ namespace AydenIO.Lifx {
             if (!disposedValue) {
                 if (disposing) {
                     // TODO: dispose managed state (managed objects).
-                    this.StopDiscoverySync();
+                    this.StopDiscovery();
 
                     this.socket.Close();
 

@@ -815,17 +815,27 @@
             </summary>
             <returns>True if the call started the thread, otherwise the thread was not in a state to start</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscoverySync">
+        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscovery">
             <summary>
             Synchronous version of <c>StopDiscovery</c>
             </summary>
             <returns>True if the call stopped the thread, otherwise the thread was not in a state to stop</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscovery">
+        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscoveryAsync">
             <summary>
             Stops the discovery thread
             </summary>
             <returns>True if the call stopped the thread, otherwise the thread was already stopped.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoverOnce(System.Threading.CancellationToken)">
+            <summary>
+            Sends a single discovery packet
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoveryWorker">
+            <summary>
+            Thread worker that calls DiscoverOnce repeatedly every <c>DiscoveryInterval</c> milliseconds
+            </summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.HasDevice(AydenIO.Lifx.MacAddress)">
             <summary>
@@ -833,11 +843,6 @@
             </summary>
             <param name="macAddress">The MAC address to look up</param>
             <returns>Whether the device has been found</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoverOnce(System.Threading.CancellationToken)">
-            <summary>
-            Sends a single discovery packet
-            </summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(AydenIO.Lifx.MacAddress,System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
@@ -877,11 +882,6 @@
             <param name="timeoutMs">How long to wait for a response before the call times out</param>
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <returns></returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoveryWorker">
-            <summary>
-            Thread worker that calls DiscoverOnce repeatedly every <c>DiscoveryInterval</c> milliseconds
-            </summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.SendCommon(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage)">
             <summary>
