@@ -655,8 +655,36 @@
             <param name="discoveryInterval">The default discovery interval <see cref="P:AydenIO.Lifx.LifxNetwork.DiscoveryInterval" /></param>
             <param name="rxTimeout">The default receive timeout <see cref="P:AydenIO.Lifx.LifxNetwork.ReceiveTimeout" /></param>
         </member>
+        <member name="E:AydenIO.Lifx.LifxNetwork.DeviceDiscovered">
+            <summary>
+            Event handler for when a device has been discovered during discovery
+            </summary>
+        </member>
+        <member name="E:AydenIO.Lifx.LifxNetwork.DeviceLost">
+            <summary>
+            Event handler for when a device hasn't been seen for a while during discovery
+            </summary>
+        </member>
         <member name="P:AydenIO.Lifx.LifxNetwork.Devices">
             <value>Gets a list of all devices that have been discovered, or explicitly found</value>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.StartDiscovery">
+            <summary>
+            Starts the discovery thread
+            </summary>
+            <returns>True if the call started the thread, otherwise the thread was not in a state to start</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscoverySync">
+            <summary>
+            Synchronous version of <c>StopDiscovery</c>
+            </summary>
+            <returns>True if the call stopped the thread, otherwise the thread was not in a state to stop</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscovery">
+            <summary>
+            Stops the discovery thread
+            </summary>
+            <returns>True if the call stopped the thread, otherwise the thread was already stopped.</returns>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.HasDevice(AydenIO.Lifx.MacAddress)">
             <summary>
@@ -664,6 +692,11 @@
             </summary>
             <param name="macAddress">The MAC address to look up</param>
             <returns>Whether the device has been found</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoverOnce(System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Sends a single discovery packet
+            </summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.GetDevice(AydenIO.Lifx.MacAddress,System.UInt16,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
             <summary>
@@ -703,6 +736,11 @@
             <param name="timeoutMs">How long to wait for a response before the call times out</param>
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <returns></returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoveryWorker">
+            <summary>
+            Thread worker that calls DiscoverOnce repeatedly every <c>DiscoveryInterval</c> milliseconds
+            </summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.SendCommon(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage)">
             <summary>
@@ -828,44 +866,6 @@
             </summary>
             <param name="version">The LIFX version</param>
             <returns>An object containing the supported features for that product</returns>
-        </member>
-        <member name="E:AydenIO.Lifx.LifxNetwork.DeviceDiscovered">
-            <summary>
-            Event handler for when a device has been discovered during discovery
-            </summary>
-        </member>
-        <member name="E:AydenIO.Lifx.LifxNetwork.DeviceLost">
-            <summary>
-            Event handler for when a device hasn't been seen for a while during discovery
-            </summary>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.StartDiscovery">
-            <summary>
-            Starts the discovery thread
-            </summary>
-            <returns>True if the call started the thread, otherwise the thread was already started</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscoverySync">
-            <summary>
-            Synchronous version of <c>StopDiscovery</c>
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscovery">
-            <summary>
-            Stops the discovery thread
-            </summary>
-            <returns>True if the call stopped the thread, otherwise the thread was already stopped.</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoverOnce(System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Sends a single discovery packet
-            </summary>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.DiscoveryWorker">
-            <summary>
-            Thread worker that calls DiscoverOnce repeatedly every <c>DiscoveryInterval</c> milliseconds
-            </summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxService">
             <summary>

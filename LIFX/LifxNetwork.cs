@@ -31,7 +31,7 @@ namespace AydenIO.Lifx {
 
         private Thread socketReceiveThread;
 
-        private ManualResetEventSlim discoveryStopEvent;
+        private CancellationTokenSource discoveryCancellationTokenSource;
         private Thread discoveryThread;
 
         private readonly IDictionary<MacAddress, LifxDevice> deviceLookup;
@@ -51,7 +51,7 @@ namespace AydenIO.Lifx {
         /// <param name="rxTimeout">The default receive timeout <see cref="ReceiveTimeout" /></param>
         public LifxNetwork(int discoveryInterval = 5000, int rxTimeout = 500) {
             // Set up discovery fields
-            this.discoveryStopEvent = new ManualResetEventSlim(true);
+            this.discoveryCancellationTokenSource = null;
             this.discoverySyncRoot = new object();
 
             // Set up socket
@@ -196,17 +196,19 @@ namespace AydenIO.Lifx {
         /// <summary>
         /// Starts the discovery thread
         /// </summary>
-        /// <returns>True if the call started the thread, otherwise the thread was already started</returns>
+        /// <returns>True if the call started the thread, otherwise the thread was not in a state to start</returns>
         public bool StartDiscovery() {
+            bool shouldStart = false;
+
             lock (this.discoverySyncRoot) {
-                // Check if thread is already running, or flagged to start
-                if (!this.discoveryStopEvent.IsSet) {
-                    return false;
+                if (this.discoveryCancellationTokenSource == null) {
+                    shouldStart = true;
+
+                    this.discoveryCancellationTokenSource = new CancellationTokenSource();
                 }
+            }
 
-                // Reset stop event to allow loop
-                this.discoveryStopEvent.Reset();
-
+            if (shouldStart) {
                 // Create thread
                 this.discoveryThread = new Thread(new ThreadStart(this.DiscoveryWorker)) {
                     IsBackground = true,
@@ -215,32 +217,38 @@ namespace AydenIO.Lifx {
 
                 // Start thread
                 this.discoveryThread.Start();
-
-                return true;
             }
+
+            return shouldStart;
         }
 
         /// <summary>
         /// Synchronous version of <c>StopDiscovery</c>
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True if the call stopped the thread, otherwise the thread was not in a state to stop</returns>
         public bool StopDiscoverySync() {
+            bool shouldStop = false;
+
             lock (this.discoverySyncRoot) {
-                // Check if thread is already stopped, or flagged to stop
-                if (this.discoveryStopEvent.IsSet) {
-                    return false;
+                if (this.discoveryCancellationTokenSource != null && !this.discoveryCancellationTokenSource.IsCancellationRequested) {
+                    shouldStop = true;
                 }
+            }
 
-                // Set stop event
-                this.discoveryStopEvent.Set();
+            if (shouldStop) {
+                // Signal thread to stop
+                this.discoveryCancellationTokenSource.Cancel();
 
-                // Wait for thread to complete
+                // Wiat for thread to join
                 this.discoveryThread.Join();
 
                 this.discoveryThread = null;
 
-                return true;
+                ((IDisposable)this.discoveryCancellationTokenSource)?.Dispose();
+                this.discoveryCancellationTokenSource = null;
             }
+
+            return shouldStop;
         }
 
         /// <summary>
@@ -435,9 +443,9 @@ namespace AydenIO.Lifx {
         /// </summary>
         private void DiscoveryWorker() {
             // Only discover every DiscoverInterval milliseconds
-            while (!this.discoveryStopEvent.Wait(this.DiscoveryInterval)) {
+            while (!this.discoveryCancellationTokenSource.IsCancellationRequested) {
                 // Call DiscoverOnce synchronously
-                this.DiscoverOnce().Wait();
+                this.DiscoverOnce(this.discoveryCancellationTokenSource.Token).Wait();
             }
         }
 
@@ -747,8 +755,8 @@ namespace AydenIO.Lifx {
                     ((IDisposable)this.socket)?.Dispose();
                     this.socket = null;
 
-                    ((IDisposable)this.discoveryStopEvent)?.Dispose();
-                    this.discoveryStopEvent = null;
+                    ((IDisposable)this.discoveryCancellationTokenSource)?.Dispose();
+                    this.discoveryCancellationTokenSource = null;
                 }
 
                 disposedValue = true;
