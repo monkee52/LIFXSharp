@@ -9,6 +9,7 @@ namespace AydenIO.Lifx {
     /// Represents a LIFX multizone light device
     /// </summary>
     public interface ILifxMultizoneLight : ILifxLight {
+        /// <summary>The current maximum number of zones in a LIFX MultiZone device</summary>
         public const int MAX_MULTIZONE = 82;
 
         public Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null, CancellationToken cancellationToken = default);

@@ -7,7 +7,7 @@ namespace AydenIO.Lifx {
     /// </summary>
     /// <typeparam name="T">The returned message type</typeparam>
     internal class LifxMultipleResponseDelegatedAwaiter<T> : ILifxResponseAwaiter where T : LifxMessage {
-        private TaskCompletionSource<bool> taskCompletionSource;
+        private readonly TaskCompletionSource<bool> taskCompletionSource;
 
         public event Action<LifxResponse<T>> ResponseReceived;
 

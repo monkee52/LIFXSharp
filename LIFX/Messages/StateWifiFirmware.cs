@@ -12,12 +12,12 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public ulong Build { get; set; }
+        public DateTime Build { get; set; }
         public ushort VersionMinor { get; set; }
         public ushort VersionMajor { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            /* uint64_t le build */ writer.Write(this.Build);
+            /* uint64_t le build */ writer.Write(Utilities.DateTimeToNanoseconds(this.Build));
             /* uint64_t le reserved */ writer.Write((ulong)0);
             /* uint16_t le minor */ writer.Write(this.VersionMinor);
             /* uint16_t le major */ writer.Write(this.VersionMajor);
@@ -26,7 +26,7 @@ namespace AydenIO.Lifx.Messages {
         protected override void ReadPayload(BinaryReader reader) {
             ulong build = reader.ReadUInt64();
 
-            this.Build = build;
+            this.Build = Utilities.NanosecondsToDateTime(build);
 
             _ = reader.ReadUInt64();
 

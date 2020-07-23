@@ -5,8 +5,13 @@ namespace AydenIO.Lifx {
     /// Common properties for <c>Messages.StateHostFirmware</c>
     /// </summary>
     public interface ILifxHostFirmware {
+        /// <value>Firmware build time</value>
         public DateTime Build { get; }
+
+        /// <value>Firmware minor version</value>
         public ushort VersionMinor { get; }
+
+        /// <value>Firmware major version</value>
         public ushort VersionMajor { get; }
     }
 }

@@ -7,7 +7,7 @@ namespace AydenIO.Lifx {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     internal class LifxSingleResponseAwaiter<T> : ILifxResponseAwaiter where T : LifxMessage {
-        private TaskCompletionSource<LifxResponse<T>> taskCompletionSource;
+        private readonly TaskCompletionSource<LifxResponse<T>> taskCompletionSource;
 
         /// <value>Gets the awaitable task</value>
         public Task<LifxResponse<T>> Task => this.taskCompletionSource.Task;

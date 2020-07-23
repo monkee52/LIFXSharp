@@ -507,9 +507,9 @@ namespace AydenIO.Lifx {
         /// <param name="endPoint">The endpoint to target</param>
         /// <param name="message">The message</param>
         /// <param name="awaiter">The awaiter that handles the response</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <param name="timeoutMs">How long before the call times out if there is no response</param>
         /// <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         private async Task SendWithResponseCommon(IPEndPoint endPoint, LifxMessage message, ILifxResponseAwaiter awaiter, int? timeoutMs, bool isAcknowledgement, CancellationToken cancellationToken) {
             // Determine responseFlags
             LifxeResponseFlags responseFlags = isAcknowledgement ? LifxeResponseFlags.AcknowledgementRequired : LifxeResponseFlags.ResponseRequired;
@@ -741,6 +741,7 @@ namespace AydenIO.Lifx {
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
+        /// <inheritdoc />
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
@@ -764,6 +765,7 @@ namespace AydenIO.Lifx {
         }
 
         // This code added to correctly implement the disposable pattern.
+        /// <inheritdoc />
         public void Dispose() {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);

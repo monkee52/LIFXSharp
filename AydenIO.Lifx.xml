@@ -451,6 +451,9 @@
             Represents a LIFX multizone light device
             </summary>
         </member>
+        <member name="F:AydenIO.Lifx.ILifxMultizoneLight.MAX_MULTIZONE">
+            <summary>The current maximum number of zones in a LIFX MultiZone device</summary>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxProduct">
             <summary>
             Represents features of a device
@@ -730,6 +733,186 @@
             Possible message types for the LIFX protocol
             </summary>
         </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType._internal_unknown_">
+            <summary>A message that hasn't been decoded yet. Used to prevent the <c>LifxMessage.FromBytes</c> method from throwing an exception during decoding</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetService">
+            <summary>Sent by a client to acquire responses from all devices on the local network.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateService">
+            <summary>Provides the device Service and port.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetHostInfo">
+            <summary>Get Host MCU information.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateHostInfo">
+            <summary>Response to GetHostInfo message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetHostFirmware">
+            <summary>Gets Host MCU firmware information.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateHostFirmware">
+            <summary>Response to GetHostFirmware message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetWifiInfo">
+            <summary>Get Wifi subsystem information.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateWifiInfo">
+            <summary>Response to GetWifiInfo message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetWifiFirmware">
+            <summary>Get Wifi subsystem firmware.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateWifiFirmware">
+            <summary>Response to GetWifiFirmware message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetPower">
+            <summary>Get device power level.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetPower">
+            <summary>Set device power level. </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StatePower">
+            <summary>Response to GetPower message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetLabel">
+            <summary>Get device label.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetLabel">
+            <summary>Set the device label text.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateLabel">
+            <summary>Response to GetLabel message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetVersion">
+            <summary>Get the hardware version.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateVersion">
+            <summary>Provides the hardware version of the device.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetInfo">
+            <summary>Get run-time information.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateInfo">
+            <summary>Response to GetInfo message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.Acknowledgement">
+            <summary>Response to any message sent with _ack_required_ set to 1.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetLocation">
+            <summary>Ask the bulb to return its location information.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetLocation">
+            <summary>Set the device location.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateLocation">
+            <summary>Device location.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetGroup">
+            <summary>Ask the bulb to return its group membership information.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetGroup">
+            <summary>Set the device group.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateGroup">
+            <summary>Device group.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.EchoRequest">
+            <summary>Request an arbitrary payload be echoed back.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.EchoResponse">
+            <summary>Response to EchoRequest message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightGet">
+            <summary>Sent by a client to obtain the light state.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightSetColor">
+            <summary>Sent by a client to change the light state.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightSetWaveform">
+            <summary>Apply an effect to the bulb.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightSetWaveformOptional">
+            <summary>Optionally set effect parameters. Same as SetWaveform but allows some parameters to be set from the current value on device.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightState">
+            <summary>Sent by a device to provide the current light state.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightGetPower">
+            <summary>Sent by a client to obtain the power level.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightSetPower">
+            <summary>Sent by a client to change the light power level.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightStatePower">
+            <summary>Sent by a device to provide the current power level.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightGetInfrared">
+            <summary>Gets the current maximum power level of the Infrared channel.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightStateInfrared">
+            <summary>This message is returned from a GetInfrared message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.LightSetInfrared">
+            <summary>Send this message to alter the current maximum brightness for the infrared channel.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetExtendedColorZones">
+            <summary>This messages lets you change all the zones on your device in one message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetExtendedColorZones">
+            <summary>This message will ask the device to return a StateExtendedColorZones containing all of it's colors.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateExtendedColorZones">
+            <summary>Returned after you send the device a GetExtendedColorZones or SetExtendedColorZones message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetColorZones">
+            <summary>This message is used for changing the color of either a single or multiple zones.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetColorZones">
+            <summary>GetColorZones is used to request the zone colors for a range of zones.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateZone">
+            <summary>The StateZone message represents the state of a single zone.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateMultiZone">
+            <summary>The StateMultiZone message represents the state of eight consecutive zones in a single message.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetDeviceChain">
+            <summary>This message returns information about the tiles in the chain.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateDeviceChain">
+            <summary>Response to GetDeviceChain</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetUserPosition">
+            <summary>Used to tell each tile what their position is.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetTileState64">
+            <summary>Get the state of 64 pixels in the tile in a rectangle that has a starting point and width.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateTileState64">
+            <summary>Returned from a GetTileState64 and provides all the pixels in the specified rectangle for that tile.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetTileState64">
+            <summary>This lets you set 64 pixels.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetMultiZoneEffect">
+            <summary>This messages lets you control a firmware effect on your device.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetMultiZoneEffect">
+            <summary>Asks the device to return a StateMultiZoneEffect to tell you the current state of firmware effects on the device</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateMultiZoneEffect">
+            <summary>This has the same fields as a SetMultiZoneEffect and is returned from a GetMultiZoneEffect or a SetMultiZoneEffect.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.SetTileEffect">
+            <summary>This messages lets you control a firmware effect on your LIFX Tile.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.GetTileEffect">
+            <summary>Asks the device to return a StateMultiZoneEffect to tell you the current state of firmware effects on the device.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.StateTileEffect">
+            <summary>It describes the current state of the effects on the device.</summary>
+        </member>
         <member name="T:AydenIO.Lifx.LifxMultipleResponseAwaiter`1">
             <summary>
             An <c>ILifxResponseAwaiter</c> that waits for all responses before the user cancels, or it times out
@@ -913,9 +1096,9 @@
             <param name="endPoint">The endpoint to target</param>
             <param name="message">The message</param>
             <param name="awaiter">The awaiter that handles the response</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <param name="timeoutMs">How long before the call times out if there is no response</param>
             <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponse``1(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
@@ -1008,10 +1191,39 @@
             <param name="version">The LIFX version</param>
             <returns>An object containing the supported features for that product</returns>
         </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.Dispose(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.Dispose">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.LifxService">
             <summary>
             Possible (public) service types for devices
             </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxService.Udp">
+            <summary>The LIFX Protocol utilizes UDP/IP for all messages covered by the public API</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxSignalStrength">
+            <summary>
+            Represents various levels of signal strengths from normalised <c>Signal</c> properties.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSignalStrength.None">
+            <summary>No signal</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSignalStrength.Poor">
+            <summary>Poor signal strength</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSignalStrength.Fair">
+            <summary>Fair signal strength</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSignalStrength.Good">
+            <summary>Good signal strength</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSignalStrength.Excellent">
+            <summary>Excellent signal strength</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxSingleResponseAwaiter`1">
             <summary>
@@ -1040,6 +1252,35 @@
             <summary>
             Possible waveform types for LIFX light bulb effects
             <see href="https://lan.developer.lifx.com/docs/waveforms" />
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxWaveform.Saw">
+            <summary>
+            Light interpolates linearly from current color to color.
+            Duration of each cycle lasts for period milliseconds.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxWaveform.Sine">
+            <summary>
+            The color will cycle smoothly from current color to color and then end back at current color.
+            The duration of one cycle will last for period milliseconds.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxWaveform.HalfSine">
+            <summary>
+            Light interpolates smoothly from current color to color.
+            Duration of each cycle lasts for period milliseconds.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxWaveform.Triangle">
+            <summary>
+            Light interpolates linearly from current color to color, then back to current color.
+            Duration of each cycle lasts for period milliseconds.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxWaveform.Pulse">
+            <summary>
+            The color will be set immediately to color, then to current color after the duty cycle fraction expires.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.MacAddress">
@@ -1103,8 +1344,45 @@
         <member name="M:AydenIO.Lifx.MacAddress.op_Inequality(AydenIO.Lifx.MacAddress,AydenIO.Lifx.MacAddress)">
             <inheritdoc />
         </member>
+        <member name="T:AydenIO.Lifx.ILifxApplicationRequest">
+            <summary>
+            This type allows you to provide hints to the device about how the changes you make should be performed.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxApplicationRequest.Apply">
+            <value>How the change should be performed.</value>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxColorMultiZoneState">
+            <summary>
+            Represents multiple zones on a MultiZone device
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxColorZoneCount">
+            <summary>
+            Represents the count of zones in a multizone device
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxColorZoneCount.ZoneCount">
+            <value>The number of zones the device has</value>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxColorZoneIndex">
+            <summary>
+            Represents the first index of states of zones on multizone devices.
+            </summary>
+        </member>
         <member name="P:AydenIO.Lifx.ILifxColorZoneIndex.Index">
             <value>The index field is the zone we start applying the colors from. The first zone is 0.</value>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxColorZoneRange">
+            <summary>
+            Represents a range of zones covered by a multizone state message.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxColorZoneRange.StartIndex">
+            <value>The index of the first zone.</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxColorZoneRange.EndIndex">
+            <value>The index of the last zone.</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxColorZones">
             <summary>
@@ -1113,6 +1391,11 @@
         </member>
         <member name="P:AydenIO.Lifx.ILifxColorZones.Colors">
             <value>The colors is 8/82 HSBK values and number of colors from this array will be applied sequentially from the <c>Index</c>'d zone on the device.</value>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxColorZoneState">
+            <summary>
+            Represents the state of a single zone on a multizone device
+            </summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxEcho">
             <summary>
@@ -1131,30 +1414,83 @@
             </summary>
             <param name="payload">The payload</param>
         </member>
+        <member name="T:AydenIO.Lifx.ILifxGroup">
+            <summary>
+            Represents a group membership for a device.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxGroup.Group">
+            <value>The group identifier</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxGroup.Label">
+            <value>The label for the group</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxGroup.UpdatedAt">
+            <value>When the group membership information was updated</value>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxHostFirmware">
             <summary>
             Common properties for <c>Messages.StateHostFirmware</c>
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxHostFirmware.Build">
+            <value>Firmware build time</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxHostFirmware.VersionMinor">
+            <value>Firmware minor version</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxHostFirmware.VersionMajor">
+            <value>Firmware major version</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxHostInfo">
             <summary>
             Common properties for <c>Messages.StateHostInfo</c>
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.ILifxHostInfo.Signal">
+            <value>Radio receive signal strength</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxHostInfo.TransmittedBytes">
+            <value>Transmitted bytes since power on</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxHostInfo.ReceivedBytes">
+            <value>Received bytes since power on</value>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxHostInfo.GetSignalStrength">
+            <summary>
+            Returns the signal strength as a normalised value.
+            </summary>
+            <returns>The quality of the received signal</returns>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxInfo">
             <summary>
             Common properties for <c>Messages.StateInfo</c>
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxInfo.Time">
+            <value>Current time</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxInfo.Uptime">
+            <value>Time since last power on</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxInfo.Downtime">
+            <value>Last power off period (5-second accuracy)</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxInfrared">
             <summary>
             Common properties for <c>Messages.SetInfrared</c> and <c>Messages.StateInfrared</c>
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.ILifxInfrared.Level">
+            <value>The current maximum setting for the infrared channel</value>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxLabel">
             <summary>
             Common properties for <c>Messages.SetLabel</c> and <c>Messages.StateLabel</c>
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxLabel.Label">
+            <value>The device label</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxLightState">
             <summary>
@@ -1166,45 +1502,126 @@
             Common properties for <c>Messages.SetLocation</c> and <c>Messages.StateLocation</c>
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.ILifxLocation.Location">
+            <value>The location identifier</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxLocation.Label">
+            <value>The label for the location</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxLocation.UpdatedAt">
+            <value>When the location membership information was updated</value>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxPower">
             <summary>
             Common properties for <c>Messages.SetPower</c>, <c>Messages.StatePower</c>, <c>Messages.LightSetPower</c>, <c>Messages.LightStatePower</c>
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxPower.PoweredOn">
+            <value>Whether the device is powered on</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxService">
             <summary>
             Common properties for <c>Messages.StateService</c>
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.ILifxService.Service">
+            <value>The service type</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxService.Port">
+            <value>The port that the service is on</value>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxTransition">
             <summary>
             Common properties for transitionable messages <c>Messages.LightSetPower</c> and <c>Messages.LightSetColor</c>
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxTransition.Duration">
+            <value>The duration of the transition</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxVersion">
             <summary>
             Common properties for <c>Messages.StateVersion</c>
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.ILifxVersion.VendorId">
+            <value>The vendor identifier</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxVersion.ProductId">
+            <value>The product identifier</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxVersion.Version">
+            <value>The hardware version</value>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxWaveform">
             <summary>
             Common properties for <c>Messages.LightSetWaveform</c>
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWaveform.Transient">
+            <value>True if the color does not persist.</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWaveform.Period">
+            <value>Duration of a cycle</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWaveform.Cycles">
+            <value>Number of cycles</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWaveform.SkewRatio">
+            <value>Waveform skew</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWaveform.Waveform">
+            <value>The waveform type</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxWaveformOptional">
             <summary>
             Common properties for <c>Messages.LightSetWaveformOptional</c>
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.ILifxWaveformOptional.SetHue">
+            <value>True to use end color's hue</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWaveformOptional.SetSaturation">
+            <value>True to use end color's saturation</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWaveformOptional.SetBrightness">
+            <value>True to use end color's brightness</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWaveformOptional.SetKelvin">
+            <value>True to use end color's kelvin</value>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxWifiFirmware">
             <summary>
             Common properties for <c>Messages.StateWifiFirmware</c>
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiFirmware.Build">
+            <value>Firmware build time</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiFirmware.VersionMinor">
+            <value>Firmware minor version</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiFirmware.VersionMajor">
+            <value>Firmware major version</value>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxWifiInfo">
             <summary>
             Common properties for <c>Messages.StateWifiInfo</c>
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiInfo.Signal">
+            <value>Radio receive signal strength</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiInfo.TransmittedBytes">
+            <value>Transmitted bytes since power on</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiInfo.ReceivedBytes">
+            <value>Received bytes since power on</value>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxWifiInfo.GetSignalStrength">
+            <summary>
+            Returns the signal strength as a normalised value.
+            </summary>
+            <returns>The quality of the received signal</returns>
         </member>
         <member name="T:AydenIO.Lifx.Messages.Acknowledgement">
             <summary>
