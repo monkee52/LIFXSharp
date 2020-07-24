@@ -1,17 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>AydenIO.Lifx</AssemblyName>
     <RootNamespace>AydenIO.Lifx</RootNamespace>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>F:\personal-projects\LIFX#\AydenIO.Lifx.xml</DocumentationFile>
+  <PropertyGroup>
+    <DocumentationFile>..\AydenIO.Lifx.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>F:\personal-projects\LIFX#\AydenIO.Lifx.xml</DocumentationFile>
-  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LifxSourceGenerator\LifxSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
 
 </Project>

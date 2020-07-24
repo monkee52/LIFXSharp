@@ -1176,20 +1176,20 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <param name="timeoutMs">How long before the call times out if there is no response</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.GetFeaturesForProduct(System.UInt32,System.UInt32)">
-            <summary>
-            Gets the features supported by a device, given a vendor and product ID
-            </summary>
-            <param name="vendorId">The vendor ID to look up</param>
-            <param name="productId">The product ID to look up</param>
-            <returns>An object containing the supported features for that product</returns>
-        </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.GetFeaturesForProduct(AydenIO.Lifx.ILifxVersion)">
             <summary>
             Gets the features supported by a device, given a vendor and product ID
             </summary>
             <param name="version">The LIFX version</param>
             <returns>An object containing the supported features for that product</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.ProductSupportsExtendedMultizoneApi(AydenIO.Lifx.ILifxVersion,AydenIO.Lifx.ILifxHostFirmware)">
+            <summary>
+            Gets whether a device supports the extended multizone API
+            </summary>
+            <param name="version">The LIFX device's version</param>
+            <param name="hostFirmware">The LIFX device's host firmware</param>
+            <returns></returns>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.Dispose(System.Boolean)">
             <inheritdoc />

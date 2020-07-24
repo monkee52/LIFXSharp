@@ -15,7 +15,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Common class that connects C# to the LIFX protocol
     /// </summary>
-    public class LifxNetwork : IDisposable {
+    public partial class LifxNetwork : IDisposable {
         /// <summary>
         /// The default LIFX LAN protocol port
         /// </summary>
@@ -281,29 +281,31 @@ namespace AydenIO.Lifx {
             // Send message
             await this.SendWithMultipleResponseDelegated<Messages.StateVersion>(null, getVersion, (LifxResponse<Messages.StateVersion> response) => this.DiscoveryResponseHandler(response, cancellationToken), this.DiscoveryInterval, cancellationToken);
 
-            // Remove "lost" devices
-            DateTime now = DateTime.UtcNow;
-            TimeSpan lostTimeout = TimeSpan.FromMinutes(5); // Devices more than 5 minutes are considered lost
-            IList<MacAddress> devicesToRemove = new List<MacAddress>(); // Store list of devices that are lost
+            if (!cancellationToken.IsCancellationRequested) {
+                // Remove "lost" devices
+                DateTime now = DateTime.UtcNow;
+                TimeSpan lostTimeout = TimeSpan.FromMinutes(5); // Devices more than 5 minutes are considered lost
+                IList<MacAddress> devicesToRemove = new List<MacAddress>(); // Store list of devices that are lost
 
-            // Iterate over all devices
-            foreach (KeyValuePair<MacAddress, ILifxDevice> devicePair in this.deviceLookup) {
-                if (devicePair.Value is LifxDevice clientDevice) {
-                    // Check if device was last seen more than lostTimeout ago
-                    if (now - clientDevice.LastSeen > lostTimeout) {
-                        // Add to lost list
-                        devicesToRemove.Add(devicePair.Key);
+                // Iterate over all devices
+                foreach (KeyValuePair<MacAddress, ILifxDevice> devicePair in this.deviceLookup) {
+                    if (devicePair.Value is LifxDevice clientDevice) {
+                        // Check if device was last seen more than lostTimeout ago
+                        if (now - clientDevice.LastSeen > lostTimeout) {
+                            // Add to lost list
+                            devicesToRemove.Add(devicePair.Key);
 
-                        // Fire event
-                        this.DeviceLost?.Invoke(this, new LifxDeviceLostEventArgs(devicePair.Key));
+                            // Fire event
+                            this.DeviceLost?.Invoke(this, new LifxDeviceLostEventArgs(devicePair.Key));
+                        }
                     }
                 }
-            }
 
-            // Iterate over lost devices
-            foreach (MacAddress deviceId in devicesToRemove) {
-                // Remove device
-                this.deviceLookup.Remove(deviceId);
+                // Iterate over lost devices
+                foreach (MacAddress deviceId in devicesToRemove) {
+                    // Remove device
+                    this.deviceLookup.Remove(deviceId);
+                }
             }
         }
 
@@ -340,7 +342,7 @@ namespace AydenIO.Lifx {
                 ILifxHostFirmware hostFirmware = (await this.SendWithResponse<Messages.StateHostFirmware>(response.EndPoint, getHostFirmware, null, cancellationToken)).Message;
 
                 // Firmware version's greater than 2.77 support the extended API
-                if (hostFirmware.VersionMajor >= 2 && hostFirmware.VersionMajor >= 77) {
+                if (LifxNetwork.ProductSupportsExtendedMultizoneApi(response.Message, hostFirmware)) {
                     device = new LifxExtendedMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message, hostFirmware);
                 } else {
                     device = new LifxStandardMultizoneLight(this, response.Message.Target, response.EndPoint, response.Message, hostFirmware);
@@ -536,6 +538,11 @@ namespace AydenIO.Lifx {
 
             await this.SendCommon(endPoint, message);
 
+            // Handle user cancellation
+            cancellationToken.Register(() => {
+                awaiter.HandleException(new OperationCanceledException(cancellationToken));
+            });
+
             // Allow timeout exception to be cancelled
             using CancellationTokenSource timeoutCancellationSource = new CancellationTokenSource();
 
@@ -544,9 +551,7 @@ namespace AydenIO.Lifx {
 
             // Handle timeout
             _ = Task.Delay(timeoutMs ?? this.ReceiveTimeout, linkedCancellationSource.Token).ContinueWith(_ => {
-                if (cancellationToken.IsCancellationRequested) {
-                    awaiter.HandleException(new OperationCanceledException(cancellationToken));
-                } else if (!timeoutCancellationSource.Token.IsCancellationRequested) {
+                 if (!timeoutCancellationSource.Token.IsCancellationRequested) {
                     awaiter.HandleException(new TimeoutException("Time out while waiting for response."));
                 }
             }, linkedCancellationSource.Token);
@@ -680,62 +685,20 @@ namespace AydenIO.Lifx {
         /// <summary>
         /// Gets the features supported by a device, given a vendor and product ID
         /// </summary>
-        /// <param name="vendorId">The vendor ID to look up</param>
-        /// <param name="productId">The product ID to look up</param>
-        /// <returns>An object containing the supported features for that product</returns>
-        public static ILifxProduct GetFeaturesForProduct(uint vendorId, uint productId) {
-            // https://raw.githubusercontent.com/LIFX/products/master/products.json
-            // PRODUCTS.map(vendor => vendor.products.map(product => `(${vendor.vid}, ${product.pid}) => new LifxProduct() { VendorName = ${JSON.stringify(vendor.name)}, Name = ${JSON.stringify(product.name)}, SupportsColor = ${product.features.color}, SupportsInfrared = ${product.features.infrared}, IsMultizone = ${product.features.multizone}, IsChain = ${product.features.chain}, IsMatrix = ${product.features.matrix}, MinKelvin = ${product.features.temperature_range[0]}, MaxKelvin = ${product.features.temperature_range[1]} }`)).reduce((a, b) => b.concat(a), ["_ => new LifxProduct()"]).join(",\n");
-
-            return (vendorId, productId) switch
-            {
-                (1,  1) => new LifxProduct() { VendorName = "LIFX", Name = "Original 1000", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1,  3) => new LifxProduct() { VendorName = "LIFX", Name = "Color 650", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 10) => new LifxProduct() { VendorName = "LIFX", Name = "White 800 (Low Voltage)", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 6500 },
-                (1, 11) => new LifxProduct() { VendorName = "LIFX", Name = "White 800 (High Voltage)", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 6500 },
-                (1, 18) => new LifxProduct() { VendorName = "LIFX", Name = "White 900 BR30 (Low Voltage)", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 6500 },
-                (1, 20) => new LifxProduct() { VendorName = "LIFX", Name = "Color 1000 BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 22) => new LifxProduct() { VendorName = "LIFX", Name = "Color 1000", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 27) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX A19", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 28) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 29) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ A19", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 30) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ BR30", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 31) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Z", SupportsColor = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 32) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Z 2", SupportsColor = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 36) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Downlight", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 37) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Downlight", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 38) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Beam", SupportsColor = true, SupportsInfrared = false, IsMultizone = true, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 43) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX A19", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 44) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 45) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ A19", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 46) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ BR30", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 49) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 50) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini Warm to White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 1500, MaxKelvin = 4000 },
-                (1, 51) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 2700 },
-                (1, 52) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX GU10", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 55) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Tile", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = true, IsMatrix = true, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 57) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Candle", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = true, MinKelvin = 1500, MaxKelvin = 9000 },
-                (1, 59) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini Color", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 60) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini Warm to White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 1500, MaxKelvin = 4000 },
-                (1, 61) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Mini White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2700, MaxKelvin = 2700 },
-                (1, 62) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX A19", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 63) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX BR30", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 64) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ A19", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 65) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX+ BR30", SupportsColor = true, SupportsInfrared = true, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2500, MaxKelvin = 9000 },
-                (1, 68) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Candle", SupportsColor = true, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = true, MinKelvin = 1500, MaxKelvin = 9000 },
-                (1, 81) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Candle Warm to White", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2200, MaxKelvin = 6500 },
-                (1, 82) => new LifxProduct() { VendorName = "LIFX", Name = "LIFX Filament", SupportsColor = false, SupportsInfrared = false, IsMultizone = false, IsChain = false, IsMatrix = false, MinKelvin = 2000, MaxKelvin = 2000 },
-                _ => new LifxProduct()
-            };
-        }
-
-        /// <summary>
-        /// Gets the features supported by a device, given a vendor and product ID
-        /// </summary>
         /// <param name="version">The LIFX version</param>
         /// <returns>An object containing the supported features for that product</returns>
         public static ILifxProduct GetFeaturesForProduct(ILifxVersion version) {
             return LifxNetwork.GetFeaturesForProduct(version.VendorId, version.ProductId);
+        }
+
+        /// <summary>
+        /// Gets whether a device supports the extended multizone API
+        /// </summary>
+        /// <param name="version">The LIFX device's version</param>
+        /// <param name="hostFirmware">The LIFX device's host firmware</param>
+        /// <returns></returns>
+        public static bool ProductSupportsExtendedMultizoneApi(ILifxVersion version, ILifxHostFirmware hostFirmware) {
+            return LifxNetwork.ProductSupportsExtendedMultizoneApi(version.VendorId, version.ProductId, hostFirmware.VersionMajor, hostFirmware.VersionMinor);
         }
 
         #region IDisposable Support
@@ -746,8 +709,16 @@ namespace AydenIO.Lifx {
             if (!disposedValue) {
                 if (disposing) {
                     // TODO: dispose managed state (managed objects).
-                    this.StopDiscovery();
+                    // Stop discovery
+                    this.discoveryCancellationTokenSource?.Cancel();
 
+                    this.discoveryThread?.Join();
+                    this.discoveryThread = null;
+
+                    ((IDisposable)this.discoveryCancellationTokenSource)?.Dispose();
+                    this.discoveryCancellationTokenSource = null;
+
+                    // Close socket
                     this.socket.Close();
 
                     this.socketReceiveThread?.Join();
@@ -755,9 +726,6 @@ namespace AydenIO.Lifx {
 
                     ((IDisposable)this.socket)?.Dispose();
                     this.socket = null;
-
-                    ((IDisposable)this.discoveryCancellationTokenSource)?.Dispose();
-                    this.discoveryCancellationTokenSource = null;
                 }
 
                 disposedValue = true;

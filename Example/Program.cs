@@ -15,7 +15,6 @@ namespace AydenIO.Examples.Lifx {
             lifx.DeviceLost += Program.DeviceLost;
 
             lifx.StartDiscovery();
-            lifx.StopDiscoverySync();
 
             Console.ReadKey();
 

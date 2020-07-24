@@ -13,7 +13,7 @@ namespace AydenIO.Lifx {
     public class MacAddress : IEquatable<MacAddress> {
         private static readonly Regex MAC_ADDRESS_REGEX = new Regex(@"^(([0-9a-fA-F]{2})(:|\-|\s)?)([0-9a-fA-F]{2})\3([0-9a-fA-F]{2})\3([0-9a-fA-F]{2})\3([0-9a-fA-F]{2})\3([0-9a-fA-F]{2})$");
 
-        private byte[] bytes;
+        private readonly byte[] bytes;
 
         /// <summary>
         /// Get the MAC address as a byte array
@@ -64,9 +64,7 @@ namespace AydenIO.Lifx {
         /// <param name="macAddress">The string representation of the MAC address</param>
         /// <returns>The resulting MAC address</returns>
         public static MacAddress Parse(string macAddress) {
-            MacAddress result;
-
-            if (MacAddress.TryParse(macAddress, out result)) {
+            if (MacAddress.TryParse(macAddress, out MacAddress result)) {
                 return result;
             } else {
                 throw new ArgumentException(nameof(macAddress));

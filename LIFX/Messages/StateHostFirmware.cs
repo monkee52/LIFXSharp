@@ -17,8 +17,6 @@ namespace AydenIO.Lifx.Messages {
         public ushort VersionMajor { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
-            TimeSpan build = this.Build - DateTime.UnixEpoch;
-
             /* uint64_t le build */ writer.Write(Utilities.DateTimeToNanoseconds(this.Build));
             /* uint16_t le minor */ writer.Write(this.VersionMinor);
             /* uint16_t le major */ writer.Write(this.VersionMajor);
