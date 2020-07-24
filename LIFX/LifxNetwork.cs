@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -77,7 +78,7 @@ namespace AydenIO.Lifx {
             // Set up internals
             this.sequenceCounter = -1; // Start at -1 because Interlocked.Increment returns the incremented value
             this.deviceLookup = new Dictionary<MacAddress, ILifxDevice>();
-            this.awaitingSequences = new Dictionary<byte, ILifxResponseAwaiter>();
+            this.awaitingSequences = new ConcurrentDictionary<byte, ILifxResponseAwaiter>();
 
             // Set up config
             this.DiscoveryInterval = discoveryInterval;
@@ -281,31 +282,33 @@ namespace AydenIO.Lifx {
             // Send message
             await this.SendWithMultipleResponseDelegated<Messages.StateVersion>(null, getVersion, (LifxResponse<Messages.StateVersion> response) => this.DiscoveryResponseHandler(response, cancellationToken), this.DiscoveryInterval, cancellationToken);
 
-            if (!cancellationToken.IsCancellationRequested) {
-                // Remove "lost" devices
-                DateTime now = DateTime.UtcNow;
-                TimeSpan lostTimeout = TimeSpan.FromMinutes(5); // Devices more than 5 minutes are considered lost
-                IList<MacAddress> devicesToRemove = new List<MacAddress>(); // Store list of devices that are lost
+            if (cancellationToken.IsCancellationRequested) {
+                return;
+            }
 
-                // Iterate over all devices
-                foreach (KeyValuePair<MacAddress, ILifxDevice> devicePair in this.deviceLookup) {
-                    if (devicePair.Value is LifxDevice clientDevice) {
-                        // Check if device was last seen more than lostTimeout ago
-                        if (now - clientDevice.LastSeen > lostTimeout) {
-                            // Add to lost list
-                            devicesToRemove.Add(devicePair.Key);
+            // Remove "lost" devices
+            DateTime now = DateTime.UtcNow;
+            TimeSpan lostTimeout = TimeSpan.FromMinutes(5); // Devices more than 5 minutes are considered lost
+            IList<MacAddress> devicesToRemove = new List<MacAddress>(); // Store list of devices that are lost
 
-                            // Fire event
-                            this.DeviceLost?.Invoke(this, new LifxDeviceLostEventArgs(devicePair.Key));
-                        }
+            // Iterate over all devices
+            foreach (KeyValuePair<MacAddress, ILifxDevice> devicePair in this.deviceLookup) {
+                if (devicePair.Value is LifxDevice clientDevice) {
+                    // Check if device was last seen more than lostTimeout ago
+                    if (now - clientDevice.LastSeen > lostTimeout) {
+                        // Add to lost list
+                        devicesToRemove.Add(devicePair.Key);
+
+                        // Fire event
+                        this.DeviceLost?.Invoke(this, new LifxDeviceLostEventArgs(devicePair.Key));
                     }
                 }
+            }
 
-                // Iterate over lost devices
-                foreach (MacAddress deviceId in devicesToRemove) {
-                    // Remove device
-                    this.deviceLookup.Remove(deviceId);
-                }
+            // Iterate over lost devices
+            foreach (MacAddress deviceId in devicesToRemove) {
+                // Remove device
+                this.deviceLookup.Remove(deviceId);
             }
         }
 

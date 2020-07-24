@@ -28,7 +28,7 @@ namespace AydenIO.Lifx {
         /// <inheritdoc />
         public void HandleException(Exception e) {
             if (e is TimeoutException || e is OperationCanceledException) {
-                this.taskCompletionSource.SetResult(true);
+                this.taskCompletionSource.TrySetResult(true);
             } else {
                 this.taskCompletionSource.SetException(e);
             }

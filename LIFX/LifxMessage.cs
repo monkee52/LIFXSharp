@@ -151,14 +151,13 @@ namespace AydenIO.Lifx {
         }
 
         public void FromBytes(byte[] bytes) {
-            using (MemoryStream ms = new MemoryStream(bytes)) {
-                using (BinaryReader reader = new BinaryReader(ms)) {
-                    this.ReadFrame(reader);
-                    this.ReadFrameAddress(reader);
-                    this.ReadProtocolHeader(reader);
-                    this.ReadPayload(reader);
-                }
-            }
+            using MemoryStream ms = new MemoryStream(bytes);
+            using BinaryReader reader = new BinaryReader(ms);
+
+            this.ReadFrame(reader);
+            this.ReadFrameAddress(reader);
+            this.ReadProtocolHeader(reader);
+            this.ReadPayload(reader);
         }
     }
 }
