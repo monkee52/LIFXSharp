@@ -12,6 +12,12 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public StateLocation(ILifxLocation location) {
+            this.Location = location.Location;
+            this.Label = location.Label;
+            this.UpdatedAt = location.UpdatedAt;
+        }
+
         public Guid Location { get; set; }
         public string Label { get; set; }
         public DateTime UpdatedAt { get; set; }

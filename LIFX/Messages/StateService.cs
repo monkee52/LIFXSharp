@@ -11,6 +11,11 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public StateService(ILifxService service) {
+            this.Service = service.Service;
+            this.Port = service.Port;
+        }
+
         public LifxService Service { get; set; }
         public uint Port { get; set; }
 

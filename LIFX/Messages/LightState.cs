@@ -15,6 +15,13 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public LightState(ILifxLightState lightState) {
+            this.FromHsbk(lightState);
+
+            this.PoweredOn = lightState.PoweredOn;
+            this.Label = lightState.Label;
+        }
+
         public ushort Hue { get; set; }
         public ushort Saturation { get; set; }
         public ushort Brightness { get; set; }

@@ -462,7 +462,7 @@
         <member name="P:AydenIO.Lifx.ILifxProduct.VendorName">
             <value>Gets the vendor name</value>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxProduct.Name">
+        <member name="P:AydenIO.Lifx.ILifxProduct.ProductName">
             <value>Gets the device product name</value>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.SupportsColor">
@@ -546,7 +546,7 @@
         <member name="P:AydenIO.Lifx.LifxDevice.VendorName">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxDevice.Name">
+        <member name="P:AydenIO.Lifx.LifxDevice.ProductName">
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.SupportsColor">
@@ -1314,6 +1314,12 @@
             </summary>
             <param name="macAddress">The string representation of the MAC address</param>
             <returns>The resulting MAC address</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.MacAddress.CreateLocallyAdministeredAddress">
+            <summary>
+            Creates a random locally administered MAC address
+            </summary>
+            <returns>The random MAC address</returns>
         </member>
         <member name="M:AydenIO.Lifx.MacAddress.ToString(System.String,System.Boolean)">
             <summary>

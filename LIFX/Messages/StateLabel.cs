@@ -12,6 +12,14 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public StateLabel(string label) {
+            this.Label = label;
+        }
+
+        public StateLabel(ILifxLabel label) {
+            this.Label = label.Label;
+        }
+
         public string Label { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {

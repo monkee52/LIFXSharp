@@ -16,6 +16,10 @@ namespace AydenIO.Examples.Lifx {
 
             lifx.StartDiscovery();
 
+            LifxVirtualDevice virtualDev = new LifxVirtualDevice(lifx, MacAddress.CreateLocallyAdministeredAddress());
+
+            Console.WriteLine($"Virtual MAC: {virtualDev.MacAddress}");
+
             Console.ReadKey();
 
             lifx.Dispose();
@@ -127,7 +131,7 @@ namespace AydenIO.Examples.Lifx {
             result.AppendLine(DateTime.Now.ToLongTimeString());
 
             result.AppendLine($"Found device {e.Device.GetType().Name} @ {e.Device.EndPoint} (MAC: {e.Device.MacAddress}): {{");
-            result.AppendLine($"    Name: {e.Device.Name};");
+            result.AppendLine($"    Name: {e.Device.ProductName};");
             result.AppendLine($"    SupportsColor: {e.Device.SupportsColor};");
             result.AppendLine($"    SupportsInfrared: {e.Device.SupportsInfrared};");
             result.AppendLine($"    IsMultizone: {e.Device.IsMultizone};");

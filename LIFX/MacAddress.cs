@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -12,6 +13,11 @@ namespace AydenIO.Lifx {
     /// </summary>
     public class MacAddress : IEquatable<MacAddress> {
         private static readonly Regex MAC_ADDRESS_REGEX = new Regex(@"^(([0-9a-fA-F]{2})(:|\-|\s)?)([0-9a-fA-F]{2})\3([0-9a-fA-F]{2})\3([0-9a-fA-F]{2})\3([0-9a-fA-F]{2})\3([0-9a-fA-F]{2})$");
+        private const int MAC_ADDRESS_BYTES = 6;
+
+        private static readonly MacAddress broadcast = new MacAddress(new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff });
+
+        public static MacAddress Broadcast => MacAddress.broadcast;
 
         private readonly byte[] bytes;
 
@@ -28,7 +34,7 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="bytes">The byte array</param>
         public MacAddress(byte[] bytes) {
-            if (bytes.Length != 6) {
+            if (bytes.Length != MacAddress.MAC_ADDRESS_BYTES) {
                 throw new ArgumentOutOfRangeException(nameof(bytes));
             }
 
@@ -69,6 +75,25 @@ namespace AydenIO.Lifx {
             } else {
                 throw new ArgumentException(nameof(macAddress));
             }
+        }
+
+        /// <summary>
+        /// Creates a random locally administered MAC address
+        /// </summary>
+        /// <returns>The random MAC address</returns>
+        public static MacAddress CreateLocallyAdministeredAddress() {
+            // Create random MAC address
+            byte[] bytes = new byte[MacAddress.MAC_ADDRESS_BYTES];
+
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+
+            rng.GetBytes(bytes);
+
+            // https://serverfault.com/questions/40712/what-range-of-mac-addresses-can-i-safely-use-for-my-virtual-machines
+            bytes[1] &= 0xfe;
+            bytes[1] |= 0x02;
+
+            return new MacAddress(bytes);
         }
 
         /// <summary>

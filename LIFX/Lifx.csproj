@@ -9,6 +9,11 @@
 
   <PropertyGroup>
     <DocumentationFile>..\AydenIO.Lifx.xml</DocumentationFile>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.Year) Ayden Hull</Copyright>
+    <Authors>Ayden Hull</Authors>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Product>LIFX#</Product>
   </PropertyGroup>
 
   <ItemGroup>

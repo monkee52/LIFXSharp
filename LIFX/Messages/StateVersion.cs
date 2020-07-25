@@ -12,6 +12,12 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public StateVersion(ILifxVersion version) {
+            this.VendorId = version.VendorId;
+            this.ProductId = version.ProductId;
+            this.Version = version.Version;
+        }
+
         public uint VendorId { get; private set; }
 
         public uint ProductId { get; private set; }

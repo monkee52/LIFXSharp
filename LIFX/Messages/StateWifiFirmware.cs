@@ -12,6 +12,12 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public StateWifiFirmware(ILifxWifiFirmware wifiFirmware) {
+            this.Build = wifiFirmware.Build;
+            this.VersionMinor = wifiFirmware.VersionMinor;
+            this.VersionMajor = wifiFirmware.VersionMajor;
+        }
+
         public DateTime Build { get; set; }
         public ushort VersionMinor { get; set; }
         public ushort VersionMajor { get; set; }

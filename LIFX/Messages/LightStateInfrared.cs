@@ -15,6 +15,14 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public LightStateInfrared(ushort level) {
+            this.Level = level;
+        }
+
+        public LightStateInfrared(ILifxInfrared infrared) {
+            this.Level = infrared.Level;
+        }
+
         public ushort Level { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {

@@ -12,10 +12,45 @@ using Microsoft.CodeAnalysis.Text;
 namespace AydenIO.Lifx.SourceGenerator {
     [Generator]
     public class LifxSourceGenerator : ISourceGenerator {
-        public const string GENERATED_FILENAME = "LifxNetwork.Products.Generated.cs";
-        public const string PRODUCTS_JSON = "https://raw.githubusercontent.com/LIFX/products/master/products.json";
-
         public void Execute(SourceGeneratorContext context) {
+            this.AddSource(context, "LifxNetwork.Products.Generated.cs", this.GetProductMapSource());
+            this.AddSource(context, "LifxNetwork.BuildMetadata.Generated.cs", this.GetBuildMetadataSource());
+        }
+
+        private void AddSource(SourceGeneratorContext context, string filename, string source) {
+            context.AddSource(filename, SourceText.From(source, Encoding.UTF8));
+        }
+
+        public void Initialize(InitializationContext context) {
+            
+        }
+
+        private LifxVendor[] GetVendors(string jsonString) {
+            LifxVendor[] vendors;
+
+            using MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(LifxVendor[]));
+
+            vendors = ser.ReadObject(ms) as LifxVendor[];
+
+            ms.Close();
+
+            return vendors;
+        }
+
+        private string GetBuildMetadataSource() => $@"using System;
+
+namespace AydenIO.Lifx {{
+    public partial class LifxNetwork {{
+        private static readonly DateTime buildDate = new DateTime({DateTime.UtcNow.Ticks}L, DateTimeKind.Utc);
+        internal static DateTime BuildDate => LifxNetwork.buildDate;
+    }}
+}}
+";
+
+        private string GetProductMapSource() {
+            const string productsUri = "https://raw.githubusercontent.com/LIFX/products/master/products.json";
+
             StringBuilder sourceBuilder = new StringBuilder();
 
             sourceBuilder.Append(@"namespace AydenIO.Lifx {
@@ -24,7 +59,7 @@ namespace AydenIO.Lifx.SourceGenerator {
             return (vendorId, productId) switch {
 ");
 
-            string productsRaw = new WebClient().DownloadString(LifxSourceGenerator.PRODUCTS_JSON);
+            string productsRaw = new WebClient().DownloadString(productsUri);
 
             //LifxVendor[] vendors = JsonSerializer.Deserialize<LifxVendor[]>(productsRaw);
             LifxVendor[] vendors = this.GetVendors(productsRaw);
@@ -38,9 +73,9 @@ namespace AydenIO.Lifx.SourceGenerator {
 
                     productLine.Append($"                ({vendor.VendorId}, {product.ProductId,2}) => new LifxProduct() {{ ");
 
-                    productLine.Append(String.Join(", ", new string [] {
+                    productLine.Append(String.Join(", ", new string[] {
                         $"VendorName = \"{vendor.Name}\"",
-                        $"Name = \"{product.Name}\"",
+                        $"ProductName = \"{product.Name}\"",
                         $"SupportsColor = {(product.Features.SupportsColor ? "true" : "false")}",
                         $"SupportsInfrared = {(product.Features.SupportsInfrared ? "true" : "false")}",
                         $"IsMultizone = {(product.Features.IsMultizone ? "true" : "false")}",
@@ -105,27 +140,7 @@ namespace AydenIO.Lifx.SourceGenerator {
 }
 ");
 
-            string source = sourceBuilder.ToString();
-
-            // Add the generatred source to the compilation
-            context.AddSource(LifxSourceGenerator.GENERATED_FILENAME, SourceText.From(source, Encoding.UTF8));
-        }
-
-        public void Initialize(InitializationContext context) {
-            
-        }
-
-        private LifxVendor[] GetVendors(string jsonString) {
-            LifxVendor[] vendors;
-
-            using MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(LifxVendor[]));
-
-            vendors = ser.ReadObject(ms) as LifxVendor[];
-
-            ms.Close();
-
-            return vendors;
+            return sourceBuilder.ToString();
         }
     }
 }

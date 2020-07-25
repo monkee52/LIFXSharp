@@ -15,6 +15,10 @@ namespace AydenIO.Lifx.Messages {
             this.payload = new byte[64];
         }
 
+        public EchoResponse(ILifxEcho echoRequest) {
+            this.SetPayload(echoRequest.GetPayload());
+        }
+
         private byte[] payload;
 
         public IReadOnlyList<byte> GetPayload() {

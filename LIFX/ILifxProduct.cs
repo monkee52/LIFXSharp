@@ -11,7 +11,7 @@ namespace AydenIO.Lifx {
         public string VendorName { get; }
 
         /// <value>Gets the device product name</value>
-        public string Name { get; }
+        public string ProductName { get; }
 
         /// <value>Gets whether the device supports color</value>
         public bool SupportsColor { get; }

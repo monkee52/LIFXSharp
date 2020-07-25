@@ -45,6 +45,10 @@ namespace AydenIO.Lifx {
 
         private readonly object discoverySyncRoot;
 
+        private static readonly MacAddress lifxBroadcast = new MacAddress(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+
+        public static MacAddress LifxBroadcast => LifxNetwork.lifxBroadcast;
+
         /// <summary>
         /// Initializes the <c>LifxNetwork</c>
         /// </summary>
@@ -56,9 +60,15 @@ namespace AydenIO.Lifx {
             this.discoverySyncRoot = new object();
 
             // Set up socket
-            this.socket = new UdpClient(new IPEndPoint(IPAddress.Any, 0)) {
-                EnableBroadcast = true
+            this.socket = new UdpClient() {
+                EnableBroadcast = true,
+                ExclusiveAddressUse = false
             };
+
+            // Allow reuse (exclusive above could be read as anti-reuse, rather than implicit reuse?)
+            this.socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+            this.socket.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
 
             // Set up socket thread
             this.socketReceiveThread = new Thread(new ThreadStart(this.SocketReceiveWorker)) {
@@ -83,6 +93,8 @@ namespace AydenIO.Lifx {
             // Set up config
             this.DiscoveryInterval = discoveryInterval;
             this.ReceiveTimeout = rxTimeout;
+
+            Debug.WriteLine($"Build time: {LifxNetwork.BuildDate}");
         }
 
         private void SocketReceiveWorker() {
@@ -118,7 +130,67 @@ namespace AydenIO.Lifx {
                 bool isClient = origMessage.SourceId != this.SourceId;
 
                 if (isClient) {
-                    // TODO: Find device by target field, determine message
+                    // Query no devices
+                    IEnumerable<ILifxVirtualDevice> devicesToQuery = Enumerable.Empty<ILifxVirtualDevice>();
+
+                    if (origMessage.Target == LifxNetwork.LifxBroadcast) {
+                        devicesToQuery = this.Devices.OfType<ILifxVirtualDevice>();
+                    } else {
+                        bool virtualDeviceFound = this.deviceLookup.TryGetValue(origMessage.Target, out ILifxDevice device);
+
+                        if (virtualDeviceFound && device is ILifxVirtualDevice virtualDevice) {
+                            devicesToQuery = new[] { virtualDevice };
+                        } else {
+                            // TODO: Handle missing devices
+                        }
+                    }
+
+                    if (devicesToQuery.Any()) {
+                        LifxMessage message = origMessage.Type switch {
+                            // Device messages
+                            LifxMessageType.GetService => new Messages.GetService(),
+                            LifxMessageType.GetHostInfo => new Messages.GetHostInfo(),
+                            LifxMessageType.GetHostFirmware => new Messages.GetHostFirmware(),
+                            LifxMessageType.GetWifiInfo => new Messages.GetWifiInfo(),
+                            LifxMessageType.GetWifiFirmware => new Messages.GetWifiFirmware(),
+                            LifxMessageType.GetPower => new Messages.GetPower(),
+                            LifxMessageType.SetPower => new Messages.SetPower(),
+                            LifxMessageType.GetLabel => new Messages.GetLabel(),
+                            LifxMessageType.SetLabel => new Messages.SetLabel(),
+                            LifxMessageType.GetVersion => new Messages.GetVersion(),
+                            LifxMessageType.GetInfo => new Messages.GetInfo(),
+                            LifxMessageType.GetLocation => new Messages.GetLocation(),
+                            LifxMessageType.SetLocation => new Messages.SetLocation(),
+                            LifxMessageType.GetGroup => new Messages.GetGroup(),
+                            LifxMessageType.SetGroup => new Messages.SetGroup(),
+                            LifxMessageType.EchoRequest => new Messages.EchoRequest(),
+                            // Light messages
+                            LifxMessageType.LightGet => new Messages.LightGet(),
+                            LifxMessageType.LightGetPower => new Messages.LightGetPower(),
+                            LifxMessageType.LightSetPower => new Messages.LightSetPower(),
+                            LifxMessageType.LightSetColor => new Messages.LightSetColor(),
+                            LifxMessageType.LightSetWaveform => new Messages.LightSetWaveform(),
+                            LifxMessageType.LightSetWaveformOptional => new Messages.LightSetWaveformOptional(),
+                            LifxMessageType.LightGetInfrared => new Messages.LightGetInfrared(),
+                            LifxMessageType.LightSetInfrared => new Messages.LightSetInfrared(),
+                            // MultiZone messages
+                            LifxMessageType.GetExtendedColorZones => new Messages.GetExtendedColorZones(),
+                            LifxMessageType.SetExtendedColorZones => new Messages.SetExtendedColorZones(),
+                            LifxMessageType.GetColorZones => new Messages.GetColorZones(),
+
+                            _ => origMessage
+                        };
+
+                        if (message != origMessage) {
+                            message.SourceId = origMessage.SourceId;
+
+                            message.FromBytes(buffer);
+
+                            foreach (ILifxVirtualDevice virtualDevice in devicesToQuery) {
+                                _ = this.QueryVirtualDevice(endPoint, message, virtualDevice);
+                            }
+                        }
+                    }
                 } else {
                     // Find awaiters
                     bool found = this.awaitingSequences.TryGetValue(origMessage.SequenceNumber, out ILifxResponseAwaiter responseAwaiter);
@@ -153,16 +225,16 @@ namespace AydenIO.Lifx {
 
                             _ => origMessage
                         };
-                    }
 
-                    try {
                         // Decode message again if needed
                         if (message != origMessage) {
                             message.SourceId = this.SourceId;
 
                             message.FromBytes(buffer);
                         }
+                    }
 
+                    try {
                         // Trigger awaiter
                         if (found) {
                             responseAwaiter.HandleResponse(new LifxResponse(endPoint, message));
@@ -178,6 +250,201 @@ namespace AydenIO.Lifx {
                         }
                     }
                 }
+            }
+        }
+
+        private void SetReplyMessageHeaderCommon(ILifxDevice device, LifxMessage request, LifxMessage reply) {
+            reply.Target = device.MacAddress;
+
+            reply.SourceId = request.SourceId;
+            reply.SequenceNumber = request.SequenceNumber;
+            reply.ResponseFlags = LifxeResponseFlags.None;
+        }
+
+        private async Task QueryVirtualDevice(IPEndPoint remoteEndPoint, LifxMessage request, ILifxVirtualDevice virtualDevice) {
+            ILifxVirtualLight virtualLight = virtualDevice as ILifxVirtualLight;
+            bool isVirtualLight = virtualLight != null;
+
+            ILifxVirtualInfraredLight virtualInfraredLight = virtualDevice as ILifxVirtualInfraredLight;
+            bool isVirtualInfraredLight = virtualInfraredLight != null;
+
+            ILifxVirtualMultizoneLight virtualMultizoneLight = virtualDevice as ILifxVirtualMultizoneLight;
+            bool isVirtualMultizoneLight = virtualMultizoneLight != null;
+
+            bool resRequired = request.ResponseFlags.HasFlag(LifxeResponseFlags.ResponseRequired);
+            bool ackRequired = request.ResponseFlags.HasFlag(LifxeResponseFlags.AcknowledgementRequired);
+
+            ICollection<LifxMessage> responses = new List<LifxMessage>();
+
+            // Set messages, responses are dealt with below
+            switch (request) {
+                // Device messages
+                case Messages.SetPower setPower: { 
+                    await virtualDevice.SetPower(setPower.PoweredOn);
+
+                    break;
+                }
+                case Messages.SetLabel setLabel: { 
+                    await virtualDevice.SetLabel(setLabel.Label);
+
+                    break;
+                }
+                case Messages.SetLocation setLocation: {
+                    await virtualDevice.SetLocation(setLocation);
+
+                    break;
+                }
+                case Messages.SetGroup setGroup: { 
+                    await virtualDevice.SetGroup(setGroup);
+
+                    break;
+                }
+                // Light messages
+                case Messages.LightSetPower lightSetPower when isVirtualLight: {
+                    await virtualLight.SetPower(lightSetPower.PoweredOn, lightSetPower.Duration);
+
+                    break;
+                }
+                case Messages.LightSetColor lightSetColor when isVirtualLight: {
+                    await virtualLight.SetColor(lightSetColor, lightSetColor.Duration);
+
+                    break;
+                }
+                case Messages.LightSetInfrared lightSetInfrared when isVirtualInfraredLight: {
+                    await virtualInfraredLight.SetInfrared(lightSetInfrared.Level);
+
+                    break;
+                }
+                // Multizone messages
+                // TODO: ^
+            }
+
+            // Get messages
+            if (resRequired) {
+                switch (request) {
+                    // Device messages
+                    case Messages.GetService: {
+                        IReadOnlyCollection<ILifxService> services = await virtualDevice.GetServices();
+
+                        foreach (ILifxService service in services) {
+                            responses.Add(new Messages.StateService(service));
+                        }
+
+                        break;
+                    }
+                    case Messages.GetHostInfo: {
+                        ILifxHostInfo hostInfo = await virtualDevice.GetHostInfo();
+
+                        responses.Add(new Messages.StateHostInfo(hostInfo));
+
+                        break;
+                    }
+                    case Messages.GetHostFirmware: {
+                        ILifxHostFirmware hostFirmware = await virtualDevice.GetHostFirmware();
+
+                        responses.Add(new Messages.StateHostFirmware(hostFirmware));
+
+                        break;
+                    }
+                    case Messages.GetWifiInfo: {
+                        ILifxWifiInfo wifiInfo = await virtualDevice.GetWifiInfo();
+
+                        responses.Add(new Messages.StateWifiInfo(wifiInfo));
+
+                        break;
+                    }
+                    case Messages.GetWifiFirmware: {
+                        ILifxWifiFirmware wifiFirmware = await virtualDevice.GetWifiFirmware();
+
+                        responses.Add(new Messages.StateWifiFirmware(wifiFirmware));
+
+                        break;
+                    }
+                    case Messages.GetPower: {
+                        bool poweredOn = await virtualDevice.GetPower();
+
+                        responses.Add(new Messages.StatePower(poweredOn));
+
+                        break;
+                    }
+                    case Messages.GetLabel: {
+                        string label = await virtualDevice.GetLabel();
+
+                        responses.Add(new Messages.StateLabel(label));
+
+                        break;
+                    }
+                    case Messages.GetVersion: {
+                        ILifxVersion version = await virtualDevice.GetVersion();
+
+                        responses.Add(new Messages.StateVersion(version));
+
+                        break;
+                    }
+                    case Messages.GetInfo: {
+                        ILifxInfo info = await virtualDevice.GetInfo();
+
+                        responses.Add(new Messages.StateInfo(info));
+
+                        break;
+                    }
+                    case Messages.GetLocation: {
+                        ILifxLocation location = await virtualDevice.GetLocation();
+
+                        responses.Add(new Messages.StateLocation(location));
+
+                        break;
+                    }
+                    case Messages.GetGroup: {
+                        ILifxGroup group = await virtualDevice.GetGroup();
+
+                        responses.Add(new Messages.StateGroup(group));
+
+                        break;
+                    }
+                    case Messages.EchoRequest echoRequest: {
+                        responses.Add(new Messages.EchoResponse(echoRequest));
+
+                        break;
+                    }
+                    // Light messages
+                    case Messages.LightSetColor when isVirtualLight:
+                    case Messages.LightSetWaveform when isVirtualLight:
+                    case Messages.LightSetWaveformOptional when isVirtualLight:
+                    case Messages.LightGet when isVirtualLight: {
+                        ILifxLightState lightState = await virtualLight.GetState();
+
+                        responses.Add(new Messages.LightState(lightState));
+
+                        break;
+                    }
+                    case Messages.LightGetPower when isVirtualLight: {
+                        bool poweredOn = await virtualLight.GetPower();
+
+                        responses.Add(new Messages.LightStatePower(poweredOn));
+
+                        break;
+                    }
+                    case Messages.LightGetInfrared when isVirtualInfraredLight: {
+                        ushort level = await virtualInfraredLight.GetInfrared();
+
+                        responses.Add(new Messages.LightStateInfrared(level));
+
+                        break;
+                    }
+                    // Multizone messages
+                    // TODO: ^
+                }
+            }
+
+            if (ackRequired) {
+                responses.Add(new Messages.Acknowledgement());
+            }
+
+            foreach (LifxMessage response in responses) {
+                this.SetReplyMessageHeaderCommon(virtualDevice, request, response);
+
+                await this.SendCommon(remoteEndPoint, response);
             }
         }
 
@@ -683,6 +950,10 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call times out if there is no response</param>
         internal async Task SendWithAcknowledgement(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             await this.SendWithResponse<Messages.Acknowledgement>(device?.EndPoint, message, timeoutMs, cancellationToken);
+        }
+
+        public void RegisterVirtualDevice(ILifxVirtualDevice device) {
+            this.deviceLookup.Add(device.MacAddress, device);
         }
 
         /// <summary>

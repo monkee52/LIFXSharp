@@ -12,6 +12,12 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public StateHostFirmware(ILifxHostFirmware hostFirmware) {
+            this.Build = hostFirmware.Build;
+            this.VersionMinor = hostFirmware.VersionMinor;
+            this.VersionMajor = hostFirmware.VersionMajor;
+        }
+
         public DateTime Build { get; set; }
         public ushort VersionMinor { get; set; }
         public ushort VersionMajor { get; set; }

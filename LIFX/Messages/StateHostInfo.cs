@@ -12,6 +12,12 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public StateHostInfo(ILifxHostInfo hostInfo) {
+            this.Signal = hostInfo.Signal;
+            this.TransmittedBytes = hostInfo.TransmittedBytes;
+            this.ReceivedBytes = hostInfo.ReceivedBytes;
+        }
+
         public float Signal { get; set; }
         public uint TransmittedBytes { get; set; }
         public uint ReceivedBytes { get; set; }

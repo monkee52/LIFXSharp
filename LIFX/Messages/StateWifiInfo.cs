@@ -12,6 +12,12 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public StateWifiInfo(ILifxWifiInfo wifiInfo) {
+            this.Signal = wifiInfo.Signal;
+            this.TransmittedBytes = wifiInfo.TransmittedBytes;
+            this.ReceivedBytes = wifiInfo.ReceivedBytes;
+        }
+
         public float Signal { get; set; }
 
         public uint TransmittedBytes { get; set; }

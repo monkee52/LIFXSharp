@@ -12,6 +12,14 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
+        public StatePower(bool poweredOn) {
+            this.PoweredOn = poweredOn;
+        }
+
+        public StatePower(ILifxPower power) {
+            this.PoweredOn = power.PoweredOn;
+        }
+
         public bool PoweredOn { get; set; }
 
         protected override void WritePayload(BinaryWriter writer) {
