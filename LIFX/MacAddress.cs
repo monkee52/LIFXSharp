@@ -17,7 +17,11 @@ namespace AydenIO.Lifx {
 
         private static readonly MacAddress broadcast = new MacAddress(new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff });
 
+        /// <value>Gets the standard Ethernet broadcast MAC address</value>
         public static MacAddress Broadcast => MacAddress.broadcast;
+
+        /// <value>Gets whether this MAC address is the broadcast mac address</value>
+        public bool IsBroadcast => this == MacAddress.Broadcast;
 
         private readonly byte[] bytes;
 

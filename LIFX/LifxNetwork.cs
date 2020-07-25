@@ -47,6 +47,7 @@ namespace AydenIO.Lifx {
 
         private static readonly MacAddress lifxBroadcast = new MacAddress(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
 
+        /// <value>Gets the LIFX Broadcast target</value>
         public static MacAddress LifxBroadcast => LifxNetwork.lifxBroadcast;
 
         /// <summary>
@@ -947,6 +948,10 @@ namespace AydenIO.Lifx {
             await this.SendWithResponse<Messages.Acknowledgement>(device?.EndPoint, message, timeoutMs, cancellationToken);
         }
 
+        /// <summary>
+        /// Registers a virtual device with this LIFX network
+        /// </summary>
+        /// <param name="device">The virtual device</param>
         public void RegisterVirtualDevice(ILifxVirtualDevice device) {
             this.deviceLookup.Add(device.MacAddress, device);
         }
