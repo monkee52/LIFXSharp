@@ -263,9 +263,14 @@ namespace AydenIO.Lifx {
         }
 
         private async Task QueryVirtualDevice(IPEndPoint remoteEndPoint, LifxMessage request, ILifxVirtualDevice virtualDevice) {
-            bool isVirtualLight = virtualDevice is ILifxVirtualLight virtualLight;
-            bool isVirtualInfraredLight = virtualDevice is ILifxVirtualInfraredLight virtualInfraredLight;
-            bool isVirtualMultizoneLight = virtualDevice is ILifxVirtualMultizoneLight virtualMultizoneLight;
+            ILifxVirtualLight virtualLight = virtualDevice as ILifxVirtualLight;
+            bool isVirtualLight = virtualLight != null;
+
+            ILifxVirtualInfraredLight virtualInfraredLight = virtualDevice as ILifxVirtualInfraredLight;
+            bool isVirtualInfraredLight = virtualInfraredLight != null;
+
+            ILifxVirtualMultizoneLight virtualMultizoneLight = virtualDevice as ILifxVirtualMultizoneLight;
+            bool isVirtualMultizoneLight = virtualMultizoneLight != null;
 
             bool resRequired = request.ResponseFlags.HasFlag(LifxeResponseFlags.ResponseRequired);
             bool ackRequired = request.ResponseFlags.HasFlag(LifxeResponseFlags.AcknowledgementRequired);
@@ -297,17 +302,17 @@ namespace AydenIO.Lifx {
                 }
                 // Light messages
                 case Messages.LightSetPower lightSetPower when isVirtualLight: {
-                    await virtualLight.SetPower(lightSetPower.PoweredOn, lightSetPower.Duration);
+                    await virtualLight!.SetPower(lightSetPower.PoweredOn, lightSetPower.Duration);
 
                     break;
                 }
                 case Messages.LightSetColor lightSetColor when isVirtualLight: {
-                    await virtualLight.SetColor(lightSetColor, lightSetColor.Duration);
+                    await virtualLight!.SetColor(lightSetColor, lightSetColor.Duration);
 
                     break;
                 }
                 case Messages.LightSetInfrared lightSetInfrared when isVirtualInfraredLight: {
-                    await virtualInfraredLight.SetInfrared(lightSetInfrared.Level);
+                    await virtualInfraredLight!.SetInfrared(lightSetInfrared.Level);
 
                     break;
                 }

@@ -972,6 +972,9 @@
         <member name="P:AydenIO.Lifx.LifxNetwork.ReceiveTimeout">
             <value>Gets or sets the default time to wait before a call times out, in milliseconds</value>
         </member>
+        <member name="P:AydenIO.Lifx.LifxNetwork.LifxBroadcast">
+            <value>Gets the LIFX Broadcast target</value>
+        </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.#ctor(System.Int32,System.Int32)">
             <summary>
             Initializes the <c>LifxNetwork</c>
@@ -1176,6 +1179,12 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <param name="timeoutMs">How long before the call times out if there is no response</param>
         </member>
+        <member name="M:AydenIO.Lifx.LifxNetwork.RegisterVirtualDevice(AydenIO.Lifx.ILifxVirtualDevice)">
+            <summary>
+            Registers a virtual device with this LIFX network
+            </summary>
+            <param name="device">The virtual device</param>
+        </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.GetFeaturesForProduct(AydenIO.Lifx.ILifxVersion)">
             <summary>
             Gets the features supported by a device, given a vendor and product ID
@@ -1287,6 +1296,12 @@
             <summary>
             Represents a MAC address
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.MacAddress.Broadcast">
+            <value>Gets the standard Ethernet broadcast MAC address</value>
+        </member>
+        <member name="P:AydenIO.Lifx.MacAddress.IsBroadcast">
+            <value>Gets whether this MAC address is the broadcast mac address</value>
         </member>
         <member name="M:AydenIO.Lifx.MacAddress.GetBytes">
             <summary>
