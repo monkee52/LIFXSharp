@@ -262,14 +262,9 @@ namespace AydenIO.Lifx {
         }
 
         private async Task QueryVirtualDevice(IPEndPoint remoteEndPoint, LifxMessage request, ILifxVirtualDevice virtualDevice) {
-            ILifxVirtualLight virtualLight = virtualDevice as ILifxVirtualLight;
-            bool isVirtualLight = virtualLight != null;
-
-            ILifxVirtualInfraredLight virtualInfraredLight = virtualDevice as ILifxVirtualInfraredLight;
-            bool isVirtualInfraredLight = virtualInfraredLight != null;
-
-            ILifxVirtualMultizoneLight virtualMultizoneLight = virtualDevice as ILifxVirtualMultizoneLight;
-            bool isVirtualMultizoneLight = virtualMultizoneLight != null;
+            bool isVirtualLight = virtualDevice is ILifxVirtualLight virtualLight;
+            bool isVirtualInfraredLight = virtualDevice is ILifxVirtualInfraredLight virtualInfraredLight;
+            bool isVirtualMultizoneLight = virtualDevice is ILifxVirtualMultizoneLight virtualMultizoneLight;
 
             bool resRequired = request.ResponseFlags.HasFlag(LifxeResponseFlags.ResponseRequired);
             bool ackRequired = request.ResponseFlags.HasFlag(LifxeResponseFlags.AcknowledgementRequired);
