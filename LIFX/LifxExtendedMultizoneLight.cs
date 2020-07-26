@@ -40,7 +40,7 @@ namespace AydenIO.Lifx {
                 Index = startAt
             };
 
-            IEnumerable<ILifxColor> hsbkColors = colors.Take(LifxMultizoneLight.MaxLifxMultizone);
+            IEnumerable<ILifxColor> hsbkColors = colors.Take(Messages.SetExtendedColorZones.MaxZoneCount);
 
             foreach (ILifxColor color in hsbkColors) {
                 setExtendedColorZones.Colors.Add(color.ToHsbk());
@@ -56,7 +56,7 @@ namespace AydenIO.Lifx {
                 Index = startAt
             };
 
-            IEnumerable<ILifxColor> hsbkColors = colors.Take(LifxMultizoneLight.MaxLifxMultizone);
+            IEnumerable<ILifxColor> hsbkColors = colors.Take(Messages.SetExtendedColorZones.MaxZoneCount);
 
             foreach (ILifxColor color in hsbkColors) {
                 setExtendedColorZones.Colors.Add(color.ToHsbk());

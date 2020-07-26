@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     public abstract class LifxMultizoneLight : LifxLight, ILifxMultizoneLight {
-        /// <value>The current maximum number of zones in a LIFX MultiZone device</value>
-        public static int MaxLifxMultizone => 82;
-
         protected internal LifxMultizoneLight(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version, ILifxHostFirmware hostFirmware) : base(lifx, macAddress, endPoint, version) {
             this.SetHostFirmwareCachedValue(hostFirmware);
         }

@@ -7,6 +7,20 @@ namespace AydenIO.Lifx {
     /// Compares <c>ILifxHsbkColor</c>s
     /// </summary>
     public class LifxHsbkColorComparer : IEqualityComparer<ILifxHsbkColor> {
+
+        private static LifxHsbkColorComparer defaultInstance = null;
+
+        /// <value>Gets the default instance of <c>LifxHsbkColorComparer</c></value>
+        public static LifxHsbkColorComparer Instance {
+            get {
+                if (LifxHsbkColorComparer.defaultInstance == null) {
+                    LifxHsbkColorComparer.defaultInstance = new LifxHsbkColorComparer();
+                }
+
+                return LifxHsbkColorComparer.defaultInstance;
+            }
+        }
+
         /// <inheritdoc />
         public int GetHashCode(ILifxHsbkColor color) {
             long hashCodeLong = 0x7496a6cd4543cf48L ^ (((long)color.Hue << 48) | ((long)color.Saturation << 32) | ((long)color.Brightness << 16) | (long)color.Kelvin);

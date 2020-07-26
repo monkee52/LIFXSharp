@@ -63,5 +63,10 @@ namespace AydenIO.Lifx {
         public Task SetPower(bool power, uint durationMs = 0, bool rapid = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             return this.SetPower(power, TimeSpan.FromMilliseconds(durationMs), rapid, timeoutMs, cancellationToken);
         }
+
+        /// <inheritdoc />
+        public sealed override Task SetPower(bool power, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return this.SetPower(power, TimeSpan.Zero, false, timeoutMs, cancellationToken);
+        }
     }
 }

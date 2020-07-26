@@ -61,7 +61,6 @@ namespace AydenIO.Lifx {{
 
             string productsRaw = new WebClient().DownloadString(productsUri);
 
-            //LifxVendor[] vendors = JsonSerializer.Deserialize<LifxVendor[]>(productsRaw);
             LifxVendor[] vendors = this.GetVendors(productsRaw);
 
             IList<string> productLines = new List<string>();

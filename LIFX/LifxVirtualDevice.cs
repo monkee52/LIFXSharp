@@ -163,7 +163,7 @@ namespace AydenIO.Lifx {
         }
 
         /// <value>Gets the internal info value</value>
-        protected ILifxInfo Info => this.Info;
+        protected ILifxInfo Info => this.info;
 
         /// <inheritdoc />
         public Task<ILifxInfo> GetInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.Info);

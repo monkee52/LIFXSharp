@@ -76,9 +76,7 @@ namespace AydenIO.Lifx.Messages {
             this.Apply = (LifxApplicationRequest)apply;
         }
 
-        public ILifxHsbkColor ToHsbk() {
-            return this;
-        }
+        public ILifxHsbkColor ToHsbk() => this;
 
         public void FromHsbk(ILifxHsbkColor color) {
             if (this != color) {

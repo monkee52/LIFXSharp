@@ -13,22 +13,16 @@ namespace AydenIO.Examples.Lifx {
         static void Main(string[] args) {
             LifxNetwork lifx = new LifxNetwork();
 
-            //lifx.DeviceDiscovered += Program.DeviceDiscovered;
+            lifx.DeviceDiscovered += Program.DeviceDiscovered;
             lifx.DeviceLost += Program.DeviceLost;
 
-            //lifx.StartDiscovery();
+            lifx.StartDiscovery();
 
-            //LifxVirtualDevice virtualDev = new LifxVirtualDevice(lifx, MacAddress.CreateLocallyAdministeredAddress());
+            LifxVirtualLight virtualLight = new ExampleLight(lifx, MacAddress.CreateLocallyAdministeredAddress());
 
-            //Console.WriteLine($"Virtual MAC: {virtualDev.MacAddress}");
+            Console.WriteLine($"Virtual MAC: {virtualLight.MacAddress}");
 
-            lifx.DiscoverOnce().Wait();
-
-            foreach (ILifxDevice device in lifx.Devices) {
-                Program.PrintDevice(device).Wait();
-            }
-
-            Console.ReadKey();
+            Console.ReadLine();
 
             lifx.Dispose();
         }
@@ -238,7 +232,7 @@ namespace AydenIO.Examples.Lifx {
             }
 
             if (device is ILifxLight light) {
-                if (light.SupportsColor) {
+                if (light.SupportsColor || light.MaxKelvin > 0) {
                     ILifxLightState lightState = null;
 
                     try {

@@ -9,6 +9,10 @@ namespace AydenIO.Lifx.Messages {
     /// </summary>
     internal class SetExtendedColorZones : LifxMessage, ILifxTransition, ILifxApplicationRequest, ILifxColorZones {
         public const LifxMessageType TYPE = LifxMessageType.SetExtendedColorZones;
+
+        /// <value>The current maximum number of zones in a LIFX MultiZone device</value>
+        public static int MaxZoneCount => 82;
+
         public SetExtendedColorZones() : base(TYPE) {
             this.Colors = new List<ILifxHsbkColor>();
         }
@@ -33,7 +37,7 @@ namespace AydenIO.Lifx.Messages {
 
             ILifxHsbkColor defaultColor = new LifxHsbkColor();
 
-            for (int i = 0; i < LifxMultizoneLight.MaxLifxMultizone; i++) {
+            for (int i = 0; i < SetExtendedColorZones.MaxZoneCount; i++) {
                 ILifxHsbkColor color;
 
                 if (i < count) {
@@ -71,7 +75,7 @@ namespace AydenIO.Lifx.Messages {
             // Empty list
             this.Colors.Clear();
 
-            for (int i = 0; i < LifxMultizoneLight.MaxLifxMultizone; i++) {
+            for (int i = 0; i < SetExtendedColorZones.MaxZoneCount; i++) {
                 // Read HSBK
                 ushort hue = reader.ReadUInt16();
                 ushort saturation = reader.ReadUInt16();

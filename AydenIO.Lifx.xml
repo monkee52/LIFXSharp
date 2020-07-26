@@ -74,6 +74,9 @@
             Compares <c>ILifxHsbkColor</c>s
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.LifxHsbkColorComparer.Instance">
+            <value>Gets the default instance of <c>LifxHsbkColorComparer</c></value>
+        </member>
         <member name="M:AydenIO.Lifx.LifxHsbkColorComparer.GetHashCode(AydenIO.Lifx.ILifxHsbkColor)">
             <inheritdoc />
         </member>
@@ -941,9 +944,6 @@
         <member name="M:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.HandleException(System.Exception)">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxMultizoneLight.MaxLifxMultizone">
-            <value>The current maximum number of zones in a LIFX MultiZone device</value>
-        </member>
         <member name="T:AydenIO.Lifx.LifxNetwork">
             <summary>
             Common class that connects C# to the LIFX protocol
@@ -997,12 +997,6 @@
             Synchronous version of <c>StopDiscovery</c>
             </summary>
             <returns>True if the call stopped the thread, otherwise the thread was not in a state to stop</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.StopDiscoveryAsync">
-            <summary>
-            Stops the discovery thread
-            </summary>
-            <returns>True if the call stopped the thread, otherwise the thread was already stopped.</returns>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.DiscoverOnce(System.Threading.CancellationToken)">
             <summary>
@@ -1444,6 +1438,9 @@
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualLight.SetPower(System.Boolean,System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.SetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxVirtualMultizoneLight">
@@ -2009,10 +2006,19 @@
             This messages lets you change all the zones on your device in one message.
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.Messages.SetExtendedColorZones.MaxZoneCount">
+            <value>The current maximum number of zones in a LIFX MultiZone device</value>
+        </member>
         <member name="T:AydenIO.Lifx.Messages.SetGroup">
             <summary>
             Set the device group.
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateExtendedColorZones.MaxZoneCount">
+            <value>The current maximum number of zones in a LIFX MultiZone device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateMultiZone.MaxZoneCount">
+            <value>Gets the maximum number of zones supported by this message</value>
         </member>
     </members>
 </doc>

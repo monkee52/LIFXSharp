@@ -74,7 +74,7 @@ namespace AydenIO.Lifx {
             // Set up socket thread
             this.socketReceiveThread = new Thread(new ThreadStart(this.SocketReceiveWorker)) {
                 IsBackground = true,
-                Name = nameof(this.socketReceiveThread)
+                Name = nameof(this.SocketReceiveWorker)
             };
 
             this.socketReceiveThread.Start();
@@ -264,7 +264,7 @@ namespace AydenIO.Lifx {
             reply.ResponseFlags = LifxeResponseFlags.None;
         }
 
-        private async Task QueryVirtualDevice(IPEndPoint remoteEndPoint, LifxMessage request, LifxVirtualDevice virtualDevice) {
+        private async Task QueryVirtualDevice(IPEndPoint replyToEndPoint, LifxMessage request, LifxVirtualDevice virtualDevice) {
             LifxVirtualLight virtualLight = virtualDevice as LifxVirtualLight;
             bool isVirtualLight = virtualLight != null;
 
@@ -304,22 +304,35 @@ namespace AydenIO.Lifx {
                 }
                 // Light messages
                 case Messages.LightSetPower lightSetPower when isVirtualLight: {
-                    await virtualLight!.SetPower(lightSetPower.PoweredOn, lightSetPower.Duration);
+                    await virtualLight.SetPower(lightSetPower.PoweredOn, lightSetPower.Duration);
 
                     break;
                 }
                 case Messages.LightSetColor lightSetColor when isVirtualLight: {
-                    await virtualLight!.SetColor(lightSetColor, lightSetColor.Duration);
+                    await virtualLight.SetColor(lightSetColor, lightSetColor.Duration);
 
                     break;
                 }
                 case Messages.LightSetInfrared lightSetInfrared when isVirtualInfraredLight: {
-                    await virtualInfraredLight!.SetInfrared(lightSetInfrared.Level);
+                    await virtualInfraredLight.SetInfrared(lightSetInfrared.Level);
 
                     break;
                 }
                 // Multizone messages
-                // TODO: ^
+                case Messages.SetColorZones setColorZones when isVirtualMultizoneLight: {
+                    int colorCount = setColorZones.EndIndex - setColorZones.StartIndex + 1;
+
+                    IEnumerable<ILifxColor> colors = Enumerable.Repeat<ILifxColor>(setColorZones, colorCount);
+
+                    await virtualMultizoneLight.SetMultizoneState(setColorZones.Apply, setColorZones.StartIndex, colors, setColorZones.Duration);
+
+                    break;
+                }
+                case Messages.SetExtendedColorZones setExtendedColorZones when isVirtualInfraredLight: {
+                    await virtualMultizoneLight.SetMultizoneState(setExtendedColorZones.Apply, setExtendedColorZones.Index, setExtendedColorZones.Colors, setExtendedColorZones.Duration);
+
+                    break;
+                }
             }
 
             // Get messages
@@ -436,7 +449,81 @@ namespace AydenIO.Lifx {
                         break;
                     }
                     // Multizone messages
-                    // TODO: ^
+                    case Messages.SetExtendedColorZones setExtendedColorZones when isVirtualMultizoneLight: {
+                        int count = setExtendedColorZones.Colors.Count;
+
+                        ILifxColorMultiZoneState state = await virtualMultizoneLight.GetMultizoneState(setExtendedColorZones.Index, (ushort)count);
+
+                        // Fragment message
+                        for (int i = 0; i < count; i += Messages.StateExtendedColorZones.MaxZoneCount) {
+                            int index = state.Index + i;
+
+                            Messages.StateExtendedColorZones stateExtendedColorZones = new Messages.StateExtendedColorZones() {
+                                ZoneCount = state.ZoneCount,
+                                Index = (ushort)index
+                            };
+
+                            IEnumerable<ILifxHsbkColor> colors = state.Colors.Skip(i).Take(Messages.StateExtendedColorZones.MaxZoneCount);
+
+                            foreach (ILifxHsbkColor color in colors) {
+                                stateExtendedColorZones.Colors.Add(color);
+                            }
+
+                            responses.Add(stateExtendedColorZones);
+                        }
+
+                        break;
+                    }
+                    case Messages.GetExtendedColorZones when isVirtualMultizoneLight: {
+                        ILifxColorMultiZoneState state = await virtualMultizoneLight.GetMultizoneState();
+
+                        int count = state.Colors.Count;
+
+                        // Fragment message
+                        for (int i = 0; i < count; i += Messages.StateExtendedColorZones.MaxZoneCount) {
+                            int index = state.Index + i;
+
+                            Messages.StateExtendedColorZones stateExtendedColorZones = new Messages.StateExtendedColorZones() {
+                                ZoneCount = state.ZoneCount,
+                                Index = (ushort)index
+                            };
+
+                            IEnumerable<ILifxHsbkColor> colors = state.Colors.Skip(i).Take(Messages.StateExtendedColorZones.MaxZoneCount);
+
+                            foreach (ILifxHsbkColor color in colors) {
+                                stateExtendedColorZones.Colors.Add(color);
+                            }
+
+                            responses.Add(stateExtendedColorZones);
+                        }
+
+                        break;
+                    }
+                    case Messages.GetColorZones getColorZones when isVirtualMultizoneLight: {
+                            int count = getColorZones.EndIndex - getColorZones.StartIndex + 1;
+
+                            ILifxColorMultiZoneState state = await virtualMultizoneLight.GetMultizoneState(getColorZones.StartIndex, (ushort)count);
+
+                            // Fragment message
+                            for (int i = 0; i < count; i += Messages.StateMultiZone.MaxZoneCount) {
+                                int index = getColorZones.StartIndex + i;
+
+                                Messages.StateMultiZone stateMultiZone = new Messages.StateMultiZone() {
+                                    ZoneCount = state.ZoneCount,
+                                    Index = (ushort)index
+                                };
+
+                                IEnumerable<ILifxHsbkColor> colors = state.Colors.Skip(i).Take(Messages.StateMultiZone.MaxZoneCount);
+
+                                foreach (ILifxHsbkColor color in colors) {
+                                    stateMultiZone.Colors.Add(color);
+                                }
+
+                                responses.Add(stateMultiZone);
+                            }
+
+                        break;
+                    }
                 }
             }
 
@@ -447,7 +534,7 @@ namespace AydenIO.Lifx {
             foreach (LifxMessage response in responses) {
                 this.SetReplyMessageHeaderCommon(virtualDevice, request, response);
 
-                int sentBytes = await this.SendCommon(remoteEndPoint, response);
+                int sentBytes = await this.SendCommon(replyToEndPoint, response);
 
                 virtualDevice.AddTxBytes((uint)sentBytes);
             }
@@ -485,7 +572,7 @@ namespace AydenIO.Lifx {
                 // Create thread
                 this.discoveryThread = new Thread(new ThreadStart(this.DiscoveryWorker)) {
                     IsBackground = true,
-                    Name = nameof(this.discoveryThread)
+                    Name = nameof(this.DiscoveryWorker)
                 };
 
                 // Start thread
@@ -505,13 +592,13 @@ namespace AydenIO.Lifx {
             lock (this.discoverySyncRoot) {
                 if (this.discoveryCancellationTokenSource != null && !this.discoveryCancellationTokenSource.IsCancellationRequested) {
                     shouldStop = true;
+
+                    // Signal thread to stop in locked region to prevent race conditions with above check
+                    this.discoveryCancellationTokenSource.Cancel();
                 }
             }
 
             if (shouldStop) {
-                // Signal thread to stop
-                this.discoveryCancellationTokenSource.Cancel();
-
                 // Wiat for thread to join
                 this.discoveryThread.Join();
 
@@ -522,14 +609,6 @@ namespace AydenIO.Lifx {
             }
 
             return shouldStop;
-        }
-
-        /// <summary>
-        /// Stops the discovery thread
-        /// </summary>
-        /// <returns>True if the call stopped the thread, otherwise the thread was already stopped.</returns>
-        public Task<bool> StopDiscoveryAsync() {
-            return Task.Run(() => this.StopDiscovery());
         }
 
         private void DiscoveryResponseHandler(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
@@ -600,9 +679,7 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="macAddress">The MAC address to look up</param>
         /// <returns>Whether the device has been found</returns>
-        public bool HasDevice(MacAddress macAddress) {
-            return this.deviceLookup.ContainsKey(macAddress);
-        }
+        public bool HasDevice(MacAddress macAddress) => this.deviceLookup.ContainsKey(macAddress);
 
         private async Task<LifxDevice> CreateAndAddDevice(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
             LifxDevice device;
@@ -624,7 +701,7 @@ namespace AydenIO.Lifx {
                 }
             } else if (product.SupportsInfrared) {
                 device = new LifxInfraredLight(this, response.Message.Target, response.EndPoint, response.Message);
-            } else if (product.SupportsColor) {
+            } else if (product.SupportsColor || product.MaxKelvin > 0) {
                 device = new LifxLight(this, response.Message.Target, response.EndPoint, response.Message);
             } else {
                 device = new LifxDevice(this, response.Message.Target, response.EndPoint, response.Message);
@@ -698,9 +775,7 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns></returns>
-        public Task<ILifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            return this.GetDevice(new IPEndPoint(address, port), timeoutMs, cancellationToken);
-        }
+        public Task<ILifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) => this.GetDevice(new IPEndPoint(address, port), timeoutMs, cancellationToken);
 
         /// <summary>
         /// Gets a device using an IP or MAC address, and a port
@@ -963,6 +1038,8 @@ namespace AydenIO.Lifx {
         /// <param name="device">The virtual device</param>
         public void RegisterVirtualDevice(LifxVirtualDevice device) {
             this.deviceLookup.Add(device.MacAddress, device);
+
+            this.DeviceDiscovered?.Invoke(this, new LifxDeviceDiscoveredEventArgs(device));
         }
 
         /// <summary>
@@ -970,9 +1047,7 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="version">The LIFX version</param>
         /// <returns>An object containing the supported features for that product</returns>
-        public static ILifxProduct GetFeaturesForProduct(ILifxVersion version) {
-            return LifxNetwork.GetFeaturesForProduct(version.VendorId, version.ProductId);
-        }
+        public static ILifxProduct GetFeaturesForProduct(ILifxVersion version) => LifxNetwork.GetFeaturesForProduct(version.VendorId, version.ProductId);
 
         /// <summary>
         /// Gets whether a device supports the extended multizone API
@@ -980,16 +1055,14 @@ namespace AydenIO.Lifx {
         /// <param name="version">The LIFX device's version</param>
         /// <param name="hostFirmware">The LIFX device's host firmware</param>
         /// <returns></returns>
-        public static bool ProductSupportsExtendedMultizoneApi(ILifxVersion version, ILifxHostFirmware hostFirmware) {
-            return LifxNetwork.ProductSupportsExtendedMultizoneApi(version.VendorId, version.ProductId, hostFirmware.VersionMajor, hostFirmware.VersionMinor);
-        }
+        public static bool ProductSupportsExtendedMultizoneApi(ILifxVersion version, ILifxHostFirmware hostFirmware) => LifxNetwork.ProductSupportsExtendedMultizoneApi(version.VendorId, version.ProductId, hostFirmware.VersionMajor, hostFirmware.VersionMinor);
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
         /// <inheritdoc />
         protected virtual void Dispose(bool disposing) {
-            if (!disposedValue) {
+            if (!this.disposedValue) {
                 if (disposing) {
                     // TODO: dispose managed state (managed objects).
                     // Stop discovery
@@ -1011,7 +1084,7 @@ namespace AydenIO.Lifx {
                     this.socket = null;
                 }
 
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
@@ -1019,7 +1092,7 @@ namespace AydenIO.Lifx {
         /// <inheritdoc />
         public void Dispose() {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
+            this.Dispose(true);
         }
         #endregion
     }
