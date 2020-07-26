@@ -8,9 +8,9 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxService {
         /// <value>The service type</value>
-        public LifxService Service { get; set; }
+        public LifxService Service { get; }
 
         /// <value>The port that the service is on</value>
-        public uint Port { get; set; }
+        public uint Port { get; }
     }
 }

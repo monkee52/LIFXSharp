@@ -10,10 +10,7 @@ namespace AydenIO.Lifx {
     /// Represents a LIFX device
     /// </summary>
     public interface ILifxDevice : ILifxProduct {
-        /// <value>Gets the <c>IPEndPoint</c> of the device</value>
-        public IPEndPoint EndPoint { get; }
-
-        /// <value>Gets the MAC address of the device</value>
+        /// <value>Gets the MAC address of the device. Used as the primary identifier for the device</value>
         public MacAddress MacAddress { get; }
 
         /// <summary>
@@ -64,11 +61,10 @@ namespace AydenIO.Lifx {
         /// <summary>
         /// Gets the device power state
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device power state</returns>
-        public Task<bool> GetPower(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        public Task<bool> GetPower(int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Sets the device power state
@@ -160,22 +156,5 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         public Task SetGroup(ILifxGroup group, int? timeoutMs = null, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Request a device to echo back a specific payload
-        /// </summary>
-        /// <param name="payload">The payload to be echoed</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>Whether the device responded, and whether the response matched the payload</returns>
-        public Task<bool> Ping(IEnumerable<byte> payload, int? timeoutMs = null, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Request a device to echo back a random payload
-        /// </summary>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>Whether the device responded, and whether the response matched the payload</returns>
-        public Task<bool> Ping(int? timeoutMs = null, CancellationToken cancellationToken = default);
     }
 }

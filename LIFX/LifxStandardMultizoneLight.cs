@@ -6,13 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
-    internal class LifxStandardMultizoneLight : LifxLight, ILifxMultizoneLight {
-        protected internal LifxStandardMultizoneLight(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version, ILifxHostFirmware hostFirmware) : base(lifx, macAddress, endPoint, version) {
-            this.SetHostFirmwareCachedValue(hostFirmware);
+    internal class LifxStandardMultizoneLight : LifxMultizoneLight {
+        protected internal LifxStandardMultizoneLight(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version, ILifxHostFirmware hostFirmware) : base(lifx, macAddress, endPoint, version, hostFirmware) {
+            
         }
 
-        public virtual async Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            ILifxColorMultiZoneState state = new LifxColorMultizoneState(length) {
+        public override async Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            LifxColorMultizoneState state = new LifxColorMultizoneState(length) {
                 Index = startAt
             };
 
@@ -49,7 +49,7 @@ namespace AydenIO.Lifx {
             return state;
         }
 
-        public virtual async Task SetMultizoneState(LifxApplicationRequest apply, ushort startAt, IEnumerable<ILifxColor> colors, TimeSpan duration = default, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public override async Task SetMultizoneState(LifxApplicationRequest apply, ushort startAt, IEnumerable<ILifxColor> colors, TimeSpan duration = default, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             ushort index = startAt;
 
             IEnumerator<ILifxColor> colorEnumerator = colors.GetEnumerator();
@@ -74,11 +74,7 @@ namespace AydenIO.Lifx {
             }
         }
 
-        public virtual Task SetMultizoneState(LifxApplicationRequest apply, ushort startAt, IEnumerable<ILifxColor> colors, uint durationMs = 0, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            return this.SetMultizoneState(apply, startAt, colors, TimeSpan.FromMilliseconds(durationMs), timeoutMs, cancellationToken);
-        }
-
-        public virtual async Task SetMultizoneState(ushort startAt, IEnumerable<ILifxColor> colors, TimeSpan duration = default, bool rapid = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public override async Task SetMultizoneState(ushort startAt, IEnumerable<ILifxColor> colors, TimeSpan duration = default, bool rapid = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             ushort index = startAt;
 
             IEnumerator<ILifxColor> colorEnumerator = colors.GetEnumerator();
@@ -105,10 +101,6 @@ namespace AydenIO.Lifx {
 
                 index++;
             }
-        }
-
-        public virtual Task SetMultizoneState(ushort startAt, IEnumerable<ILifxColor> colors, uint durationMs = 0, bool rapid = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            return this.SetMultizoneState(startAt, colors, TimeSpan.FromMilliseconds(durationMs), rapid, timeoutMs, cancellationToken);
         }
     }
 }

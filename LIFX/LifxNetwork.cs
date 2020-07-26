@@ -20,7 +20,7 @@ namespace AydenIO.Lifx {
         /// <summary>
         /// The default LIFX LAN protocol port
         /// </summary>
-        public const int LIFX_PORT = 56700;
+        public const int LifxPort = 56700;
 
         private UdpClient socket;
 
@@ -132,14 +132,14 @@ namespace AydenIO.Lifx {
 
                 if (isClient) {
                     // Query no devices
-                    IEnumerable<ILifxVirtualDevice> devicesToQuery = Enumerable.Empty<ILifxVirtualDevice>();
+                    IEnumerable<LifxVirtualDevice> devicesToQuery = Enumerable.Empty<LifxVirtualDevice>();
 
                     if (origMessage.Target == LifxNetwork.LifxBroadcast) {
-                        devicesToQuery = this.Devices.OfType<ILifxVirtualDevice>();
+                        devicesToQuery = this.Devices.OfType<LifxVirtualDevice>();
                     } else {
                         bool virtualDeviceFound = this.deviceLookup.TryGetValue(origMessage.Target, out ILifxDevice device);
 
-                        if (virtualDeviceFound && device is ILifxVirtualDevice virtualDevice) {
+                        if (virtualDeviceFound && device is LifxVirtualDevice virtualDevice) {
                             devicesToQuery = new[] { virtualDevice };
                         } else {
                             // TODO: Handle missing devices
@@ -187,7 +187,7 @@ namespace AydenIO.Lifx {
 
                             message.FromBytes(buffer);
 
-                            foreach (ILifxVirtualDevice virtualDevice in devicesToQuery) {
+                            foreach (LifxVirtualDevice virtualDevice in devicesToQuery) {
                                 _ = this.QueryVirtualDevice(endPoint, message, virtualDevice);
                             }
                         }
@@ -262,14 +262,14 @@ namespace AydenIO.Lifx {
             reply.ResponseFlags = LifxeResponseFlags.None;
         }
 
-        private async Task QueryVirtualDevice(IPEndPoint remoteEndPoint, LifxMessage request, ILifxVirtualDevice virtualDevice) {
-            ILifxVirtualLight virtualLight = virtualDevice as ILifxVirtualLight;
+        private async Task QueryVirtualDevice(IPEndPoint remoteEndPoint, LifxMessage request, LifxVirtualDevice virtualDevice) {
+            LifxVirtualLight virtualLight = virtualDevice as LifxVirtualLight;
             bool isVirtualLight = virtualLight != null;
 
-            ILifxVirtualInfraredLight virtualInfraredLight = virtualDevice as ILifxVirtualInfraredLight;
+            LifxVirtualInfraredLight virtualInfraredLight = virtualDevice as LifxVirtualInfraredLight;
             bool isVirtualInfraredLight = virtualInfraredLight != null;
 
-            ILifxVirtualMultizoneLight virtualMultizoneLight = virtualDevice as ILifxVirtualMultizoneLight;
+            LifxVirtualMultizoneLight virtualMultizoneLight = virtualDevice as LifxVirtualMultizoneLight;
             bool isVirtualMultizoneLight = virtualMultizoneLight != null;
 
             bool resRequired = request.ResponseFlags.HasFlag(LifxeResponseFlags.ResponseRequired);
@@ -645,7 +645,7 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device</returns>
-        public async Task<ILifxDevice> GetDevice(MacAddress macAddress, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxDevice> GetDevice(MacAddress macAddress, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (this.deviceLookup.ContainsKey(macAddress)) {
                 return this.deviceLookup[macAddress];
             }
@@ -671,7 +671,7 @@ namespace AydenIO.Lifx {
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device</returns>
         public async Task<ILifxDevice> GetDevice(IPEndPoint endPoint, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            ILifxDevice device = this.Devices.FirstOrDefault(x => x.EndPoint.Equals(endPoint));
+            ILifxDevice device = this.Devices.OfType<LifxDevice>().FirstOrDefault(x => x.EndPoint.Equals(endPoint));
 
             if (device != null) {
                 return device;
@@ -694,7 +694,7 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns></returns>
-        public Task<ILifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public Task<ILifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             return this.GetDevice(new IPEndPoint(address, port), timeoutMs, cancellationToken);
         }
 
@@ -706,7 +706,7 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns></returns>
-        public Task<ILifxDevice> GetDevice(string address, ushort port = LifxNetwork.LIFX_PORT, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public Task<ILifxDevice> GetDevice(string address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             bool isIpAddress = IPAddress.TryParse(address, out IPAddress ipAddress);
 
             if (isIpAddress) {
@@ -729,7 +729,7 @@ namespace AydenIO.Lifx {
         /// <param name="message">The message</param>
         private async Task SendCommon(IPEndPoint endPoint, LifxMessage message) {
             // Broadcast if no endpoint
-            endPoint ??= new IPEndPoint(IPAddress.Broadcast, LifxNetwork.LIFX_PORT);
+            endPoint ??= new IPEndPoint(IPAddress.Broadcast, LifxNetwork.LifxPort);
 
             // Get message as bytes
             byte[] messageBytes = message.GetBytes();
@@ -957,7 +957,7 @@ namespace AydenIO.Lifx {
         /// Registers a virtual device with this LIFX network
         /// </summary>
         /// <param name="device">The virtual device</param>
-        public void RegisterVirtualDevice(ILifxVirtualDevice device) {
+        public void RegisterVirtualDevice(LifxVirtualDevice device) {
             this.deviceLookup.Add(device.MacAddress, device);
         }
 

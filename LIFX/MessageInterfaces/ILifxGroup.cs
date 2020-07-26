@@ -6,12 +6,12 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxGroup {
         /// <value>The group identifier</value>
-        public Guid Group { get; set; }
+        public Guid Group { get; }
 
         /// <value>The label for the group</value>
-        public string Label { get; set; }
+        public string Label { get; }
 
         /// <value>When the group membership information was updated</value>
-        public DateTime UpdatedAt { get; set; }
+        public DateTime UpdatedAt { get; }
     }
 }

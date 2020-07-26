@@ -83,14 +83,6 @@ namespace AydenIO.Lifx {
         public Task SetWaveformOptional(bool transient, ILifxColor color, uint periodMs, float cycles, short skewRatio, LifxWaveform waveform, bool setHue, bool setSaturation, bool setBrightness, bool setKelvin, bool rapid = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the light's power state
-        /// </summary>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The light's power state</returns>
-        public Task<bool> GetPower(int? timeoutMs = null, CancellationToken cancellationToken = default);
-
-        /// <summary>
         /// Sets the light's power state
         /// </summary>
         /// <param name="power">The power state</param>

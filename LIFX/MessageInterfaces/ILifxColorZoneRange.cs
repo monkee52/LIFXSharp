@@ -8,9 +8,9 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxColorZoneRange {
         /// <value>The index of the first zone.</value>
-        public byte StartIndex { get; set; }
+        public byte StartIndex { get; }
 
         /// <value>The index of the last zone.</value>
-        public byte EndIndex { get; set; }
+        public byte EndIndex { get; }
     }
 }

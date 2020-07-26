@@ -4,8 +4,11 @@ using System.Text;
 
 namespace AydenIO.Lifx {
     internal class LifxProduct : ILifxProduct {
+        public uint VendorId { get; set; }
+
         public string VendorName { get; set; }
 
+        public uint ProductId { get; set; }
         public string ProductName { get; set; }
 
         public bool SupportsColor { get; set; }

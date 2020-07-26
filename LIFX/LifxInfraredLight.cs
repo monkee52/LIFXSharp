@@ -9,7 +9,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Represents a LIFX light device with infrared
     /// </summary>
-    internal class LifxInfraredLight : LifxLight, ILifxInfraredLight {
+    public class LifxInfraredLight : LifxLight, ILifxInfraredLight {
         /// <summary>
         /// Creates a LIFX light class that supports infrared
         /// </summary>
@@ -23,7 +23,7 @@ namespace AydenIO.Lifx {
 
         // Infrared
         /// <inheritdoc />
-        public virtual async Task<ushort> GetInfrared(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ushort> GetInfrared(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.LightGetInfrared getInfrared = new Messages.LightGetInfrared();
 
             Messages.LightStateInfrared infrared = await this.Lifx.SendWithResponse<Messages.LightStateInfrared>(this, getInfrared, timeoutMs, cancellationToken);
@@ -32,7 +32,7 @@ namespace AydenIO.Lifx {
         }
 
         /// <inheritdoc />
-        public virtual async Task SetInfrared(ushort level, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task SetInfrared(ushort level, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.LightSetInfrared setInfrared = new Messages.LightSetInfrared() {
                 Level = level
             };

@@ -131,11 +131,8 @@
             Represents a LIFX device
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxDevice.EndPoint">
-            <value>Gets the <c>IPEndPoint</c> of the device</value>
-        </member>
         <member name="P:AydenIO.Lifx.ILifxDevice.MacAddress">
-            <value>Gets the MAC address of the device</value>
+            <value>Gets the MAC address of the device. Used as the primary identifier for the device</value>
         </member>
         <member name="M:AydenIO.Lifx.ILifxDevice.GetServices(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
@@ -182,11 +179,10 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <returns>The wifi firmware</returns>
         </member>
-        <member name="M:AydenIO.Lifx.ILifxDevice.GetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.ILifxDevice.GetPower(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets the device power state
             </summary>
-            <param name="forceRefresh">True to get from the device, false to use a cached value</param>
             <param name="timeoutMs">How long before the call times out, in milliseconds</param>
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <returns>The device power state</returns>
@@ -281,23 +277,6 @@
             <param name="group">The group</param>
             <param name="timeoutMs">How long before the call times out, in milliseconds</param>
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        </member>
-        <member name="M:AydenIO.Lifx.ILifxDevice.Ping(System.Collections.Generic.IEnumerable{System.Byte},System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <summary>
-            Request a device to echo back a specific payload
-            </summary>
-            <param name="payload">The payload to be echoed</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>Whether the device responded, and whether the response matched the payload</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.ILifxDevice.Ping(System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <summary>
-            Request a device to echo back a random payload
-            </summary>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>Whether the device responded, and whether the response matched the payload</returns>
         </member>
         <member name="T:AydenIO.Lifx.ILifxInfraredLight">
             <summary>
@@ -398,14 +377,6 @@
             <param name="timeoutMs">How long before the call times out, in milliseconds</param>
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         </member>
-        <member name="M:AydenIO.Lifx.ILifxLight.GetPower(System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <summary>
-            Gets the light's power state
-            </summary>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>The light's power state</returns>
-        </member>
         <member name="M:AydenIO.Lifx.ILifxLight.SetPower(System.Boolean,System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Sets the light's power state
@@ -451,16 +422,19 @@
             Represents a LIFX multizone light device
             </summary>
         </member>
-        <member name="F:AydenIO.Lifx.ILifxMultizoneLight.MAX_MULTIZONE">
-            <summary>The current maximum number of zones in a LIFX MultiZone device</summary>
-        </member>
         <member name="T:AydenIO.Lifx.ILifxProduct">
             <summary>
             Represents features of a device
             </summary>
         </member>
+        <member name="P:AydenIO.Lifx.ILifxProduct.VendorId">
+            <value>Gets the vendor ID</value>
+        </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.VendorName">
             <value>Gets the vendor name</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxProduct.ProductId">
+            <value>Gets the product ID</value>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.ProductName">
             <value>Gets the device product name</value>
@@ -506,6 +480,27 @@
             </summary>
             <param name="exception">The exception that was generated</param>
         </member>
+        <member name="T:AydenIO.Lifx.LifxVirtualInfraredLight">
+            <summary>
+            Represents a virtual LIFX light with infrared support
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualInfraredLight.SupportsInfrared">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
+            <summary>
+            Creates a new virtual LIFX light with infrared support
+            </summary>
+            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual light with</param>
+            <param name="macAddress">The <c>MacAddress</c> of this virtual light</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.GetInfrared(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.SetInfrared(System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.LifxApplicationRequest">
             <summary>
             Controls how/when multizone devices apply color changes
@@ -543,7 +538,13 @@
             <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
             <param name="version">The version of the device</param>
         </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.VendorId">
+            <inheritdoc />
+        </member>
         <member name="P:AydenIO.Lifx.LifxDevice.VendorName">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.ProductId">
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.ProductName">
@@ -571,7 +572,7 @@
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.EndPoint">
-            <inheritdoc />
+            <value>Gets the <c>IPEndPoint</c> of the device</value>
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.MacAddress">
             <inheritdoc />
@@ -600,7 +601,7 @@
         <member name="M:AydenIO.Lifx.LifxDevice.GetWifiFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.GetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxDevice.GetPower(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.SetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
@@ -637,10 +638,21 @@
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Collections.Generic.IEnumerable{System.Byte},System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <inheritdoc />
+            <summary>
+            Request a device to echo back a specific payload
+            </summary>
+            <param name="payload">The payload to be echoed</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>Whether the device responded, and whether the response matched the payload</returns>
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <inheritdoc />
+            <summary>
+            Request a device to echo back a random payload
+            </summary>
+            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+            <returns>Whether the device responded, and whether the response matched the payload</returns>
         </member>
         <member name="T:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs">
             <summary>
@@ -707,13 +719,10 @@
         <member name="M:AydenIO.Lifx.LifxLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLight.GetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxLight.GetPower(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxLight.GetPower(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxLight.SetPower(System.Boolean,System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
@@ -953,12 +962,15 @@
         <member name="M:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.HandleException(System.Exception)">
             <inheritdoc />
         </member>
+        <member name="P:AydenIO.Lifx.LifxMultizoneLight.MaxLifxMultizone">
+            <value>The current maximum number of zones in a LIFX MultiZone device</value>
+        </member>
         <member name="T:AydenIO.Lifx.LifxNetwork">
             <summary>
             Common class that connects C# to the LIFX protocol
             </summary>
         </member>
-        <member name="F:AydenIO.Lifx.LifxNetwork.LIFX_PORT">
+        <member name="F:AydenIO.Lifx.LifxNetwork.LifxPort">
             <summary>
             The default LIFX LAN protocol port
             </summary>
@@ -1179,7 +1191,7 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <param name="timeoutMs">How long before the call times out if there is no response</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.RegisterVirtualDevice(AydenIO.Lifx.ILifxVirtualDevice)">
+        <member name="M:AydenIO.Lifx.LifxNetwork.RegisterVirtualDevice(AydenIO.Lifx.LifxVirtualDevice)">
             <summary>
             Registers a virtual device with this LIFX network
             </summary>
@@ -1255,6 +1267,201 @@
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxSingleResponseAwaiter`1.HandleException(System.Exception)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxVirtualDevice">
+            <summary>
+            Represents a virtual LIFX device
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Lifx">
+            <value>Gets the <c>LifxNetwork></c> this virtual device is associated with</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.MacAddress">
+            <value>Gets the virtual MAC address for the device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.VendorName">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.ProductName">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.SupportsColor">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.SupportsInfrared">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.IsMultizone">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.IsChain">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.IsMatrix">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.MinKelvin">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.MaxKelvin">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
+            <summary>
+            Creates a new virtual LIFX device
+            </summary>
+            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual device with</param>
+            <param name="macAddress">The <c>MacAddress</c> of this virtual device</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetServices(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetHostInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetWifiInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetHostFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetWifiFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.StartTime">
+            <value>Gets or sets the time that this virtual device was started</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.LastDownTime">
+            <value>Gets or sets the time that this virtual device was last stopped</value>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.VendorId">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.ProductId">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Version">
+            <value>Gets or sets the "hardware" version of this virtual device</value>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetVersion(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.PowerOff(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.PowerOn(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetLocation(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetLocation(AydenIO.Lifx.ILifxLocation,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetGroup(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetGroup(AydenIO.Lifx.ILifxGroup,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetLabel(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetLabel(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetPower(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxVirtualLight">
+            <summary>
+            Represents a virtual LIFX light
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualLight.SupportsColor">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualLight.MinKelvin">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualLight.MaxKelvin">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
+            <summary>
+            Creates a new virtual LIFX light
+            </summary>
+            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual light with</param>
+            <param name="macAddress">The <c>MacAddress</c> of this virtual light</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.GetState(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.SetColor(AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.SetPower(System.Boolean,System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.TimeSpan,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.SetWaveform(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.SetWaveformOptional(System.Boolean,AydenIO.Lifx.ILifxColor,System.UInt32,System.Single,System.Int16,AydenIO.Lifx.LifxWaveform,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.SetColor(AydenIO.Lifx.ILifxColor,System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.SetPower(System.Boolean,System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxVirtualMultizoneLight">
+            <summary>
+            Represents a virtual LIFX multizone light
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualMultizoneLight.SupportsColor">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualMultizoneLight.SupportsInfrared">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualMultizoneLight.IsMultizone">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualMultizoneLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
+            <summary>
+            Creates a new virtual LIFX multizone light
+            </summary>
+            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual light with</param>
+            <param name="macAddress">The <c>MacAddress</c> of this virtual light</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualMultizoneLight.GetMultizoneState(System.UInt16,System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualMultizoneLight.SetMultizoneState(AydenIO.Lifx.LifxApplicationRequest,System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.TimeSpan,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualMultizoneLight.SetMultizoneState(System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualMultizoneLight.SetMultizoneState(AydenIO.Lifx.LifxApplicationRequest,System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.UInt32,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualMultizoneLight.SetMultizoneState(System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxWaveform">

@@ -8,6 +8,6 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxLabel {
         /// <value>The device label</value>
-        public string Label { get; set; }
+        public string Label { get; }
     }
 }

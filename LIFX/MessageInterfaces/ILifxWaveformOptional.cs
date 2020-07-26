@@ -8,15 +8,15 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxWaveformOptional : ILifxWaveform {
         /// <value>True to use end color's hue</value>
-        public bool SetHue { get; set; }
+        public bool SetHue { get; }
 
         /// <value>True to use end color's saturation</value>
-        public bool SetSaturation { get; set; }
+        public bool SetSaturation { get; }
 
         /// <value>True to use end color's brightness</value>
-        public bool SetBrightness { get; set; }
+        public bool SetBrightness { get; }
 
         /// <value>True to use end color's kelvin</value>
-        public bool SetKelvin { get; set; }
+        public bool SetKelvin { get; }
     }
 }

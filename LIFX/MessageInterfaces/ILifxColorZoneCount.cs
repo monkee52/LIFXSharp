@@ -8,6 +8,6 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxColorZoneCount {
         /// <value>The number of zones the device has</value>
-        public ushort ZoneCount { get; set; }
+        public ushort ZoneCount { get; }
     }
 }

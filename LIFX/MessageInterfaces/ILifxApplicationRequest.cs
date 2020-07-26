@@ -8,6 +8,6 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxApplicationRequest {
         /// <value>How the change should be performed.</value>
-        public LifxApplicationRequest Apply { get; set; }
+        public LifxApplicationRequest Apply { get; }
     }
 }

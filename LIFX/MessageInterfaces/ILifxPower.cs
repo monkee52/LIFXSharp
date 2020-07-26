@@ -8,6 +8,6 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxPower {
         /// <value>Whether the device is powered on</value>
-        public bool PoweredOn { get; set; }
+        public bool PoweredOn { get; }
     }
 }

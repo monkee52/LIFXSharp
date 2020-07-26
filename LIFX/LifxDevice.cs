@@ -12,7 +12,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Represents a LIFX device
     /// </summary>
-    internal class LifxDevice : ILifxDevice {
+    public class LifxDevice : ILifxDevice {
         /// <value>Gets the associated <c>LifxNetwork</c> for the device</value>
         protected LifxNetwork Lifx { get; private set; }
 
@@ -51,7 +51,13 @@ namespace AydenIO.Lifx {
 
         // Properties
         /// <inheritdoc />
+        public uint VendorId => this.version.VendorId;
+
+        /// <inheritdoc />
         public string VendorName { get; private set; }
+
+        /// <inheritdoc />
+        public uint ProductId => this.version.ProductId;
 
         /// <inheritdoc />
         public string ProductName { get; private set; }
@@ -78,8 +84,8 @@ namespace AydenIO.Lifx {
         /// <inheritdoc />
         public ushort MaxKelvin { get; private set; }
 
-        /// <inheritdoc />
-        public IPEndPoint EndPoint { get; private set; }
+        /// <value>Gets the <c>IPEndPoint</c> of the device</value>
+        public IPEndPoint EndPoint { get; }
 
         /// <inheritdoc />
         public MacAddress MacAddress { get; private set; }
@@ -91,7 +97,7 @@ namespace AydenIO.Lifx {
         private IReadOnlyCollection<ILifxService> services;
 
         /// <inheritdoc />
-        public virtual async Task<IReadOnlyCollection<ILifxService>> GetServices(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<IReadOnlyCollection<ILifxService>> GetServices(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.services != null) {
                 return this.services;
             }
@@ -127,7 +133,7 @@ namespace AydenIO.Lifx {
         private ILifxHostFirmware hostFirmware;
 
         /// <inheritdoc />
-        public virtual async Task<ILifxHostFirmware> GetHostFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxHostFirmware> GetHostFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.hostFirmware != null) {
                 return this.hostFirmware;
             }
@@ -153,7 +159,7 @@ namespace AydenIO.Lifx {
         private ILifxWifiInfo wifiInfo;
 
         /// <inheritdoc />
-        public virtual async Task<ILifxWifiInfo> GetWifiInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxWifiInfo> GetWifiInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.wifiInfo != null) {
                 return this.wifiInfo;
             }
@@ -171,7 +177,7 @@ namespace AydenIO.Lifx {
         private ILifxWifiFirmware wifiFirmware;
 
         /// <inheritdoc />
-        public virtual async Task<ILifxWifiFirmware> GetWifiFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxWifiFirmware> GetWifiFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.wifiFirmware != null) {
                 return this.wifiFirmware;
             }
@@ -186,19 +192,11 @@ namespace AydenIO.Lifx {
         }
 
         // Power
-        private bool? power;
-
         /// <inheritdoc />
-        public virtual async Task<bool> GetPower(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            if (!forceRefresh && this.power != null) {
-                return (bool)this.power;
-            }
-
+        public virtual async Task<bool> GetPower(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.GetPower getPower = new Messages.GetPower();
 
             Messages.StatePower powerMessage = await this.Lifx.SendWithResponse<Messages.StatePower>(this, getPower, timeoutMs, cancellationToken);
-
-            this.power = powerMessage.PoweredOn;
 
             return powerMessage.PoweredOn;
         }
@@ -213,20 +211,16 @@ namespace AydenIO.Lifx {
         }
 
         /// <inheritdoc />
-        public virtual Task PowerOn(int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            return this.SetPower(true, timeoutMs);
-        }
+        public Task PowerOn(int? timeoutMs = null, CancellationToken cancellationToken = default) => this.SetPower(true, timeoutMs, cancellationToken);
 
         /// <inheritdoc />
-        public virtual Task PowerOff(int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            return this.SetPower(false, timeoutMs, cancellationToken);
-        }
+        public Task PowerOff(int? timeoutMs = null, CancellationToken cancellationToken = default) => this.SetPower(false, timeoutMs, cancellationToken);
 
         // Label
         private string label;
 
         /// <inheritdoc />
-        public virtual async Task<string> GetLabel(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<string> GetLabel(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.label != null) {
                 return this.label;
             }
@@ -241,7 +235,7 @@ namespace AydenIO.Lifx {
         }
 
         /// <inheritdoc />
-        public virtual async Task SetLabel(string label, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task SetLabel(string label, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.SetLabel setLabel = new Messages.SetLabel() {
                 Label = label
             };
@@ -253,7 +247,7 @@ namespace AydenIO.Lifx {
         private ILifxVersion version;
 
         /// <inheritdoc />
-        public virtual async Task<ILifxVersion> GetVersion(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxVersion> GetVersion(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.version != null) {
                 return this.version;
             }
@@ -271,7 +265,7 @@ namespace AydenIO.Lifx {
         private ILifxInfo info;
 
         /// <inheritdoc />
-        public virtual async Task<ILifxInfo> GetInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxInfo> GetInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.info != null) {
                 return this.info;
             }
@@ -289,7 +283,7 @@ namespace AydenIO.Lifx {
         private ILifxLocation location;
 
         /// <inheritdoc />
-        public virtual async Task<ILifxLocation> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxLocation> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.location != null) {
                 return this.location;
             }
@@ -304,7 +298,7 @@ namespace AydenIO.Lifx {
         }
 
         /// <inheritdoc />
-        public virtual async Task SetLocation(ILifxLocation location, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task SetLocation(ILifxLocation location, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.SetLocation setLocation = new Messages.SetLocation() {
                 Location = location.Location,
                 Label = location.Label,
@@ -318,7 +312,7 @@ namespace AydenIO.Lifx {
         private ILifxGroup group;
 
         /// <inheritdoc />
-        public virtual async Task<ILifxGroup> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxGroup> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.group != null) {
                 return this.group;
             }
@@ -333,7 +327,7 @@ namespace AydenIO.Lifx {
         }
 
         /// <inheritdoc />
-        public virtual async Task SetGroup(ILifxGroup group, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task SetGroup(ILifxGroup group, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.SetGroup setGroup = new Messages.SetGroup() {
                 Group = group.Group,
                 Label = group.Label,
@@ -344,8 +338,14 @@ namespace AydenIO.Lifx {
         }
 
         // Echo
-        /// <inheritdoc />
-        public virtual async Task<bool> Ping(IEnumerable<byte> payload, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        /// <summary>
+        /// Request a device to echo back a specific payload
+        /// </summary>
+        /// <param name="payload">The payload to be echoed</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <returns>Whether the device responded, and whether the response matched the payload</returns>
+        public async Task<bool> Ping(IEnumerable<byte> payload, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.EchoRequest echoRequest = new Messages.EchoRequest();
 
             echoRequest.SetPayload(payload);
@@ -360,8 +360,13 @@ namespace AydenIO.Lifx {
             }
         }
 
-        /// <inheritdoc />
-        public virtual Task<bool> Ping(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        /// <summary>
+        /// Request a device to echo back a random payload
+        /// </summary>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <returns>Whether the device responded, and whether the response matched the payload</returns>
+        public Task<bool> Ping(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             byte[] payload = new byte[64];
 
             new Random().NextBytes(payload);

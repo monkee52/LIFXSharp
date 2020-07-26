@@ -74,7 +74,9 @@ namespace AydenIO.Lifx {{
                     productLine.Append($"                ({vendor.VendorId}, {product.ProductId,2}) => new LifxProduct() {{ ");
 
                     productLine.Append(String.Join(", ", new string[] {
+                        $"VendorId = {vendor.VendorId}u",
                         $"VendorName = \"{vendor.Name}\"",
+                        $"ProductId = {product.ProductId}u",
                         $"ProductName = \"{product.Name}\"",
                         $"SupportsColor = {(product.Features.SupportsColor ? "true" : "false")}",
                         $"SupportsInfrared = {(product.Features.SupportsInfrared ? "true" : "false")}",

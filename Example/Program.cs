@@ -3,34 +3,42 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace AydenIO.Examples.Lifx {
     class Program {
         static void Main(string[] args) {
             LifxNetwork lifx = new LifxNetwork();
 
-            lifx.DeviceDiscovered += Program.DeviceDiscovered;
+            //lifx.DeviceDiscovered += Program.DeviceDiscovered;
             lifx.DeviceLost += Program.DeviceLost;
 
-            lifx.StartDiscovery();
+            //lifx.StartDiscovery();
 
-            LifxVirtualDevice virtualDev = new LifxVirtualDevice(lifx, MacAddress.CreateLocallyAdministeredAddress());
+            //LifxVirtualDevice virtualDev = new LifxVirtualDevice(lifx, MacAddress.CreateLocallyAdministeredAddress());
 
-            Console.WriteLine($"Virtual MAC: {virtualDev.MacAddress}");
+            //Console.WriteLine($"Virtual MAC: {virtualDev.MacAddress}");
+
+            lifx.DiscoverOnce().Wait();
+
+            foreach (ILifxDevice device in lifx.Devices) {
+                Program.PrintDevice(device).Wait();
+            }
 
             Console.ReadKey();
 
             lifx.Dispose();
         }
 
-        private static async void DeviceDiscovered(object sender, LifxDeviceDiscoveredEventArgs e) {
+        private static async Task PrintDevice(ILifxDevice device) {
             // Location
             ILifxLocation location = null;
 
             try {
-                location = await e.Device.GetLocation();
+                location = await device.GetLocation();
             } catch (TimeoutException) {
 
             }
@@ -39,7 +47,7 @@ namespace AydenIO.Examples.Lifx {
             ILifxGroup group = null;
 
             try {
-                group = await e.Device.GetGroup();
+                group = await device.GetGroup();
             } catch (TimeoutException) {
 
             }
@@ -48,7 +56,7 @@ namespace AydenIO.Examples.Lifx {
             string label = null;
 
             try {
-                label = await e.Device.GetLabel();
+                label = await device.GetLabel();
             } catch (TimeoutException) {
 
             }
@@ -57,7 +65,7 @@ namespace AydenIO.Examples.Lifx {
             IEnumerable<ILifxService> services = Enumerable.Empty<ILifxService>();
 
             try {
-                services = await e.Device.GetServices();
+                services = await device.GetServices();
             } catch (TimeoutException) {
 
             }
@@ -66,7 +74,7 @@ namespace AydenIO.Examples.Lifx {
             ILifxHostInfo hostInfo = null;
 
             try {
-                hostInfo = await e.Device.GetHostInfo();
+                hostInfo = await device.GetHostInfo();
             } catch (TimeoutException) {
 
             }
@@ -75,7 +83,7 @@ namespace AydenIO.Examples.Lifx {
             ILifxHostFirmware hostFirmware = null;
 
             try {
-                hostFirmware = await e.Device.GetHostFirmware();
+                hostFirmware = await device.GetHostFirmware();
             } catch (TimeoutException) {
 
             }
@@ -84,7 +92,7 @@ namespace AydenIO.Examples.Lifx {
             ILifxWifiInfo wifiInfo = null;
 
             try {
-                wifiInfo = await e.Device.GetWifiInfo();
+                wifiInfo = await device.GetWifiInfo();
             } catch (TimeoutException) {
 
             }
@@ -93,7 +101,7 @@ namespace AydenIO.Examples.Lifx {
             ILifxWifiFirmware wifiFirmware = null;
 
             try {
-                wifiFirmware = await e.Device.GetWifiFirmware();
+                wifiFirmware = await device.GetWifiFirmware();
             } catch (TimeoutException) {
 
             }
@@ -102,7 +110,7 @@ namespace AydenIO.Examples.Lifx {
             bool? poweredOn = null;
 
             try {
-                poweredOn = await e.Device.GetPower();
+                poweredOn = await device.GetPower();
             } catch (TimeoutException) {
 
             }
@@ -111,7 +119,7 @@ namespace AydenIO.Examples.Lifx {
             ILifxVersion version = null;
 
             try {
-                version = await e.Device.GetVersion();
+                version = await device.GetVersion();
             } catch (TimeoutException) {
 
             }
@@ -120,7 +128,7 @@ namespace AydenIO.Examples.Lifx {
             ILifxInfo info = null;
 
             try {
-                info = await e.Device.GetInfo();
+                info = await device.GetInfo();
             } catch (TimeoutException) {
 
             }
@@ -130,14 +138,20 @@ namespace AydenIO.Examples.Lifx {
 
             result.AppendLine(DateTime.Now.ToLongTimeString());
 
-            result.AppendLine($"Found device {e.Device.GetType().Name} @ {e.Device.EndPoint} (MAC: {e.Device.MacAddress}): {{");
-            result.AppendLine($"    Name: {e.Device.ProductName};");
-            result.AppendLine($"    SupportsColor: {e.Device.SupportsColor};");
-            result.AppendLine($"    SupportsInfrared: {e.Device.SupportsInfrared};");
-            result.AppendLine($"    IsMultizone: {e.Device.IsMultizone};");
-            result.AppendLine($"    IsChain: {e.Device.IsChain};");
-            result.AppendLine($"    MinKelvin: {e.Device.MinKelvin};");
-            result.AppendLine($"    MaxKelvin: {e.Device.MaxKelvin};");
+            result.Append($"Found device {device.GetType().Name}");
+
+            if (device is LifxDevice remoteDevice) {
+                result.Append($" @ { remoteDevice.EndPoint}");
+            }
+            
+            result.AppendLine($" (MAC: {device.MacAddress}): {{");
+            result.AppendLine($"    Name: {device.ProductName};");
+            result.AppendLine($"    SupportsColor: {device.SupportsColor};");
+            result.AppendLine($"    SupportsInfrared: {device.SupportsInfrared};");
+            result.AppendLine($"    IsMultizone: {device.IsMultizone};");
+            result.AppendLine($"    IsChain: {device.IsChain};");
+            result.AppendLine($"    MinKelvin: {device.MinKelvin};");
+            result.AppendLine($"    MaxKelvin: {device.MaxKelvin};");
             result.AppendLine();
 
             if (location != null) {
@@ -200,7 +214,7 @@ namespace AydenIO.Examples.Lifx {
                 result.AppendLine($"        MinorVersion: {wifiFirmware.VersionMinor};");
                 result.AppendLine($"    }};");
             }
-            
+
             if (poweredOn != null) {
                 result.AppendLine();
                 result.AppendLine($"    PoweredOn: {poweredOn};");
@@ -223,7 +237,7 @@ namespace AydenIO.Examples.Lifx {
                 result.AppendLine($"    }};");
             }
 
-            if (e.Device is ILifxLight light) {
+            if (device is ILifxLight light) {
                 if (light.SupportsColor) {
                     ILifxLightState lightState = null;
 
@@ -249,7 +263,7 @@ namespace AydenIO.Examples.Lifx {
                     try {
                         infrared = await infraredLight.GetInfrared();
                     } catch (TimeoutException) {
-                        
+
                     }
 
                     if (infrared != null) {
@@ -262,6 +276,10 @@ namespace AydenIO.Examples.Lifx {
             result.AppendLine($"];");
 
             Console.WriteLine(result.ToString());
+        }
+
+        private static async void DeviceDiscovered(object sender, LifxDeviceDiscoveredEventArgs e) {
+            await Program.PrintDevice(e.Device);
         }
 
         private static void DeviceLost(object sender, LifxDeviceLostEventArgs e) {

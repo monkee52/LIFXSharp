@@ -8,6 +8,6 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxInfrared {
         /// <value>The current maximum setting for the infrared channel</value>
-        public ushort Level { get; set; }
+        public ushort Level { get; }
     }
 }

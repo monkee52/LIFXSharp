@@ -8,6 +8,6 @@ namespace AydenIO.Lifx {
     /// </summary>
     public interface ILifxTransition {
         /// <value>The duration of the transition</value>
-        public TimeSpan Duration { get; set; }
+        public TimeSpan Duration { get; }
     }
 }
