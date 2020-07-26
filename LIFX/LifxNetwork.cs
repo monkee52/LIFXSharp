@@ -188,6 +188,8 @@ namespace AydenIO.Lifx {
                             message.FromBytes(buffer);
 
                             foreach (LifxVirtualDevice virtualDevice in devicesToQuery) {
+                                virtualDevice.AddRxBytes((uint)buffer.Length);
+
                                 _ = this.QueryVirtualDevice(endPoint, message, virtualDevice);
                             }
                         }
@@ -445,7 +447,9 @@ namespace AydenIO.Lifx {
             foreach (LifxMessage response in responses) {
                 this.SetReplyMessageHeaderCommon(virtualDevice, request, response);
 
-                await this.SendCommon(remoteEndPoint, response);
+                int sentBytes = await this.SendCommon(remoteEndPoint, response);
+
+                virtualDevice.AddTxBytes((uint)sentBytes);
             }
         }
 
@@ -727,7 +731,7 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="endPoint">The destination, or null if message is to be broadcast</param>
         /// <param name="message">The message</param>
-        private async Task SendCommon(IPEndPoint endPoint, LifxMessage message) {
+        private Task<int> SendCommon(IPEndPoint endPoint, LifxMessage message) {
             // Broadcast if no endpoint
             endPoint ??= new IPEndPoint(IPAddress.Broadcast, LifxNetwork.LifxPort);
 
@@ -735,7 +739,7 @@ namespace AydenIO.Lifx {
             byte[] messageBytes = message.GetBytes();
 
             // Send message
-            await this.socket.SendAsync(messageBytes, messageBytes.Length, endPoint);
+            return this.socket.SendAsync(messageBytes, messageBytes.Length, endPoint);
         }
 
         /// <summary>

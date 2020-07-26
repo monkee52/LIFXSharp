@@ -480,27 +480,6 @@
             </summary>
             <param name="exception">The exception that was generated</param>
         </member>
-        <member name="T:AydenIO.Lifx.LifxVirtualInfraredLight">
-            <summary>
-            Represents a virtual LIFX light with infrared support
-            </summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualInfraredLight.SupportsInfrared">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
-            <summary>
-            Creates a new virtual LIFX light with infrared support
-            </summary>
-            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual light with</param>
-            <param name="macAddress">The <c>MacAddress</c> of this virtual light</param>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.GetInfrared(System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.SetInfrared(System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <inheritdoc />
-        </member>
         <member name="T:AydenIO.Lifx.LifxApplicationRequest">
             <summary>
             Controls how/when multizone devices apply color changes
@@ -1314,17 +1293,32 @@
             <param name="lifx">The <c>LifxNetwork</c> to associated this virtual device with</param>
             <param name="macAddress">The <c>MacAddress</c> of this virtual device</param>
         </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Services">
+            <value>Gets the internal collection of supported services</value>
+        </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetServices(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.HostInfo">
+            <value>Gets the internal host info</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetHostInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.WifiInfo">
+            <value>Gets the internal wifi info</value>
+        </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetWifiInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.HostFirmware">
+            <value>Gets the internal host firmware</value>
+        </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetHostFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.WifiFirmware">
+            <value>Gets the internal wifi firmware</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetWifiFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -1335,6 +1329,9 @@
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.LastDownTime">
             <value>Gets or sets the time that this virtual device was last stopped</value>
         </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Info">
+            <value>Gets the internal info value</value>
+        </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
@@ -1344,8 +1341,11 @@
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.ProductId">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Version">
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.VersionNumber">
             <value>Gets or sets the "hardware" version of this virtual device</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Version">
+            <value>Gets the internal version value</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetVersion(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -1380,13 +1380,31 @@
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="T:AydenIO.Lifx.LifxVirtualInfraredLight">
+            <summary>
+            Represents a virtual LIFX light with infrared support
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualInfraredLight.SupportsInfrared">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
+            <summary>
+            Creates a new virtual LIFX light with infrared support
+            </summary>
+            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual light with</param>
+            <param name="macAddress">The <c>MacAddress</c> of this virtual light</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.GetInfrared(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.SetInfrared(System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.LifxVirtualLight">
             <summary>
             Represents a virtual LIFX light
             </summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualLight.SupportsColor">
-            <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualLight.MinKelvin">
             <inheritdoc />
