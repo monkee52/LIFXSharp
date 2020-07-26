@@ -15,7 +15,7 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public LightState(ILifxLightState lightState) {
+        public LightState(ILifxLightState lightState) : this() {
             this.FromHsbk(lightState);
 
             this.PoweredOn = lightState.PoweredOn;

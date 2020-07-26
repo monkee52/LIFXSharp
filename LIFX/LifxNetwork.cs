@@ -69,7 +69,7 @@ namespace AydenIO.Lifx {
             // Allow reuse (exclusive above could be read as anti-reuse, rather than implicit reuse?)
             this.socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
-            this.socket.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
+            this.socket.Client.Bind(new IPEndPoint(IPAddress.Any, LifxNetwork.LifxPort));
 
             // Set up socket thread
             this.socketReceiveThread = new Thread(new ThreadStart(this.SocketReceiveWorker)) {
@@ -120,9 +120,8 @@ namespace AydenIO.Lifx {
 
                 try {
                     origMessage.FromBytes(buffer);
-                } catch (Exception) {
-                    // TODO: Handle malformed packet
-                    Debug.WriteLine($"Received bad packet: {Utilities.BytesToHexString(buffer)}");
+                } catch (Exception e) {
+                    Debug.WriteLine($"{e.GetType().Name} while decoding message: {e.Message}");
 
                     continue;
                 }
@@ -132,10 +131,10 @@ namespace AydenIO.Lifx {
 
                 if (isClient) {
                     // Query no devices
-                    IEnumerable<LifxVirtualDevice> devicesToQuery = Enumerable.Empty<LifxVirtualDevice>();
+                    ICollection<LifxVirtualDevice> devicesToQuery = new LifxVirtualDevice[0];
 
                     if (origMessage.Target == LifxNetwork.LifxBroadcast) {
-                        devicesToQuery = this.Devices.OfType<LifxVirtualDevice>();
+                        devicesToQuery = this.Devices.OfType<LifxVirtualDevice>().ToList();
                     } else {
                         bool virtualDeviceFound = this.deviceLookup.TryGetValue(origMessage.Target, out ILifxDevice device);
 
@@ -146,7 +145,7 @@ namespace AydenIO.Lifx {
                         }
                     }
 
-                    if (devicesToQuery.Any()) {
+                    if (devicesToQuery.Count > 0) {
                         LifxMessage message = origMessage.Type switch {
                             // Device messages
                             LifxMessageType.GetService => new Messages.GetService(),
@@ -185,7 +184,13 @@ namespace AydenIO.Lifx {
                         if (message != origMessage) {
                             message.SourceId = origMessage.SourceId;
 
-                            message.FromBytes(buffer);
+                            try {
+                                message.FromBytes(buffer);
+                            } catch (Exception e) {
+                                Debug.WriteLine($"{e.GetType().Name} while decoding message: {e.Message}");
+
+                                continue;
+                            }
 
                             foreach (LifxVirtualDevice virtualDevice in devicesToQuery) {
                                 virtualDevice.AddRxBytes((uint)buffer.Length);
@@ -233,24 +238,22 @@ namespace AydenIO.Lifx {
                         if (message != origMessage) {
                             message.SourceId = this.SourceId;
 
-                            message.FromBytes(buffer);
-                        }
-                    }
+                            try {
+                                message.FromBytes(buffer);
+                            } catch (Exception e) {
+                                Debug.WriteLine($"{e.GetType().Name} while decoding message: {e.Message}");
 
-                    try {
-                        // Trigger awaiter
-                        if (found) {
+                                responseAwaiter.HandleException(e);
+
+                                continue;
+                            }
+
                             responseAwaiter.HandleResponse(new LifxResponse(endPoint, message));
                         } else {
-                            // TODO: ??
-                            Debug.WriteLine($"Received: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}] from {endPoint}");
+                            Debug.WriteLine($"Received unknown message: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}] from {endPoint}");
                         }
-                    } catch (Exception e) {
-                        if (found) {
-                            responseAwaiter.HandleException(e);
-                        } else {
-                            throw;
-                        }
+                    } else {
+                        Debug.WriteLine($"Received unexpected message: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}] from {endPoint}");
                     }
                 }
             }
@@ -551,7 +554,7 @@ namespace AydenIO.Lifx {
         public event EventHandler<LifxDeviceLostEventArgs> DeviceLost;
 
         /// <value>Gets a list of all devices that have been discovered, or explicitly found</value>
-        public IEnumerable<ILifxDevice> Devices => this.deviceLookup.Values;
+        public IReadOnlyCollection<ILifxDevice> Devices => new ReadOnlyDeviceCollection(this.deviceLookup.Values);
 
         /// <summary>
         /// Starts the discovery thread
@@ -679,7 +682,9 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="macAddress">The MAC address to look up</param>
         /// <returns>Whether the device has been found</returns>
-        public bool HasDevice(MacAddress macAddress) => this.deviceLookup.ContainsKey(macAddress);
+        public bool HasDevice(MacAddress macAddress) {
+            return this.deviceLookup.ContainsKey(macAddress);
+        }
 
         private async Task<LifxDevice> CreateAndAddDevice(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
             LifxDevice device;
@@ -775,7 +780,9 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns></returns>
-        public Task<ILifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) => this.GetDevice(new IPEndPoint(address, port), timeoutMs, cancellationToken);
+        public Task<ILifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return this.GetDevice(new IPEndPoint(address, port), timeoutMs, cancellationToken);
+        }
 
         /// <summary>
         /// Gets a device using an IP or MAC address, and a port
@@ -1047,7 +1054,9 @@ namespace AydenIO.Lifx {
         /// </summary>
         /// <param name="version">The LIFX version</param>
         /// <returns>An object containing the supported features for that product</returns>
-        public static ILifxProduct GetFeaturesForProduct(ILifxVersion version) => LifxNetwork.GetFeaturesForProduct(version.VendorId, version.ProductId);
+        public static ILifxProduct GetFeaturesForProduct(ILifxVersion version) {
+            return LifxNetwork.GetFeaturesForProduct(version.VendorId, version.ProductId);
+        }
 
         /// <summary>
         /// Gets whether a device supports the extended multizone API
@@ -1055,7 +1064,9 @@ namespace AydenIO.Lifx {
         /// <param name="version">The LIFX device's version</param>
         /// <param name="hostFirmware">The LIFX device's host firmware</param>
         /// <returns></returns>
-        public static bool ProductSupportsExtendedMultizoneApi(ILifxVersion version, ILifxHostFirmware hostFirmware) => LifxNetwork.ProductSupportsExtendedMultizoneApi(version.VendorId, version.ProductId, hostFirmware.VersionMajor, hostFirmware.VersionMinor);
+        public static bool ProductSupportsExtendedMultizoneApi(ILifxVersion version, ILifxHostFirmware hostFirmware) {
+            return LifxNetwork.ProductSupportsExtendedMultizoneApi(version.VendorId, version.ProductId, hostFirmware.VersionMajor, hostFirmware.VersionMinor);
+        }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

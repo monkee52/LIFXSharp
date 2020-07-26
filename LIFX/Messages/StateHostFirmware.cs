@@ -12,7 +12,7 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public StateHostFirmware(ILifxHostFirmware hostFirmware) {
+        public StateHostFirmware(ILifxHostFirmware hostFirmware) : this() {
             this.Build = hostFirmware.Build;
             this.VersionMinor = hostFirmware.VersionMinor;
             this.VersionMajor = hostFirmware.VersionMajor;
@@ -24,6 +24,7 @@ namespace AydenIO.Lifx.Messages {
 
         protected override void WritePayload(BinaryWriter writer) {
             /* uint64_t le build */ writer.Write(Utilities.DateTimeToNanoseconds(this.Build));
+            /* uint64_t le reserved */ writer.Write((ulong)0);
             /* uint16_t le minor */ writer.Write(this.VersionMinor);
             /* uint16_t le major */ writer.Write(this.VersionMajor);
         }

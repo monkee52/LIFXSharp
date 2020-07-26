@@ -12,7 +12,7 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public StateGroup(ILifxGroup group) {
+        public StateGroup(ILifxGroup group) : this() {
             this.Group = group.Group;
             this.Label = group.Label;
             this.UpdatedAt = group.UpdatedAt;

@@ -15,11 +15,11 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public LightStateInfrared(ushort level) {
+        public LightStateInfrared(ushort level) : this() {
             this.Level = level;
         }
 
-        public LightStateInfrared(ILifxInfrared infrared) {
+        public LightStateInfrared(ILifxInfrared infrared) : this() {
             this.Level = infrared.Level;
         }
 

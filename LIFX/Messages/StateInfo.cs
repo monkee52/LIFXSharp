@@ -12,7 +12,7 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public StateInfo(ILifxInfo info) {
+        public StateInfo(ILifxInfo info) : this() {
             this.Time = info.Time;
             this.Uptime = info.Uptime;
             this.Downtime = info.Downtime;

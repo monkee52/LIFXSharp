@@ -211,10 +211,14 @@ namespace AydenIO.Lifx {
         }
 
         /// <inheritdoc />
-        public Task PowerOn(int? timeoutMs = null, CancellationToken cancellationToken = default) => this.SetPower(true, timeoutMs, cancellationToken);
+        public Task PowerOn(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return this.SetPower(true, timeoutMs, cancellationToken);
+        }
 
         /// <inheritdoc />
-        public Task PowerOff(int? timeoutMs = null, CancellationToken cancellationToken = default) => this.SetPower(false, timeoutMs, cancellationToken);
+        public Task PowerOff(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return this.SetPower(false, timeoutMs, cancellationToken);
+        }
 
         // Label
         private string label;

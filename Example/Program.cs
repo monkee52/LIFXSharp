@@ -16,9 +16,19 @@ namespace AydenIO.Examples.Lifx {
             lifx.DeviceDiscovered += Program.DeviceDiscovered;
             lifx.DeviceLost += Program.DeviceLost;
 
-            lifx.StartDiscovery();
+            //lifx.StartDiscovery();
+
+            while (lifx.Devices.Count == 0) {
+                lifx.DiscoverOnce().Wait();
+            }
+
+            ILifxDevice firstDevice = lifx.Devices.First();
 
             LifxVirtualLight virtualLight = new ExampleLight(lifx, MacAddress.CreateLocallyAdministeredAddress());
+
+            virtualLight.SetLocation(firstDevice.GetLocation().Result);
+            virtualLight.SetGroup(firstDevice.GetGroup().Result);
+            virtualLight.SetLabel("Test!");
 
             Console.WriteLine($"Virtual MAC: {virtualLight.MacAddress}");
 

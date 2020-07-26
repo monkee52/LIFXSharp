@@ -11,7 +11,7 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public StateService(ILifxService service) {
+        public StateService(ILifxService service) : this() {
             this.Service = service.Service;
             this.Port = service.Port;
         }

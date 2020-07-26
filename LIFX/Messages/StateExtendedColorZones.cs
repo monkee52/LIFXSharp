@@ -14,7 +14,7 @@ namespace AydenIO.Lifx.Messages {
             this.Colors = new List<ILifxHsbkColor>();
         }
 
-        public StateExtendedColorZones(ILifxColorMultiZoneState state) {
+        public StateExtendedColorZones(ILifxColorMultiZoneState state) : this() {
             this.Index = state.Index;
             this.ZoneCount = state.ZoneCount;
 

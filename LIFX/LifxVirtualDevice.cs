@@ -74,7 +74,9 @@ namespace AydenIO.Lifx {
         protected IReadOnlyCollection<ILifxService> Services => this.services.AsReadOnly();
 
         /// <inheritdoc />
-        public Task<IReadOnlyCollection<ILifxService>> GetServices(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.Services);
+        public Task<IReadOnlyCollection<ILifxService>> GetServices(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return Task.FromResult(this.Services);
+        }
 
         // Host and Wifi info
         // Not sure why there's a difference in host info and wifi info, but they are separate according to the docs
@@ -84,7 +86,9 @@ namespace AydenIO.Lifx {
             public uint TransmittedBytes { get; set; } = 0;
             public uint ReceivedBytes { get; set; } = 0;
 
-            public LifxSignalStrength GetSignalStrength() => Utilities.GetSignalStrength(this.Signal);
+            public LifxSignalStrength GetSignalStrength() {
+                return Utilities.GetSignalStrength(this.Signal);
+            }
         }
 
         private readonly LifxHostAndWifiInfo hostAndWifiInfo = new LifxHostAndWifiInfo();
@@ -101,13 +105,17 @@ namespace AydenIO.Lifx {
         protected ILifxHostInfo HostInfo => this.hostAndWifiInfo;
 
         /// <inheritdoc />
-        public Task<ILifxHostInfo> GetHostInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.HostInfo);
+        public Task<ILifxHostInfo> GetHostInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return Task.FromResult(this.HostInfo);
+        }
 
         /// <value>Gets the internal wifi info</value>
         protected ILifxWifiInfo WifiInfo => this.hostAndWifiInfo;
 
         /// <inheritdoc />
-        public Task<ILifxWifiInfo> GetWifiInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.WifiInfo);
+        public Task<ILifxWifiInfo> GetWifiInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return Task.FromResult(this.WifiInfo);
+        }
 
         // Host and Wifi firmware
         private class LifxHostAndWifiFirmware : ILifxHostFirmware, ILifxWifiFirmware {
@@ -127,13 +135,17 @@ namespace AydenIO.Lifx {
         protected ILifxHostFirmware HostFirmware => this.hostAndWifiFirmware;
 
         /// <inheritdoc />
-        public Task<ILifxHostFirmware> GetHostFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.HostFirmware);
+        public Task<ILifxHostFirmware> GetHostFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return Task.FromResult(this.HostFirmware);
+        }
 
         /// <value>Gets the internal wifi firmware</value>
         protected ILifxWifiFirmware WifiFirmware => this.hostAndWifiFirmware;
 
         /// <inheritdoc />
-        public Task<ILifxWifiFirmware> GetWifiFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.WifiFirmware);
+        public Task<ILifxWifiFirmware> GetWifiFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return Task.FromResult(this.WifiFirmware);
+        }
 
         // Info
         private class LifxInfo : ILifxInfo {
@@ -166,7 +178,9 @@ namespace AydenIO.Lifx {
         protected ILifxInfo Info => this.info;
 
         /// <inheritdoc />
-        public Task<ILifxInfo> GetInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.Info);
+        public Task<ILifxInfo> GetInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return Task.FromResult(this.Info);
+        }
 
         // Version
         private class LifxVersion : ILifxVersion {
@@ -201,14 +215,20 @@ namespace AydenIO.Lifx {
         protected ILifxVersion Version => this.version;
 
         /// <inheritdoc />
-        public Task<ILifxVersion> GetVersion(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.Version);
+        public Task<ILifxVersion> GetVersion(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return Task.FromResult(this.Version);
+        }
 
         // Methods that are trivial
         /// <inheritdoc />
-        public Task PowerOff(int? timeoutMs = null, CancellationToken cancellationToken = default) => this.SetPower(false, timeoutMs, cancellationToken);
+        public Task PowerOff(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return this.SetPower(false, timeoutMs, cancellationToken);
+        }
 
         /// <inheritdoc />
-        public Task PowerOn(int? timeoutMs = null, CancellationToken cancellationToken = default) => this.SetPower(true, timeoutMs, cancellationToken);
+        public Task PowerOn(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return this.SetPower(true, timeoutMs, cancellationToken);
+        }
 
         // Methods that virtual devices can implement
         /// <inheritdoc />

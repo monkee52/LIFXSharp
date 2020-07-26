@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Text;
@@ -18,10 +19,6 @@ namespace AydenIO.Lifx {
         public LifxeResponseFlags ResponseFlags { get; set; }
 
         public LifxMessageType Type { get; private set; }
-
-        protected LifxMessage() {
-
-        }
 
         public LifxMessage(LifxMessageType type) {
             this.Type = type;
@@ -43,7 +40,7 @@ namespace AydenIO.Lifx {
             /* uint8_t[6] target */ writer.Write(target);
             /* uint8_t[2] target_pad */ writer.Write(new byte[2]);
             /* uint8_t[6] reserved */ writer.Write(new byte[6]);
-            /* uint8_t flags */ writer.Write((byte)((byte)this.ResponseFlags & 3));
+            /* uint8_t flags */ writer.Write((byte)((int)this.ResponseFlags & 3));
             /* uint8_t sequence */ writer.Write((byte)this.SequenceNumber);
         }
 
@@ -92,23 +89,23 @@ namespace AydenIO.Lifx {
             byte origin = (byte)((flags >> 14) & 3);
 
             if (protocol != LifxMessage.PROTOCOL) {
-                throw new Exception($"Protocol number must be '{LifxMessage.PROTOCOL}', got '{protocol}'");
+                throw new InvalidDataException($"Protocol number must be '{LifxMessage.PROTOCOL}', got '{protocol}'");
             }
 
             if (addressable != LifxMessage.ADDRESSABLE) {
-                throw new Exception($"Addressable must be be '{LifxMessage.ADDRESSABLE}', got '{addressable}'");
+                throw new InvalidDataException($"Addressable must be be '{LifxMessage.ADDRESSABLE}', got '{addressable}'");
             }
 
             //this.isTagged = tagged;
 
             if (origin != LifxMessage.ORIGIN) {
-                throw new Exception($"Origin must be '{LifxMessage.ORIGIN}', got '{origin}'");
+                throw new InvalidDataException($"Origin must be '{LifxMessage.ORIGIN}', got '{origin}'");
             }
 
             uint source = reader.ReadUInt32();
 
             if (this.Type != LifxMessageType._internal_unknown_ && source != (uint)this.SourceId) {
-                throw new Exception($"Source must be '{(uint)this.SourceId}', got '{source}'");
+                throw new InvalidDataException($"Source must be '{(uint)this.SourceId}', got '{source}'");
             }
 
             this.SourceId = (int)source;
@@ -138,7 +135,7 @@ namespace AydenIO.Lifx {
             ushort type = reader.ReadUInt16();
 
             if (type != (ushort)this.Type && this.Type != LifxMessageType._internal_unknown_) {
-                throw new Exception($"Type must be '{this.Type}', got '{type}'");
+                throw new InvalidDataException($"Type must be '{this.Type}', got '{type}'");
             }
 
             this.Type = (LifxMessageType)type;

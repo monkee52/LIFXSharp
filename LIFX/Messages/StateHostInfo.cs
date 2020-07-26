@@ -12,7 +12,7 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public StateHostInfo(ILifxHostInfo hostInfo) {
+        public StateHostInfo(ILifxHostInfo hostInfo) : this() {
             this.Signal = hostInfo.Signal;
             this.TransmittedBytes = hostInfo.TransmittedBytes;
             this.ReceivedBytes = hostInfo.ReceivedBytes;
@@ -26,6 +26,7 @@ namespace AydenIO.Lifx.Messages {
             /* float32 le signal */ writer.Write(this.Signal);
             /* uint32_t le tx */ writer.Write(this.TransmittedBytes);
             /* uint32_t le rx */ writer.Write(this.ReceivedBytes);
+            /* uint16_t le reserved */ writer.Write((ushort)0);
         }
 
         protected override void ReadPayload(BinaryReader reader) {
@@ -44,6 +45,8 @@ namespace AydenIO.Lifx.Messages {
             _ = reader.ReadInt16();
         }
 
-        public virtual LifxSignalStrength GetSignalStrength() => Utilities.GetSignalStrength(this.Signal);
+        public virtual LifxSignalStrength GetSignalStrength() {
+            return Utilities.GetSignalStrength(this.Signal);
+        }
     }
 }

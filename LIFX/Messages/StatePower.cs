@@ -12,11 +12,11 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public StatePower(bool poweredOn) {
+        public StatePower(bool poweredOn) : this() {
             this.PoweredOn = poweredOn;
         }
 
-        public StatePower(ILifxPower power) {
+        public StatePower(ILifxPower power) : this() {
             this.PoweredOn = power.PoweredOn;
         }
 

@@ -85,7 +85,7 @@ namespace AydenIO.Examples.Lifx {
         protected ILifxLocation Location {
             get => this.location;
             set {
-                if (value.UpdatedAt > this.location.UpdatedAt) {
+                if (this.location is null || value.UpdatedAt > this.location?.UpdatedAt) {
                     this.location = value;
 
                     this.OnLocationChanged();
@@ -113,7 +113,7 @@ namespace AydenIO.Examples.Lifx {
         protected ILifxGroup Group {
             get => this.group;
             set {
-                if (value.UpdatedAt > this.group.UpdatedAt) {
+                if (this.group is null || value.UpdatedAt > this.group?.UpdatedAt) {
                     this.group = value;
 
                     this.OnGroupChanged();

@@ -15,11 +15,11 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public LightStatePower(bool poweredOn) {
+        public LightStatePower(bool poweredOn) : this() {
             this.PoweredOn = poweredOn;
         }
 
-        public LightStatePower(ILifxPower power) {
+        public LightStatePower(ILifxPower power) : this() {
             this.PoweredOn = power.PoweredOn;
         }
 

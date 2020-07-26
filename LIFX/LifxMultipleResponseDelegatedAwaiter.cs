@@ -22,7 +22,9 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public void HandleResponse(LifxResponse response) {
-            this.ResponseReceived?.Invoke((LifxResponse<T>)response);
+            if (response.Message is T) {
+                this.ResponseReceived?.Invoke((LifxResponse<T>)response);
+            }
         }
 
         /// <inheritdoc />

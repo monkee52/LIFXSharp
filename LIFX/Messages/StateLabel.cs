@@ -12,11 +12,11 @@ namespace AydenIO.Lifx.Messages {
 
         }
 
-        public StateLabel(string label) {
+        public StateLabel(string label) : this() {
             this.Label = label;
         }
 
-        public StateLabel(ILifxLabel label) {
+        public StateLabel(ILifxLabel label) : this() {
             this.Label = label.Label;
         }
 
