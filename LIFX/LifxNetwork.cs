@@ -50,6 +50,10 @@ namespace AydenIO.Lifx {
         /// <value>Gets the LIFX Broadcast target</value>
         public static MacAddress LifxBroadcast => LifxNetwork.lifxBroadcast;
 
+        public LifxLocationManager LocationManager { get; private set; }
+
+        public LifxGroupManager GroupManager { get; private set; }
+
         /// <summary>
         /// Initializes the <c>LifxNetwork</c>
         /// </summary>
@@ -96,6 +100,10 @@ namespace AydenIO.Lifx {
             this.ReceiveTimeout = rxTimeout;
 
             Debug.WriteLine($"Build time: {LifxNetwork.BuildDate}");
+
+            // Set up membership managers
+            this.LocationManager = new LifxLocationManager();
+            this.GroupManager = new LifxGroupManager();
         }
 
         private void SocketReceiveWorker() {
@@ -243,6 +251,7 @@ namespace AydenIO.Lifx {
                             } catch (Exception e) {
                                 Debug.WriteLine($"{e.GetType().Name} while decoding message: {e.Message}");
 
+                                // Should we silently ignore the message, or should we pass it back to the original call that the message is replying to?
                                 responseAwaiter.HandleException(e);
 
                                 continue;
