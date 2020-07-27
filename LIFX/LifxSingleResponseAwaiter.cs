@@ -25,11 +25,7 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public void HandleResponse(LifxResponse response) {
-            if (response.Message is T) {
-                this.taskCompletionSource.SetResult((LifxResponse<T>)response);
-            } else {
-                Debugger.Break();
-            }
+            this.taskCompletionSource.SetResult((LifxResponse<T>)response);
         }
 
         /// <inheritdoc />

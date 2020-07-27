@@ -30,11 +30,7 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public void HandleResponse(LifxResponse response) {
-            if (response.Message is T) {
-                this.responses.Add((LifxResponse<T>)response);
-            } else {
-                Debugger.Break();
-            }
+            this.responses.Add((LifxResponse<T>)response);
         }
 
         /// <inheritdoc />

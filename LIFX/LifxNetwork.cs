@@ -106,10 +106,6 @@ namespace AydenIO.Lifx {
             // Set up membership managers
             this.LocationManager = new LifxLocationManager();
             this.GroupManager = new LifxGroupManager();
-
-            foreach (Attribute attr in Utilities.StackAttributekWalker<Attribute>()) {
-                Debug.WriteLine(attr.GetType().ToString());
-            }
         }
 
         private void SocketReceiveWorker() {
@@ -269,7 +265,11 @@ namespace AydenIO.Lifx {
                                 continue;
                             }
 
-                            responseAwaiter.HandleResponse(new LifxResponse(endPoint, message));
+                            try {
+                                responseAwaiter.HandleResponse(new LifxResponse(endPoint, message));
+                            } catch (InvalidCastException e) {
+                                Debug.WriteLine($"{e.GetType().Name} while handling message: {e.Message}");
+                            }
                         } else {
                             Debug.WriteLine($"Received unknown message: [Type: {message.Type} ({(int)message.Type}), Seq: {message.SequenceNumber}] from {endPoint}");
                         }
