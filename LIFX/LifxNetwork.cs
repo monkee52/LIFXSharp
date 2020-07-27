@@ -50,8 +50,10 @@ namespace AydenIO.Lifx {
         /// <value>Gets the LIFX Broadcast target</value>
         public static MacAddress LifxBroadcast => LifxNetwork.lifxBroadcast;
 
+        /// <value>Gets the location manager for the network</value>
         public LifxLocationManager LocationManager { get; private set; }
 
+        /// <value>Gets the group manager for the network</value>
         public LifxGroupManager GroupManager { get; private set; }
 
         /// <summary>
@@ -104,6 +106,10 @@ namespace AydenIO.Lifx {
             // Set up membership managers
             this.LocationManager = new LifxLocationManager();
             this.GroupManager = new LifxGroupManager();
+
+            foreach (Attribute attr in Utilities.StackAttributekWalker<Attribute>()) {
+                Debug.WriteLine(attr.GetType().ToString());
+            }
         }
 
         private void SocketReceiveWorker() {
@@ -238,6 +244,12 @@ namespace AydenIO.Lifx {
                             LifxMessageType.StateExtendedColorZones => new Messages.StateExtendedColorZones(),
                             LifxMessageType.StateZone => new Messages.StateZone(),
                             LifxMessageType.StateMultiZone => new Messages.StateMultiZone(),
+                            // Undocumented functions
+                            LifxMessageType.StateTime => new Messages.StateTime(),
+                            LifxMessageType.StateTags => new Messages.StateTags(),
+                            LifxMessageType.StateTagLabel => new Messages.StateTagLabel(),
+                            LifxMessageType.StateWifiState => new Messages.StateWifiState(),
+                            LifxMessageType.StateAccessPoint => new Messages.StateAccessPoint(),
 
                             _ => origMessage
                         };

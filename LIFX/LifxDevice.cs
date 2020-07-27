@@ -385,5 +385,60 @@ namespace AydenIO.Lifx {
 
             return this.Ping(payload, timeoutMs, cancellationToken);
         }
+
+        // Undocumented functions
+        [Obsolete]
+        public async Task<IReadOnlyCollection<ILifxAccessPoint>> GetAccessPoints(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            Utilities.AssertCallerIgnoreUnsupported();
+
+            Messages.GetAccessPoints getAccessPoints = new Messages.GetAccessPoints();
+
+            return await this.Lifx.SendWithMultipleResponse<Messages.StateAccessPoint>(this, getAccessPoints, timeoutMs, cancellationToken);
+        }
+
+        [Obsolete]
+        public async Task<ILifxWifiState> GetWifiState(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            Utilities.AssertCallerIgnoreUnsupported();
+
+            Messages.GetWifiState getWifiState = new Messages.GetWifiState();
+
+            return await this.Lifx.SendWithResponse<Messages.StateWifiState>(this, getWifiState, timeoutMs, cancellationToken);
+        }
+
+        [Obsolete]
+        public async Task<DateTime> GetTime(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            Utilities.AssertCallerIgnoreUnsupported();
+
+            Messages.GetTime getTime = new Messages.GetTime();
+
+            ILifxTime time = await this.Lifx.SendWithResponse<Messages.StateTime>(this, getTime, timeoutMs, cancellationToken);
+
+            return time.Time;
+        }
+
+        [Obsolete]
+        public async Task<IReadOnlyCollection<ILifxTagId>> GetTagIds(int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            Utilities.AssertCallerIgnoreUnsupported();
+
+            Messages.GetTags getTags = new Messages.GetTags();
+
+            return await this.Lifx.SendWithMultipleResponse<Messages.StateTags>(this, getTags, timeoutMs, cancellationToken);
+        }
+
+        [Obsolete]
+        public async Task<ILifxTag> GetTag(ulong tagId, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            Utilities.AssertCallerIgnoreUnsupported();
+
+            Messages.GetTagLabel getTagLabel = new Messages.GetTagLabel() {
+                TagId = tagId
+            };
+
+            return await this.Lifx.SendWithResponse<Messages.StateTagLabel>(this, getTagLabel, timeoutMs, cancellationToken);
+        }
+
+        [Obsolete]
+        public Task<ILifxTag> GetTag(ILifxTagId tag, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return this.GetTag(tag.TagId, timeoutMs, cancellationToken);
+        }
     }
 }

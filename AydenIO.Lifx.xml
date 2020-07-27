@@ -1080,6 +1080,12 @@
         <member name="P:AydenIO.Lifx.LifxNetwork.LifxBroadcast">
             <value>Gets the LIFX Broadcast target</value>
         </member>
+        <member name="P:AydenIO.Lifx.LifxNetwork.LocationManager">
+            <value>Gets the location manager for the network</value>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxNetwork.GroupManager">
+            <value>Gets the group manager for the network</value>
+        </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.#ctor(System.Int32,System.Int32)">
             <summary>
             Initializes the <c>LifxNetwork</c>
@@ -1824,9 +1830,6 @@
             Common properties for <c>Messages.StateInfo</c>
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxInfo.Time">
-            <value>Current time</value>
-        </member>
         <member name="P:AydenIO.Lifx.ILifxInfo.Uptime">
             <value>Time since last power on</value>
         </member>
@@ -1886,6 +1889,9 @@
         </member>
         <member name="P:AydenIO.Lifx.ILifxService.Port">
             <value>The port that the service is on</value>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxTime.Time">
+            <value>Current time</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxTransition">
             <summary>
@@ -2133,6 +2139,12 @@
         </member>
         <member name="P:AydenIO.Lifx.Messages.StateMultiZone.MaxZoneCount">
             <value>Gets the maximum number of zones supported by this message</value>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.AssertCallerIgnoreUnsupported(System.String)">
+            <summary>
+            Walks up the stack to ensure that the method calling this' caller(s) has the LifxIgnoreUnsupportedAttribute for the calling method
+            </summary>
+            <param name="calleeMethodName">The method name to assert the callee has explicitly allowed</param>
         </member>
     </members>
 </doc>

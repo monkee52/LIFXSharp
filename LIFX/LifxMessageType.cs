@@ -191,6 +191,33 @@ namespace AydenIO.Lifx {
         GetTileEffect = 718,
 
         /// <summary>It describes the current state of the effects on the device.</summary>
-        StateTileEffect = 720
+        StateTileEffect = 720,
+
+        // Undocumented API
+        GetTime = 4,
+
+        SetTime = 5,
+
+        StateTime = 6,
+
+        GetTags = 26,
+
+        SetTags = 27,
+
+        StateTags = 28,
+
+        GetTagLabel = 29,
+
+        SetTagLabel = 30,
+
+        StateTagLabel = 31,
+
+        GetWifiState = 301,
+
+        StateWifiState = 303,
+
+        GetAccessPoints = 304,
+
+        StateAccessPoint = 306
     }
 }

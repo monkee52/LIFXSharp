@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
@@ -31,6 +32,8 @@ namespace AydenIO.Lifx {
         public void HandleResponse(LifxResponse response) {
             if (response.Message is T) {
                 this.responses.Add((LifxResponse<T>)response);
+            } else {
+                Debugger.Break();
             }
         }
 

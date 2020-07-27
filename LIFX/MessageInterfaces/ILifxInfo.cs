@@ -6,10 +6,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Common properties for <c>Messages.StateInfo</c>
     /// </summary>
-    public interface ILifxInfo {
-        /// <value>Current time</value>
-        public DateTime Time { get; }
-
+    public interface ILifxInfo : ILifxTime {
         /// <value>Time since last power on</value>
         public TimeSpan Uptime { get; }
 

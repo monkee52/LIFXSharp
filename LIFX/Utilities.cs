@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
+using AydenIO.Lifx;
 
 namespace AydenIO.Lifx {
     internal static class Utilities {
@@ -84,6 +88,52 @@ namespace AydenIO.Lifx {
                 } else {
                     return LifxSignalStrength.None;
                 }
+            }
+        }
+
+        private static IEnumerable<Type> GetBaseTypes(Type type) {
+            yield return type;
+
+            if (type.IsGenericType && !type.IsGenericTypeDefinition) {
+                Type genericType = type.GetGenericTypeDefinition();
+
+                yield return genericType;
+
+                foreach (Type baseGenericType in Utilities.GetBaseTypes(genericType)) {
+                    yield return baseGenericType;
+                }
+            }
+
+            if (type.BaseType != null) {
+                yield return type.BaseType;
+
+                foreach (Type baseType in Utilities.GetBaseTypes(type.BaseType)) {
+                    yield return baseType;
+                }
+            }
+
+            foreach (Type @interface in type.GetInterfaces()) {
+                yield return @interface;
+            }
+        }
+
+        public static IEnumerable<T> StackAttributekWalker<T>(int skipFrames = 0, bool fNeedFileInfo = false) where T : Attribute {
+            Func<IEnumerable<Assembly>, IEnumerable<T>> getAssemblies = assemblies => assemblies.SelectMany(assembly => assembly.GetCustomAttributes<T>());
+            Func<IEnumerable<Module>, IEnumerable<T>> getModules = modules => modules.SelectMany(module => module.GetCustomAttributes<T>()).Concat(getAssemblies(modules.Select(module => module.Assembly)));
+            Func<IEnumerable<Type>, IEnumerable<T>> getTypesAttributes = types => types.SelectMany(type => type.GetCustomAttributes<T>(true)).Concat(getModules(types.Select(type => type.Module)));
+            Func<Type, IEnumerable<T>> getTypes = type => getTypesAttributes(Utilities.GetBaseTypes(type));
+            Func<MethodBase, IEnumerable<T>> getAllAttributes = method => method.GetCustomAttributes<T>(true).Concat(method.DeclaringType.GetProperties().Where(p => p.GetGetMethod() == method || p.GetSetMethod() == method).SelectMany(property => property.GetCustomAttributes<T>(true))).Concat(getTypes(method.DeclaringType));
+
+            return new StackTrace(skipFrames + 1, fNeedFileInfo).GetFrames().Reverse().SelectMany(st => getAllAttributes(st.GetMethod())).Distinct();
+        }
+
+        /// <summary>
+        /// Walks up the stack to ensure that the method calling this' caller(s) has the LifxIgnoreUnsupportedAttribute for the calling method
+        /// </summary>
+        /// <param name="calleeMethodName">The method name to assert the callee has explicitly allowed</param>
+        public static void AssertCallerIgnoreUnsupported([CallerMemberName]string calleeMethodName = null) {
+            if (!Utilities.StackAttributekWalker<LifxIgnoreUnsupportedAttribute>(2, false).SelectMany(x => x.UnsupportedMethods).Any(x => x == calleeMethodName)) {
+                throw new InvalidOperationException("Caller must have LifxIgnoreUnsupportedAttribute to use this method.");
             }
         }
     }

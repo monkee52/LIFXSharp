@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
@@ -24,6 +25,8 @@ namespace AydenIO.Lifx {
         public void HandleResponse(LifxResponse response) {
             if (response.Message is T) {
                 this.ResponseReceived?.Invoke((LifxResponse<T>)response);
+            } else {
+                Debugger.Break();
             }
         }
 

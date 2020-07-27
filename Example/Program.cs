@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace AydenIO.Examples.Lifx {
     class Program {
+        [LifxIgnoreUnsupported("GetTime")]
         static void Main(string[] args) {
             LifxNetwork lifx = new LifxNetwork();
 
@@ -22,25 +23,11 @@ namespace AydenIO.Examples.Lifx {
                 lifx.DiscoverOnce().Wait();
             }
 
-            ILifxDevice firstDevice = lifx.Devices.First();
+            LifxDevice device = lifx.Devices.First(x => x.GetLabel().Result == "Left") as LifxDevice;
 
-            LifxVirtualLight virtualLight = new ExampleLight(lifx, MacAddress.CreateLocallyAdministeredAddress());
+            DateTime dt = device.GetTime().Result;
 
-            ILifxLocation location = firstDevice.GetLocation().Result;
-            ILifxGroup group = firstDevice.GetGroup().Result;
-
-            virtualLight.SetLocation(location);
-            virtualLight.SetGroup(group);
-            virtualLight.SetLabel("Test!");
-
-            Console.WriteLine($"Virtual MAC: {virtualLight.MacAddress}");
-
-            Console.WriteLine("-------");
-            Console.WriteLine($"Location: {location.Label}");
-
-            foreach (ILifxDevice device in lifx.LocationManager.GetMembers(location)) {
-                Console.WriteLine(device.GetLabel().Result);
-            }
+            Console.WriteLine(dt);
 
             Console.ReadLine();
 
