@@ -1253,7 +1253,13 @@
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.MacAddress">
             <value>Gets the virtual MAC address for the device</value>
         </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.VendorId">
+            <inheritdoc />
+        </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.VendorName">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.ProductId">
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.ProductName">
@@ -1279,6 +1285,9 @@
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.MaxKelvin">
             <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.VersionNumber">
+            <value>Gets the "hardware" version of this virtual device</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
             <summary>
@@ -1318,25 +1327,16 @@
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.StartTime">
-            <value>Gets or sets the time that this virtual device was started</value>
+            <value>Gets the time that this virtual device was started</value>
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.LastDownTime">
-            <value>Gets or sets the time that this virtual device was last stopped</value>
+            <value>Gets the time that this virtual device was last stopped</value>
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.Info">
             <value>Gets the internal info value</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.VendorId">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.ProductId">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.VersionNumber">
-            <value>Gets or sets the "hardware" version of this virtual device</value>
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.Version">
             <value>Gets the internal version value</value>

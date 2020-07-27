@@ -21,7 +21,13 @@ namespace AydenIO.Lifx {
 
         // ILifxProduct
         /// <inheritdoc />
+        public abstract uint VendorId { get; }
+
+        /// <inheritdoc />
         public abstract string VendorName { get; }
+
+        /// <inheritdoc />
+        public abstract uint ProductId { get; }
 
         /// <inheritdoc />
         public abstract string ProductName { get; }
@@ -47,12 +53,19 @@ namespace AydenIO.Lifx {
         /// <inheritdoc />
         public virtual ushort MaxKelvin => 0;
 
+        /// <value>Gets the "hardware" version of this virtual device</value>
+        protected abstract uint VersionNumber { get; }
+
         /// <summary>
         /// Creates a new virtual LIFX device
         /// </summary>
         /// <param name="lifx">The <c>LifxNetwork</c> to associated this virtual device with</param>
         /// <param name="macAddress">The <c>MacAddress</c> of this virtual device</param>
         public LifxVirtualDevice(LifxNetwork lifx, MacAddress macAddress) {
+            // Init fields that require access to virtual device
+            this.info = new LifxInfo(this);
+            this.version = new LifxVersion(this);
+
             this.Lifx = lifx;
             this.MacAddress = macAddress;
 
@@ -83,22 +96,37 @@ namespace AydenIO.Lifx {
         private class LifxHostAndWifiInfo : ILifxHostInfo, ILifxWifiInfo {
             public float Signal => 0.01f;
 
-            public uint TransmittedBytes { get; set; } = 0;
-            public uint ReceivedBytes { get; set; } = 0;
+            private long transmittedBytes;
+
+            public uint TransmittedBytes => (uint)this.transmittedBytes;
+
+            private long receivedBytes;
+
+            public uint ReceivedBytes => (uint)this.receivedBytes;
 
             public LifxSignalStrength GetSignalStrength() {
                 return Utilities.GetSignalStrength(this.Signal);
+            }
+
+            public void AddTxBytes(uint x) {
+                // thread safety
+                Interlocked.Add(ref this.transmittedBytes, x);
+            }
+
+            public void AddRxBytes(uint x) {
+                // thread safety
+                Interlocked.Add(ref this.receivedBytes, x);
             }
         }
 
         private readonly LifxHostAndWifiInfo hostAndWifiInfo = new LifxHostAndWifiInfo();
 
         internal void AddTxBytes(uint x) {
-            this.hostAndWifiInfo.TransmittedBytes += x;
+            this.hostAndWifiInfo.AddTxBytes(x);
         }
 
         internal void AddRxBytes(uint x) {
-            this.hostAndWifiInfo.ReceivedBytes += x;
+            this.hostAndWifiInfo.AddRxBytes(x);
         }
 
         /// <value>Gets the internal host info</value>
@@ -148,31 +176,27 @@ namespace AydenIO.Lifx {
         }
 
         // Info
+        /// <value>Gets the time that this virtual device was started</value>
+        protected abstract DateTime StartTime { get; }
+
+        /// <value>Gets the time that this virtual device was last stopped</value>
+        protected abstract DateTime LastDownTime { get; }
+
         private class LifxInfo : ILifxInfo {
+            protected LifxVirtualDevice VirtualDevice { get; private set; }
+
             public DateTime Time => DateTime.UtcNow;
 
-            public DateTime StartTime { get; set; }
+            public TimeSpan Uptime => this.Time - this.VirtualDevice.StartTime;
 
-            public TimeSpan Uptime => this.Time - this.StartTime;
+            public TimeSpan Downtime => this.VirtualDevice.StartTime - this.VirtualDevice.LastDownTime;
 
-            public DateTime LastDownTime { get; set; }
-
-            public TimeSpan Downtime => this.StartTime - this.LastDownTime;
+            public LifxInfo(LifxVirtualDevice virtualDevice) {
+                this.VirtualDevice = virtualDevice;
+            }
         }
 
-        private readonly LifxInfo info = new LifxInfo();
-
-        /// <value>Gets or sets the time that this virtual device was started</value>
-        protected DateTime StartTime {
-            get => this.info.StartTime;
-            set => this.info.StartTime = value;
-        }
-
-        /// <value>Gets or sets the time that this virtual device was last stopped</value>
-        protected DateTime LastDownTime {
-            get => this.info.LastDownTime;
-            set => this.info.LastDownTime = value;
-        }
+        private readonly LifxInfo info;
 
         /// <value>Gets the internal info value</value>
         protected ILifxInfo Info => this.info;
@@ -184,32 +208,20 @@ namespace AydenIO.Lifx {
 
         // Version
         private class LifxVersion : ILifxVersion {
-            public uint VendorId { get; set; }
+            protected LifxVirtualDevice VirtualDevice { get; private set; }
 
-            public uint ProductId { get; set; }
+            public uint VendorId => this.VirtualDevice.VendorId;
 
-            public uint Version { get; set; }
+            public uint ProductId => this.VirtualDevice.ProductId;
+
+            public uint Version => this.VirtualDevice.VersionNumber;
+
+            public LifxVersion(LifxVirtualDevice virtualDevice) {
+                this.VirtualDevice = virtualDevice;
+            }
         }
 
-        private readonly LifxVersion version = new LifxVersion();
-
-        /// <inheritdoc />
-        public uint VendorId {
-            get => this.version.VendorId;
-            protected set => this.version.VendorId = value;
-        }
-
-        /// <inheritdoc />
-        public uint ProductId {
-            get => this.version.ProductId;
-            protected set => this.version.ProductId = value;
-        }
-
-        /// <value>Gets or sets the "hardware" version of this virtual device</value>
-        protected uint VersionNumber {
-            get => this.version.Version;
-            set => this.version.Version = value;
-        }
+        private readonly LifxVersion version;
 
         /// <value>Gets the internal version value</value>
         protected ILifxVersion Version => this.version;

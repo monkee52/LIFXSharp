@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace AydenIO.Examples.Lifx {
     class ExampleLight : LifxVirtualLight {
+        public override uint VendorId => 1;
+
         public override string VendorName => "AydenIO";
+
+        public override uint ProductId => 59;
 
         public override string ProductName => nameof(ExampleLight);
 
@@ -17,8 +21,19 @@ namespace AydenIO.Examples.Lifx {
 
         public override ushort MaxKelvin => UInt16.MaxValue;
 
-        public ExampleLight(LifxNetwork lifx, MacAddress macAddress) : base(lifx, macAddress) {
+        private DateTime startTime;
 
+        protected override DateTime StartTime => this.startTime;
+
+        private DateTime lastDownTime;
+
+        protected override DateTime LastDownTime => this.lastDownTime;
+
+        protected override uint VersionNumber => 1;
+
+        public ExampleLight(LifxNetwork lifx, MacAddress macAddress) : base(lifx, macAddress) {
+            this.lastDownTime = DateTime.UtcNow;
+            this.startTime = DateTime.UtcNow;
         }
 
         // State
