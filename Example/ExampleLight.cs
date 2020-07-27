@@ -21,11 +21,11 @@ namespace AydenIO.Examples.Lifx {
 
         public override ushort MaxKelvin => UInt16.MaxValue;
 
-        private DateTime startTime;
+        private readonly DateTime startTime;
 
         protected override DateTime StartTime => this.startTime;
 
-        private DateTime lastDownTime;
+        private readonly DateTime lastDownTime;
 
         protected override DateTime LastDownTime => this.lastDownTime;
 
