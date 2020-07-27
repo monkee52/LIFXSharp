@@ -12,10 +12,10 @@ namespace AydenIO.Lifx {
 
         public DateTime UpdatedAt { get; private set; }
 
-        private readonly ICollection<WeakReference<ILifxDevice>> members;
+        private readonly ICollection<EquatableWeakReference<ILifxDevice>> members;
 
         private LifxGroupStore() {
-            this.members = new HashSet<WeakReference<ILifxDevice>>();
+            this.members = new HashSet<EquatableWeakReference<ILifxDevice>>();
         }
 
         public LifxGroupStore(string label) : this() {
@@ -34,21 +34,15 @@ namespace AydenIO.Lifx {
             this.Label = newLabel;
             this.UpdatedAt = DateTime.UtcNow;
 
-            ICollection<WeakReference<ILifxDevice>> devicesToRemove = new List<WeakReference<ILifxDevice>>();
+            this.Purge();
+            
             ICollection<Task> renameTasks = new List<Task>();
 
             // Change each devices group
-            foreach (WeakReference<ILifxDevice> deviceRef in this.members) {
+            foreach (EquatableWeakReference<ILifxDevice> deviceRef in this.members) {
                 if (deviceRef.TryGetTarget(out ILifxDevice device)) {
                     renameTasks.Add(device.SetGroup(this, timeoutMs, cancellationToken));
-                } else {
-                    devicesToRemove.Add(deviceRef);
                 }
-            }
-
-            // Remove devices non-existant devices
-            foreach (WeakReference<ILifxDevice> deviceRef in devicesToRemove) {
-                this.members.Remove(deviceRef);
             }
 
             // Await all rename tasks and throw aggregate exception if some failed
@@ -56,7 +50,7 @@ namespace AydenIO.Lifx {
         }
 
         public bool RemoveMember(ILifxDevice device) {
-            WeakReference<ILifxDevice> deviceRef = this.members.FirstOrDefault(x => x.TryGetTarget(out ILifxDevice potentialDevice) && potentialDevice == device);
+            EquatableWeakReference<ILifxDevice> deviceRef = this.members.FirstOrDefault(x => x.Target == device);
 
             if (deviceRef != null) {
                 this.members.Remove(deviceRef);
@@ -68,7 +62,21 @@ namespace AydenIO.Lifx {
         }
 
         public void AddMember(ILifxDevice device) {
-            this.members.Add(new WeakReference<ILifxDevice>(device));
+            this.members.Add(new EquatableWeakReference<ILifxDevice>(device));
+        }
+
+        private void Purge() {
+            IList<EquatableWeakReference<ILifxDevice>> devicesToRemove = this.members.Where(x => !x.IsAlive).ToList();
+
+            foreach (EquatableWeakReference<ILifxDevice> weakRef in devicesToRemove) {
+                this.members.Remove(weakRef);
+            }
+        }
+
+        public IReadOnlyCollection<ILifxDevice> GetMembers() {
+            this.Purge();
+
+            return this.members.Select(x => x.Target).Where(x => x != null).ToList().AsReadOnly();
         }
     }
 }

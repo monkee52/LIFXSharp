@@ -26,11 +26,21 @@ namespace AydenIO.Examples.Lifx {
 
             LifxVirtualLight virtualLight = new ExampleLight(lifx, MacAddress.CreateLocallyAdministeredAddress());
 
-            virtualLight.SetLocation(firstDevice.GetLocation().Result);
-            virtualLight.SetGroup(firstDevice.GetGroup().Result);
+            ILifxLocation location = firstDevice.GetLocation().Result;
+            ILifxGroup group = firstDevice.GetGroup().Result;
+
+            virtualLight.SetLocation(location);
+            virtualLight.SetGroup(group);
             virtualLight.SetLabel("Test!");
 
             Console.WriteLine($"Virtual MAC: {virtualLight.MacAddress}");
+
+            Console.WriteLine("-------");
+            Console.WriteLine($"Location: {location.Label}");
+
+            foreach (ILifxDevice device in lifx.LocationManager.GetMembers(location)) {
+                Console.WriteLine(device.GetLabel().Result);
+            }
 
             Console.ReadLine();
 

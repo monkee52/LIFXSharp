@@ -307,10 +307,14 @@ namespace AydenIO.Lifx {
                 case Messages.SetLocation setLocation: {
                     await virtualDevice.SetLocation(setLocation);
 
+                    this.LocationManager.UpdateMembershipInformation(virtualDevice, setLocation);
+
                     break;
                 }
                 case Messages.SetGroup setGroup: { 
                     await virtualDevice.SetGroup(setGroup);
+
+                    this.GroupManager.UpdateMembershipInformation(virtualDevice, setGroup);
 
                     break;
                 }
@@ -421,12 +425,16 @@ namespace AydenIO.Lifx {
 
                         responses.Add(new Messages.StateLocation(location));
 
+                        this.LocationManager.UpdateMembershipInformation(virtualDevice, location);
+
                         break;
                     }
                     case Messages.GetGroup: {
                         ILifxGroup group = await virtualDevice.GetGroup();
 
                         responses.Add(new Messages.StateGroup(group));
+
+                        this.GroupManager.UpdateMembershipInformation(virtualDevice, group);
 
                         break;
                     }

@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,9 +13,11 @@ namespace AydenIO.Lifx {
     /// </summary>
     public class LifxLocationManager {
         private readonly IDictionary<Guid, LifxLocationStore> locations;
+        private readonly ConditionalWeakTable<ILifxDevice, LifxLocationStore> deviceMap;
 
         internal LifxLocationManager() {
             this.locations = new ConcurrentDictionary<Guid, LifxLocationStore>();
+            this.deviceMap = new ConditionalWeakTable<ILifxDevice, LifxLocationStore>();
         }
 
         /// <summary>
@@ -100,15 +103,20 @@ namespace AydenIO.Lifx {
         }
 
         internal void UpdateMembershipInformation(ILifxDevice device, ILifxLocation location) {
-            // Remove from old location
-            foreach (LifxLocationStore store in this.locations.Values) {
-                if (store.RemoveMember(device)) {
-                    break;
-                }
+            if (this.deviceMap.TryGetValue(device, out LifxLocationStore previousLocation)) {
+                previousLocation.RemoveMember(device);
             }
 
             // Add to new location
-            this.GetLocationInternal(location).AddMember(device);
+            LifxLocationStore newLocation = this.GetLocationInternal(location);
+
+            newLocation.AddMember(device);
+
+            this.deviceMap.AddOrUpdate(device, newLocation);
+        }
+
+        public IReadOnlyCollection<ILifxDevice> GetMembers(ILifxLocation location) {
+            return this.GetLocationInternal(location).GetMembers();
         }
     }
 }

@@ -298,6 +298,8 @@ namespace AydenIO.Lifx {
 
             this.location = location;
 
+            this.Lifx.LocationManager.UpdateMembershipInformation(this, location);
+
             return location;
         }
 
@@ -310,6 +312,8 @@ namespace AydenIO.Lifx {
             };
 
             await this.Lifx.SendWithAcknowledgement(this, setLocation, timeoutMs, cancellationToken);
+
+            this.Lifx.LocationManager.UpdateMembershipInformation(this, location);
         }
 
         // Group
@@ -327,6 +331,8 @@ namespace AydenIO.Lifx {
 
             this.group = group;
 
+            this.Lifx.GroupManager.UpdateMembershipInformation(this, group);
+
             return group;
         }
 
@@ -339,6 +345,8 @@ namespace AydenIO.Lifx {
             };
 
             await this.Lifx.SendWithAcknowledgement(this, setGroup, timeoutMs, cancellationToken);
+
+            this.Lifx.GroupManager.UpdateMembershipInformation(this, group);
         }
 
         // Echo

@@ -129,6 +129,34 @@
         <member name="M:AydenIO.Lifx.LifxRgbColor16Bit.ToHsbk">
             <inheritdoc />
         </member>
+        <member name="T:AydenIO.Lifx.EquatableWeakReference`1">
+            <summary>
+            Creates a weak reference that can be compared for equality
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.EquatableWeakReference`1.#ctor(`0)">
+            <summary>
+            Creates a new weak reference object that can be compared for equality
+            </summary>
+            <param name="target">The target</param>
+        </member>
+        <member name="P:AydenIO.Lifx.EquatableWeakReference`1.Target">
+            <value>Gets or sets the object (the target) referenced by the current <c>EquatableWeakReference</c> object.</value>
+        </member>
+        <member name="P:AydenIO.Lifx.EquatableWeakReference`1.IsAlive">
+            <value>Gets an indication whether the object referenced by the current <c>EquatableWeakReference</c> object has been garbage collected.</value>
+        </member>
+        <member name="M:AydenIO.Lifx.EquatableWeakReference`1.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.EquatableWeakReference`1.TryGetTarget(`0@)">
+            <summary>
+            Tries to retrieve the target object that is referenced by the current <c>EquatableWeakReference</c> object.
+            </summary>
+            <param name="target">Contains the target object, if initialized</param>
+            <returns></returns>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxDevice">
             <summary>
             Represents a LIFX device
@@ -652,6 +680,49 @@
         <member name="P:AydenIO.Lifx.LifxDeviceLostEventArgs.MacAddress">
             <value>Gets the MAC address of the device that has been lost</value>
         </member>
+        <member name="T:AydenIO.Lifx.LifxGroupManager">
+            <summary>
+            Manages groups known to the <c>LifxNetwork</c>
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxGroupManager.GetGroup(System.Guid)">
+            <summary>
+            Gets a group by guid
+            </summary>
+            <param name="guid">The guid</param>
+            <returns>The group, or null if it does not exist</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxGroupManager.GetGroup(System.Guid,System.String)">
+            <summary>
+            Gets a group by guid, or creates it if it does not exist
+            </summary>
+            <param name="guid">The guid</param>
+            <param name="label">The label to use if creating a group</param>
+            <returns>The group</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxGroupManager.GetGroup(System.String)">
+            <summary>
+            Gets a group by label
+            </summary>
+            <param name="label">The label</param>
+            <returns>The group, or null if it does not exist</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxGroupManager.GetGroup(AydenIO.Lifx.ILifxGroup)">
+            <summary>
+            Gets a group given another group
+            </summary>
+            <param name="group">The previous group</param>
+            <returns>The group</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxGroupManager.RenameGroup(AydenIO.Lifx.ILifxGroup,System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Rename a group, and rename all associated devices
+            </summary>
+            <param name="group">The group</param>
+            <param name="newLabel">The new name</param>
+            <param name="timeoutMs">How long before the call times out if there is no response</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
         <member name="T:AydenIO.Lifx.LifxInfraredLight">
             <summary>
             Represents a LIFX light device with infrared
@@ -718,6 +789,49 @@
         </member>
         <member name="M:AydenIO.Lifx.LifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxLocationManager">
+            <summary>
+            Manages locations known to the <c>LifxNetwork</c>
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLocationManager.GetLocation(System.Guid)">
+            <summary>
+            Gets a location by guid
+            </summary>
+            <param name="guid">The guid</param>
+            <returns>The location, or null if it does not exist</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLocationManager.GetLocation(System.Guid,System.String)">
+            <summary>
+            Gets a location by guid, or creates it if it does not exist
+            </summary>
+            <param name="guid">The guid</param>
+            <param name="label">The label to use if creating a location</param>
+            <returns>The location</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLocationManager.GetLocation(System.String)">
+            <summary>
+            Gets a location by label
+            </summary>
+            <param name="label">The label</param>
+            <returns>The location, or null if it does not exist</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLocationManager.GetLocation(AydenIO.Lifx.ILifxLocation)">
+            <summary>
+            Gets a location given another location
+            </summary>
+            <param name="location">The previous location</param>
+            <returns>The location</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLocationManager.RenameLocation(AydenIO.Lifx.ILifxLocation,System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Rename a location, and rename all associated devices
+            </summary>
+            <param name="location">The location</param>
+            <param name="newLabel">The new name</param>
+            <param name="timeoutMs">How long before the call times out if there is no response</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         </member>
         <member name="T:AydenIO.Lifx.LifxMessageType">
             <summary>

@@ -110,5 +110,9 @@ namespace AydenIO.Lifx {
             // Add to new group
             this.GetGroupInternal(group).AddMember(device);
         }
+
+        public IReadOnlyCollection<ILifxDevice> GetMembers(ILifxGroup group) {
+            return this.GetGroupInternal(group).GetMembers();
+        }
     }
 }
