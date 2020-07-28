@@ -8,14 +8,14 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Manages groups known to the <c>LifxNetwork</c>
     /// </summary>
-    public class LifxGroupManager : LifxMembershipMananger<LifxGroupStore, ILifxGroup> {
+    public class LifxGroupManager : LifxMembershipMananger<LifxGroupCollection, ILifxGroup> {
         internal LifxGroupManager() : base() {
 
         }
 
         /// <inheritdoc />
-        protected override LifxGroupStore CreateStore(Guid guid, string label, DateTime updatedAt) {
-            return new LifxGroupStore(guid, label, updatedAt);
+        protected override LifxGroupCollection CreateStore(Guid guid, string label, DateTime updatedAt) {
+            return new LifxGroupCollection(guid, label, updatedAt);
         }
     }
 }

@@ -6,11 +6,11 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// A collection of devices belong to a LIFX location
     /// </summary>
-    public class LifxLocationStore : LifxMembershipStore<ILifxLocation>, ILifxLocation {
+    public class LifxLocationCollection : LifxMembershipCollection<ILifxLocation>, ILifxLocation {
         /// <inheritdoc />
         public Guid Location => this.Guid;
 
-        internal LifxLocationStore(Guid guid, string label, DateTime updatedAt) : base(guid, label, updatedAt) {
+        internal LifxLocationCollection(Guid guid, string label, DateTime updatedAt) : base(guid, label, updatedAt) {
 
         }
 

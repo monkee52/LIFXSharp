@@ -12,7 +12,7 @@ namespace AydenIO.Lifx {
     /// </summary>
     /// <typeparam name="TStore">The collection type</typeparam>
     /// <typeparam name="TType">The collection type as known to devices</typeparam>
-    public abstract class LifxMembershipMananger<TStore, TType> where TStore : LifxMembershipStore<TType>, TType where TType : ILifxMembershipInfo {
+    public abstract class LifxMembershipMananger<TStore, TType> where TStore : LifxMembershipCollection<TType>, TType where TType : ILifxMembershipInfo {
         private readonly IDictionary<Guid, TStore> collections;
         private readonly ConditionalWeakTable<ILifxDevice, TStore> deviceMap;
 

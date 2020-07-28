@@ -6,13 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
-    public delegate Task LifxUpdateMembershipInformation<T>(T collection, int? timeoutMs = null, CancellationToken cancellationToken = default);
-
     /// <summary>
     /// A collection of devices belonging to a membership information
     /// </summary>
     /// <typeparam name="T">The membership information type</typeparam>
-    public abstract class LifxMembershipStore<T> : ICollection<ILifxDevice>, IReadOnlyCollection<ILifxDevice>, ILifxMembershipInfo where T : ILifxMembershipInfo {
+    public abstract class LifxMembershipCollection<T> : ICollection<ILifxDevice>, IReadOnlyCollection<ILifxDevice>, ILifxMembershipInfo where T : ILifxMembershipInfo {
         /// <inheritdoc />
         public Guid Guid { get; private set; }
 
@@ -30,7 +28,7 @@ namespace AydenIO.Lifx {
         /// <param name="guid">The identifier for the membership information</param>
         /// <param name="label">The label for the membership information</param>
         /// <param name="updatedAt">The time the membership information was last updated</param>
-        protected LifxMembershipStore(Guid guid, string label, DateTime updatedAt) {
+        protected LifxMembershipCollection(Guid guid, string label, DateTime updatedAt) {
             this.members = new HashSet<EquatableWeakReference<ILifxDevice>>();
 
             this.Guid = guid;
