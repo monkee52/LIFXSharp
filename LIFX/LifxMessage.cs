@@ -79,8 +79,10 @@ namespace AydenIO.Lifx {
         //private bool isTagged;
 
         private void ReadFrame(BinaryReader reader) {
+            // Size
             _ = reader.ReadUInt16();
 
+            // Protocol, addressable, tagged, origin
             ushort flags = reader.ReadUInt16();
 
             ushort protocol = (ushort)(flags & 0xfff);
@@ -102,6 +104,7 @@ namespace AydenIO.Lifx {
                 throw new InvalidDataException($"Origin must be '{LifxMessage.ORIGIN}', got '{origin}'");
             }
 
+            // Source
             uint source = reader.ReadUInt32();
 
             if (this.Type != LifxMessageType._internal_unknown_ && source != (uint)this.SourceId) {
@@ -112,26 +115,32 @@ namespace AydenIO.Lifx {
         }
 
         private void ReadFrameAddress(BinaryReader reader) {
+            // Target
             byte[] target = reader.ReadBytes(6);
 
             _ = reader.ReadBytes(2); // target padding
 
             this.Target = new MacAddress(target);
 
-            _ = reader.ReadBytes(6); // reserved
+            // Reserved
+            _ = reader.ReadBytes(6);
 
+            // Res required, ack required
             byte flags = reader.ReadByte();
 
             this.ResponseFlags = (LifxeResponseFlags)(flags & 3);
 
+            // Sequence
             byte sequence = reader.ReadByte();
 
             this.SequenceNumber = sequence;
         }
 
         private void ReadProtocolHeader(BinaryReader reader) {
+            // Reserved
             _ = reader.ReadUInt64();
 
+            // Type
             ushort type = reader.ReadUInt16();
 
             if (type != (ushort)this.Type && this.Type != LifxMessageType._internal_unknown_) {
@@ -140,6 +149,7 @@ namespace AydenIO.Lifx {
 
             this.Type = (LifxMessageType)type;
 
+            // Reserved
             _ = reader.ReadUInt16();
         }
 

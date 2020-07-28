@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AydenIO.Examples.Lifx {
     class Program {
-        [LifxIgnoreUnsupported("GetTime")]
+        [LifxIgnoreUnsupported("GetTime", "GetAccessPoints")]
         static void Main(string[] args) {
             LifxNetwork lifx = new LifxNetwork();
 
@@ -28,6 +28,12 @@ namespace AydenIO.Examples.Lifx {
             DateTime dt = device.GetTime().Result;
 
             Console.WriteLine(dt);
+
+            IReadOnlyCollection<ILifxDevice> devicesInLocation = lifx.LocationManager.GetMembers(device.GetLocation().Result);
+
+            foreach (ILifxDevice deviceInLocation in devicesInLocation) {
+                Console.WriteLine(deviceInLocation.GetLabel().Result);
+            }
 
             Console.ReadLine();
 
