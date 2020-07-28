@@ -1,12 +1,18 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Manages locations known to the <c>LifxNetwork</c>
+    /// Manages locations known to the <see cref="LifxNetwork"/>.
     /// </summary>
     internal class LifxLocationCollection : LifxMembershipCollection<LifxLocation, ILifxLocation, ILifxLocationTag>, ILifxLocationCollection {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LifxLocationCollection"/> class.
+        /// </summary>
         internal LifxLocationCollection() : base() {
-
+            // Empty
         }
 
         /// <inheritdoc />

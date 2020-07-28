@@ -53,13 +53,21 @@ namespace AydenIO.Lifx {
             return Encoding.UTF8.GetString(buffer.TakeWhile(x => x != 0).ToArray());
         }
 
-        public static TimeSpan NanosecondsToTimeSpan(ulong ns) => TimeSpan.FromTicks((long)(ns / 100));
+        public static TimeSpan NanosecondsToTimeSpan(ulong ns) {
+            return TimeSpan.FromTicks((long)(ns / 100));
+        }
 
-        public static ulong TimeSpanToNanoseconds(TimeSpan ts) => (ulong)(ts.Ticks * 100);
+        public static ulong TimeSpanToNanoseconds(TimeSpan ts) {
+            return (ulong)(ts.Ticks * 100);
+        }
 
-        public static DateTime NanosecondsToDateTime(ulong ns) => DateTime.UnixEpoch + Utilities.NanosecondsToTimeSpan(ns);
+        public static DateTime NanosecondsToDateTime(ulong ns) {
+            return DateTime.UnixEpoch + Utilities.NanosecondsToTimeSpan(ns);
+        }
 
-        public static ulong DateTimeToNanoseconds(DateTime dt) => Utilities.TimeSpanToNanoseconds(dt - DateTime.UnixEpoch);
+        public static ulong DateTimeToNanoseconds(DateTime dt) {
+            return Utilities.TimeSpanToNanoseconds(dt - DateTime.UnixEpoch);
+        }
 
         public static LifxSignalStrength GetSignalStrength(float signal) {
             double val = Math.Floor(10.0 * Math.Log10(signal) + 0.5);
@@ -128,12 +136,12 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Walks up the stack to ensure that the method calling this' caller(s) has the LifxIgnoreUnsupportedAttribute for the calling method
+        /// Walks up the stack to ensure that the method calling this' caller(s) has the LifxIgnoreUnsupportedAttribute for the calling method.
         /// </summary>
-        /// <param name="calleeMethodName">The method name to assert the callee has explicitly allowed</param>
+        /// <param name="calleeMethodName">The method name to assert the callee has explicitly allowed.</param>
         public static void AssertCallerIgnoreUnsupported([CallerMemberName]string calleeMethodName = null) {
             if (!Utilities.StackAttributekWalker<LifxIgnoreUnsupportedAttribute>(2, false).SelectMany(x => x.UnsupportedMethods).Any(x => x == calleeMethodName)) {
-                throw new InvalidOperationException("Caller must have LifxIgnoreUnsupportedAttribute to use this method.");
+                throw new InvalidOperationException($"Caller must have {nameof(LifxIgnoreUnsupportedAttribute)} to use this method.");
             }
         }
     }

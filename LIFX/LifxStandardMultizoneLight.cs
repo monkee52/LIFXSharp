@@ -1,24 +1,38 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
+    /// <summary>
+    /// Represents a multizone light that doesn't support the extended API.
+    /// </summary>
     internal class LifxStandardMultizoneLight : LifxMultizoneLight {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LifxStandardMultizoneLight"/> class.
+        /// </summary>
+        /// <param name="lifx">The <see cref="LifxNetwork"/> that the device belongs to.</param>
+        /// <param name="macAddress">The <see cref="MacAddress"/> of the device.</param>
+        /// <param name="endPoint">The <see cref="IPEndPoint"/> of the device.</param>
+        /// <param name="version">The <see cref="ILifxVersion"/> of the device.</param>
+        /// <param name="hostFirmware">The <see cref="ILifxHostFirmware"/> of the device.</param>
         protected internal LifxStandardMultizoneLight(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version, ILifxHostFirmware hostFirmware) : base(lifx, macAddress, endPoint, version, hostFirmware) {
-            
+            // Empty
         }
 
+        /// <inheritdoc />
         public override async Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             LifxColorMultizoneState state = new LifxColorMultizoneState(length) {
-                Index = startAt
+                Index = startAt,
             };
 
             Messages.GetColorZones getColorZones = new Messages.GetColorZones() {
                 StartIndex = (byte)startAt,
-                EndIndex = (byte)(Math.Min(255, startAt + length))
+                EndIndex = (byte)Math.Min(255, startAt + length),
             };
 
             IReadOnlyCollection<LifxMessage> responses = await this.Lifx.SendWithMultipleResponse<LifxMessage>(this, getColorZones, timeoutMs, cancellationToken);
@@ -49,6 +63,7 @@ namespace AydenIO.Lifx {
             return state;
         }
 
+        /// <inheritdoc />
         public override async Task SetMultizoneState(LifxApplicationRequest apply, ushort startAt, IEnumerable<ILifxColor> colors, TimeSpan duration = default, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             ushort index = startAt;
 
@@ -58,12 +73,11 @@ namespace AydenIO.Lifx {
                 ILifxColor color = colorEnumerator.Current;
 
                 // TODO: Optimize end index for duplicate colors
-
                 Messages.SetColorZones setColorZones = new Messages.SetColorZones() {
                     Duration = duration,
                     Apply = apply,
                     StartIndex = (byte)index,
-                    EndIndex = (byte)index
+                    EndIndex = (byte)index,
                 };
 
                 setColorZones.FromHsbk(color.ToHsbk());
@@ -74,6 +88,7 @@ namespace AydenIO.Lifx {
             }
         }
 
+        /// <inheritdoc />
         public override async Task SetMultizoneState(ushort startAt, IEnumerable<ILifxColor> colors, TimeSpan duration = default, bool rapid = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             ushort index = startAt;
 
@@ -83,12 +98,11 @@ namespace AydenIO.Lifx {
                 ILifxColor color = colorEnumerator.Current;
 
                 // TODO: Optimize end index for duplicate colors
-
                 Messages.SetColorZones setColorZones = new Messages.SetColorZones() {
                     Duration = duration,
                     Apply = LifxApplicationRequest.Apply,
                     StartIndex = (byte)index,
-                    EndIndex = (byte)index
+                    EndIndex = (byte)index,
                 };
 
                 setColorZones.FromHsbk(color.ToHsbk());

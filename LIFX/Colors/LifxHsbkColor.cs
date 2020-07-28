@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Basic implementation of <c>ILifxHsbkColor</c>
+    /// Basic implementation of <see cref="ILifxHsbkColor"/>.
     /// </summary>
     public class LifxHsbkColor : ILifxHsbkColor {
         /// <inheritdoc />
@@ -22,7 +20,7 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public void FromHsbk(ILifxHsbkColor hsbk) {
-            if (this != hsbk) {
+            if (this != hsbk && hsbk != null) {
                 this.Hue = hsbk.Hue;
                 this.Saturation = hsbk.Saturation;
                 this.Brightness = hsbk.Brightness;

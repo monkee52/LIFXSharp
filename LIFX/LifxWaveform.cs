@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Possible waveform types for LIFX light bulb effects
-    /// <see href="https://lan.developer.lifx.com/docs/waveforms" />
+    /// Possible waveform types for LIFX light bulb effects.
+    /// <para>See also <seealso href="https://lan.developer.lifx.com/docs/waveforms" />.</para>
     /// </summary>
     public enum LifxWaveform {
         /// <summary>
@@ -35,6 +34,6 @@ namespace AydenIO.Lifx {
         /// <summary>
         /// The color will be set immediately to color, then to current color after the duty cycle fraction expires.
         /// </summary>
-        Pulse = 4
+        Pulse = 4,
     }
 }

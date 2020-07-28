@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,19 +13,36 @@ using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Represents a LIFX device
+    /// Represents a LIFX device.
     /// </summary>
     public class LifxDevice : ILifxDevice {
-        /// <value>Gets the associated <c>LifxNetwork</c> for the device</value>
-        protected LifxNetwork Lifx { get; private set; }
+        private IReadOnlyCollection<ILifxService> services;
+
+        private ILifxHostInfo hostInfo;
+
+        private ILifxHostFirmware hostFirmware;
+
+        private ILifxWifiInfo wifiInfo;
+
+        private ILifxWifiFirmware wifiFirmware;
+
+        private string label;
+
+        private ILifxVersion version;
+
+        private ILifxInfo info;
+
+        private ILifxLocationTag location;
+
+        private ILifxGroupTag group;
 
         /// <summary>
-        /// Creates a LIFX device class
+        /// Initializes a new instance of the <see cref="LifxDevice"/> class.
         /// </summary>
-        /// <param name="lifx">The <c>LifxNetwork</c> the device belongs to</param>
-        /// <param name="macAddress">The MAC address of the device</param>
-        /// <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
-        /// <param name="version">The version of the device</param>
+        /// <param name="lifx">The <c>LifxNetwork</c> the device belongs to.</param>
+        /// <param name="macAddress">The MAC address of the device.</param>
+        /// <param name="endPoint">The <c>IPEndPoint</c> of the device.</param>
+        /// <param name="version">The version of the device.</param>
         protected internal LifxDevice(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version) {
             this.Lifx = lifx;
             this.MacAddress = macAddress;
@@ -50,6 +70,7 @@ namespace AydenIO.Lifx {
         }
 
         // Properties
+
         /// <inheritdoc />
         public uint VendorId => this.version.VendorId;
 
@@ -64,7 +85,6 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public bool SupportsColor { get; private set; }
-
 
         /// <inheritdoc />
         public bool SupportsInfrared { get; private set; }
@@ -84,17 +104,17 @@ namespace AydenIO.Lifx {
         /// <inheritdoc />
         public ushort MaxKelvin { get; private set; }
 
-        /// <value>Gets the <c>IPEndPoint</c> of the device</value>
+        /// .<summary>Gets the <c>IPEndPoint</c> of the device.</summary>
         public IPEndPoint EndPoint { get; }
 
         /// <inheritdoc />
         public MacAddress MacAddress { get; private set; }
 
-        /// <value>Gets the last time the device was seen by discovery</value>
+        /// .<summary>Gets the last time the device was seen by discovery.</summary>
         public DateTime LastSeen { get; internal set; }
 
-        // Service
-        private IReadOnlyCollection<ILifxService> services;
+        /// <summary>Gets the associated <c>LifxNetwork</c> for the device.</summary>
+        protected LifxNetwork Lifx { get; private set; }
 
         /// <inheritdoc />
         public async Task<IReadOnlyCollection<ILifxService>> GetServices(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
@@ -111,9 +131,6 @@ namespace AydenIO.Lifx {
             return services;
         }
 
-        // Host info
-        private ILifxHostInfo hostInfo;
-
         /// <inheritdoc />
         public virtual async Task<ILifxHostInfo> GetHostInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.hostInfo != null) {
@@ -128,9 +145,6 @@ namespace AydenIO.Lifx {
 
             return info;
         }
-
-        // Host firmware
-        private ILifxHostFirmware hostFirmware;
 
         /// <inheritdoc />
         public async Task<ILifxHostFirmware> GetHostFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
@@ -147,17 +161,6 @@ namespace AydenIO.Lifx {
             return hostFirmware;
         }
 
-        /// <summary>
-        /// Sets the internal cached value for host firmware, used when different firmware versions have different APIs
-        /// </summary>
-        /// <param name="hostFirmware">The host firmware for the device</param>
-        protected void SetHostFirmwareCachedValue(ILifxHostFirmware hostFirmware) {
-            this.hostFirmware = hostFirmware;
-        }
-
-        // Wifi Info
-        private ILifxWifiInfo wifiInfo;
-
         /// <inheritdoc />
         public async Task<ILifxWifiInfo> GetWifiInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.wifiInfo != null) {
@@ -172,9 +175,6 @@ namespace AydenIO.Lifx {
 
             return wifiInfo;
         }
-
-        // Wifi Firmware
-        private ILifxWifiFirmware wifiFirmware;
 
         /// <inheritdoc />
         public async Task<ILifxWifiFirmware> GetWifiFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
@@ -191,7 +191,6 @@ namespace AydenIO.Lifx {
             return wifiFirmware;
         }
 
-        // Power
         /// <inheritdoc />
         public virtual async Task<bool> GetPower(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.GetPower getPower = new Messages.GetPower();
@@ -204,7 +203,7 @@ namespace AydenIO.Lifx {
         /// <inheritdoc />
         public virtual async Task SetPower(bool power, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.SetPower setPower = new Messages.SetPower() {
-                PoweredOn = power
+                PoweredOn = power,
             };
 
             await this.Lifx.SendWithAcknowledgement(this, setPower, timeoutMs, cancellationToken);
@@ -219,9 +218,6 @@ namespace AydenIO.Lifx {
         public Task PowerOff(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             return this.SetPower(false, timeoutMs, cancellationToken);
         }
-
-        // Label
-        private string label;
 
         /// <inheritdoc />
         public async Task<string> GetLabel(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
@@ -241,14 +237,11 @@ namespace AydenIO.Lifx {
         /// <inheritdoc />
         public async Task SetLabel(string label, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.SetLabel setLabel = new Messages.SetLabel() {
-                Label = label
+                Label = label,
             };
 
             await this.Lifx.SendWithAcknowledgement(this, setLabel, timeoutMs, cancellationToken);
         }
-
-        // Version
-        private ILifxVersion version;
 
         /// <inheritdoc />
         public async Task<ILifxVersion> GetVersion(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
@@ -265,9 +258,6 @@ namespace AydenIO.Lifx {
             return version;
         }
 
-        // Info
-        private ILifxInfo info;
-
         /// <inheritdoc />
         public async Task<ILifxInfo> GetInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.info != null) {
@@ -282,9 +272,6 @@ namespace AydenIO.Lifx {
 
             return info;
         }
-
-        // Location
-        private ILifxLocationTag location;
 
         /// <inheritdoc />
         public async Task<ILifxLocationTag> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
@@ -305,19 +292,20 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public async Task SetLocation(ILifxLocationTag location, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            if (location is null) {
+                throw new ArgumentNullException(nameof(location));
+            }
+
             Messages.SetLocation setLocation = new Messages.SetLocation() {
                 Location = location.Location,
                 Label = location.Label,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
             };
 
             await this.Lifx.SendWithAcknowledgement(this, setLocation, timeoutMs, cancellationToken);
 
             this.Lifx.UpdateLocationMembershipInformation(this, location);
         }
-
-        // Group
-        private ILifxGroupTag group;
 
         /// <inheritdoc />
         public async Task<ILifxGroupTag> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
@@ -338,10 +326,14 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public async Task SetGroup(ILifxGroupTag group, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            if (group is null) {
+                throw new ArgumentNullException(nameof(group));
+            }
+
             Messages.SetGroup setGroup = new Messages.SetGroup() {
                 Group = group.Group,
                 Label = group.Label,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
             };
 
             await this.Lifx.SendWithAcknowledgement(this, setGroup, timeoutMs, cancellationToken);
@@ -349,14 +341,13 @@ namespace AydenIO.Lifx {
             this.Lifx.UpdateGroupMembershipInformation(this, group);
         }
 
-        // Echo
         /// <summary>
-        /// Request a device to echo back a specific payload
+        /// Request a device to echo back a specific payload.
         /// </summary>
-        /// <param name="payload">The payload to be echoed</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>Whether the device responded, and whether the response matched the payload</returns>
+        /// <param name="payload">The payload to be echoed.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>Whether the device responded, and whether the response matched the payload.</returns>
         public async Task<bool> Ping(IEnumerable<byte> payload, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.EchoRequest echoRequest = new Messages.EchoRequest();
 
@@ -373,11 +364,11 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Request a device to echo back a random payload
+        /// Request a device to echo back a random payload.
         /// </summary>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>Whether the device responded, and whether the response matched the payload</returns>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>Whether the device responded, and whether the response matched the payload.</returns>
         public Task<bool> Ping(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             byte[] payload = new byte[64];
 
@@ -386,8 +377,19 @@ namespace AydenIO.Lifx {
             return this.Ping(payload, timeoutMs, cancellationToken);
         }
 
+        /// <summary>
+        /// Sets the internal cached value for host firmware. Used when different firmware versions have different APIs.
+        /// </summary>
+        /// <param name="hostFirmware">The host firmware for the device.</param>
+        protected void SetHostFirmwareCachedValue(ILifxHostFirmware hostFirmware) {
+            this.hostFirmware = hostFirmware;
+        }
+
         // Undocumented functions
-        [Obsolete]
+#pragma warning disable SA1202
+#pragma warning disable SA1600
+#pragma warning disable CS1591
+        [Obsolete("The use of this function is unsupported.")]
         public async Task<IReadOnlyCollection<ILifxAccessPoint>> GetAccessPoints(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Utilities.AssertCallerIgnoreUnsupported();
 
@@ -396,7 +398,7 @@ namespace AydenIO.Lifx {
             return await this.Lifx.SendWithMultipleResponse<Messages.StateAccessPoint>(this, getAccessPoints, timeoutMs, cancellationToken);
         }
 
-        [Obsolete]
+        [Obsolete("The use of this function is unsupported.")]
         public async Task<ILifxWifiState> GetWifiState(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Utilities.AssertCallerIgnoreUnsupported();
 
@@ -405,7 +407,7 @@ namespace AydenIO.Lifx {
             return await this.Lifx.SendWithResponse<Messages.StateWifiState>(this, getWifiState, timeoutMs, cancellationToken);
         }
 
-        [Obsolete]
+        [Obsolete("The use of this function is unsupported.")]
         public async Task<DateTime> GetTime(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Utilities.AssertCallerIgnoreUnsupported();
 
@@ -416,7 +418,7 @@ namespace AydenIO.Lifx {
             return time.Time;
         }
 
-        [Obsolete]
+        [Obsolete("The use of this function is unsupported.")]
         public async Task<IReadOnlyCollection<ILifxTagId>> GetTagIds(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Utilities.AssertCallerIgnoreUnsupported();
 
@@ -425,20 +427,27 @@ namespace AydenIO.Lifx {
             return await this.Lifx.SendWithMultipleResponse<Messages.StateTags>(this, getTags, timeoutMs, cancellationToken);
         }
 
-        [Obsolete]
+        [Obsolete("The use of this function is unsupported.")]
         public async Task<ILifxTag> GetTag(ulong tagId, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Utilities.AssertCallerIgnoreUnsupported();
 
             Messages.GetTagLabel getTagLabel = new Messages.GetTagLabel() {
-                TagId = tagId
+                TagId = tagId,
             };
 
             return await this.Lifx.SendWithResponse<Messages.StateTagLabel>(this, getTagLabel, timeoutMs, cancellationToken);
         }
 
-        [Obsolete]
+        [Obsolete("The use of this function is unsupported.")]
         public Task<ILifxTag> GetTag(ILifxTagId tag, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            if (tag is null) {
+                throw new ArgumentNullException(nameof(tag));
+            }
+
             return this.GetTag(tag.TagId, timeoutMs, cancellationToken);
         }
+#pragma warning restore CS1591
+#pragma warning restore SA1600
+#pragma warning restore SA1202
     }
 }

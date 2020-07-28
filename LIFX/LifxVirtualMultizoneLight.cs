@@ -1,15 +1,27 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Represents a virtual LIFX multizone light
+    /// Represents a virtual LIFX multizone light.
     /// </summary>
     public abstract class LifxVirtualMultizoneLight : LifxVirtualLight, ILifxMultizoneLight {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LifxVirtualMultizoneLight"/> class.
+        /// </summary>
+        /// <param name="lifx">The <see cref="LifxNetwork"/> to associated this virtual device with.</param>
+        /// <param name="macAddress">The <see cref="MacAddress"/> of this virtual device.</param>
+        public LifxVirtualMultizoneLight(LifxNetwork lifx, MacAddress macAddress) : base(lifx, macAddress) {
+            // Empty
+        }
+
         // ILifxProduct overrides
+
         /// <inheritdoc />
         public sealed override bool SupportsColor => true;
 
@@ -18,15 +30,6 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public sealed override bool IsMultizone => true;
-
-        /// <summary>
-        /// Creates a new virtual LIFX multizone light
-        /// </summary>
-        /// <param name="lifx">The <c>LifxNetwork</c> to associated this virtual light with</param>
-        /// <param name="macAddress">The <c>MacAddress</c> of this virtual light</param>
-        public LifxVirtualMultizoneLight(LifxNetwork lifx, MacAddress macAddress) : base(lifx, macAddress) {
-
-        }
 
         /// <inheritdoc />
         public abstract Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null, CancellationToken cancellationToken = default);
@@ -38,6 +41,7 @@ namespace AydenIO.Lifx {
         public abstract Task SetMultizoneState(ushort startAt, IEnumerable<ILifxColor> colors, TimeSpan duration = default, bool rapid = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         // Trivial methods
+
         /// <inheritdoc />
         public Task SetMultizoneState(LifxApplicationRequest apply, ushort startAt, IEnumerable<ILifxColor> colors, uint durationMs = 0, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             return this.SetMultizoneState(apply, startAt, colors, TimeSpan.FromMilliseconds(durationMs), timeoutMs, cancellationToken);

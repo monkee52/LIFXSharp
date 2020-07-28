@@ -1,71 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Linq;
-using System.Text;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Represents an RGB color with 16-bits of precision per channel
+    /// Represents an RGB color with 16-bits of precision per channel.
     /// </summary>
     public class LifxRgbColor16Bit : ILifxColor {
-        /// <value>Gets or sets the red value for the color</value>
+        /// <summary>Gets or sets the red value for the color.</summary>
         public ushort Red { get; set; }
 
-        /// <value>Gets or sets the green value for the color</value>
+        /// <summary>Gets or sets the green value for the color.</summary>
         public ushort Green { get; set; }
 
-        /// <value>Gets or sets the blue value for the color</value>
+        /// <summary>Gets or sets the blue value for the color.</summary>
         public ushort Blue { get; set; }
 
-        /// <value>Gets or sets the kelvin value for the color</value>
+        /// <summary>Gets or sets the kelvin value for the color.</summary>
         public ushort Kelvin { get; set; }
 
         /// <inheritdoc />
         public void FromHsbk(ILifxHsbkColor hsbk) {
-            double H = (double)hsbk.Hue / UInt16.MaxValue;
-            double S = (double)hsbk.Saturation / UInt16.MaxValue;
-            double V = (double)hsbk.Brightness / UInt16.MaxValue;
-
-            double C = V * S;
-            double Hd = H / 6.0d;
-            double X = C * (1.0d - Math.Abs(Hd % 2.0d - 1.0d));
-
-            double R;
-            double G;
-            double B;
-
-            if (Hd <= 1.0d) {
-                R = C;
-                G = X;
-                B = 0.0d;
-            } else if (Hd <= 2.0d) {
-                R = X;
-                G = C;
-                B = 0.0d;
-            } else if (Hd <= 3.0d) {
-                R = 0.0d;
-                G = C;
-                B = X;
-            } else if (Hd <= 4.0d) {
-                R = 0.0d;
-                G = X;
-                B = C;
-            } else if (Hd <= 5.0d) {
-                R = X;
-                G = 0.0d;
-                B = C;
-            } else {
-                R = C;
-                G = 0.0d;
-                B = X;
+            if (hsbk == null) {
+                return;
             }
 
-            double m = V - C;
+            double h = (double)hsbk.Hue / UInt16.MaxValue;
+            double s = (double)hsbk.Saturation / UInt16.MaxValue;
+            double v = (double)hsbk.Brightness / UInt16.MaxValue;
 
-            this.Red = Utilities.MultiplyRoundClampUInt16(R + m);
-            this.Green = Utilities.MultiplyRoundClampUInt16(G + m);
-            this.Blue = Utilities.MultiplyRoundClampUInt16(B + m);
+            double c = v * s;
+            double hHextant = h / 6.0d;
+            double x = c * (1.0d - Math.Abs((hHextant % 2.0d) - 1.0d));
+
+            double r;
+            double g;
+            double b;
+
+            if (hHextant <= 1.0d) {
+                r = c;
+                g = x;
+                b = 0.0d;
+            } else if (hHextant <= 2.0d) {
+                r = x;
+                g = c;
+                b = 0.0d;
+            } else if (hHextant <= 3.0d) {
+                r = 0.0d;
+                g = c;
+                b = x;
+            } else if (hHextant <= 4.0d) {
+                r = 0.0d;
+                g = x;
+                b = c;
+            } else if (hHextant <= 5.0d) {
+                r = x;
+                g = 0.0d;
+                b = c;
+            } else {
+                r = c;
+                g = 0.0d;
+                b = x;
+            }
+
+            double m = v - c;
+
+            this.Red = Utilities.MultiplyRoundClampUInt16(r + m);
+            this.Green = Utilities.MultiplyRoundClampUInt16(g + m);
+            this.Blue = Utilities.MultiplyRoundClampUInt16(b + m);
             this.Kelvin = hsbk.Kelvin;
         }
 
@@ -108,7 +112,7 @@ namespace AydenIO.Lifx {
                 Hue = Utilities.MultiplyRoundClampUInt16(outHue),
                 Saturation = Utilities.MultiplyRoundClampUInt16(outSaturation),
                 Brightness = Utilities.MultiplyRoundClampUInt16(outBrightness),
-                Kelvin = this.Kelvin
+                Kelvin = this.Kelvin,
             };
         }
     }

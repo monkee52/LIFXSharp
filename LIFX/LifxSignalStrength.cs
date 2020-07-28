@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
@@ -20,6 +19,6 @@ namespace AydenIO.Lifx {
         Good,
 
         /// <summary>Excellent signal strength</summary>
-        Excellent
+        Excellent,
     }
 }

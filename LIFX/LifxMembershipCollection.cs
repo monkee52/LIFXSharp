@@ -1,154 +1,155 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Manages collections known to the <c>LifxNetwork</c>
+    /// Manages collections known to the <see cref="LifxNetwork"/>.
     /// </summary>
-    /// <typeparam name="TCollection">The collection's type</typeparam>
-    /// <typeparam name="TPublicCollection">The collection's public type</typeparam>
-    /// <typeparam name="T">The collection's membership information type as known to devices</typeparam>
-    internal abstract class LifxMembershipCollection<TCollection, TPublicCollection, T> : ILifxMembershipCollection<TPublicCollection, T> where TCollection : LifxMembership<T>, TPublicCollection, T where TPublicCollection : ILifxMembership<T> where T : ILifxMembershipTag {
+    /// <typeparam name="TCollection">The collection's type.</typeparam>
+    /// <typeparam name="TPublicCollection">The collection's interface type.</typeparam>
+    /// <typeparam name="TTag">The collection's membership information type as known to devices.</typeparam>
+    internal abstract class LifxMembershipCollection<TCollection, TPublicCollection, TTag> : ILifxMembershipCollection<TPublicCollection, TTag> where TCollection : LifxMembership<TTag>, TPublicCollection, TTag where TPublicCollection : class, ILifxMembership<TTag> where TTag : ILifxMembershipTag {
         private readonly IDictionary<Guid, TCollection> collections;
         private readonly ConditionalWeakTable<ILifxDevice, TCollection> deviceMap;
 
-        public event EventHandler<LifxMembershipCreatedEventArgs<TPublicCollection, T>> CollectionCreated;
-
         /// <summary>
-        /// Initializes the manager
+        /// Initializes a new instance of the <see cref="LifxMembershipCollection{TCollection, TPublicCollection, TTag}"/> class.
         /// </summary>
         protected LifxMembershipCollection() {
-            this.collections = new ConcurrentDictionary<Guid, TCollection>();
+            this.collections = new Dictionary<Guid, TCollection>();
             this.deviceMap = new ConditionalWeakTable<ILifxDevice, TCollection>();
         }
 
-        /// <summary>
-        /// Used to create a backing store
-        /// </summary>
-        /// <param name="guid">The identifier for the created store</param>
-        /// <param name="label">The label for the store</param>
-        /// <param name="updatedAt">The updatedAt time for the store</param>
-        /// <returns>The created backing store</returns>
-        protected abstract TCollection CreateCollection(Guid guid, string label, DateTime updatedAt);
+        /// <inheritdoc />
+        public event LifxMembershipCreatedEventHandler<TPublicCollection, TTag> CollectionCreated;
 
-        private TCollection CreateCollectionInternal(Guid guid, string label, DateTime updatedAt) {
-            TCollection collection = this.CreateCollection(guid, label, updatedAt);
-
-            this.CollectionCreated?.Invoke(this, new LifxMembershipCreatedEventArgs<TPublicCollection, T>(collection));
-
-            return collection;
-        }
-
-        private TCollection CreateCollectionInternal(Guid guid, string label) {
-            return this.CreateCollectionInternal(guid, label, DateTime.UtcNow);
-        }
-
-        /// <summary>
-        /// Gets the device compatible membership information by its identifier
-        /// </summary>
-        /// <param name="guid">The identifier to get the membership information for</param>
-        /// <returns>The device compatible membership information</returns>
-        public TPublicCollection Get(Guid guid) {
-            return this.GetInternal(guid);
-        }
-
-        /// <summary>
-        /// Gets the device compatible membership information by its identifier, and creates it if it cannot be found
-        /// </summary>
-        /// <param name="guid">The identifier to get the membership information for</param>
-        /// <param name="label">The label to use if the membership information needs to be created</param>
-        /// <returns>The device compatible membership information</returns>
-        public TPublicCollection Get(Guid guid, string label) {
-            return this.GetInternal(guid, label);
-        }
-
-        /// <summary>
-        /// Gets the device compatible membership information by its label
-        /// </summary>
-        /// <param name="label">The label to search for</param>
-        /// <returns>The device compatible membership information, or null if it cannot be found</returns>
-        public TPublicCollection Get(string label) {
-            return this.GetInternal(label);
-        }
-
-        /// <summary>
-        /// Gets the most recent membership information by a potentially stale membership information
-        /// </summary>
-        /// <param name="collection">The membership information to search for</param>
-        /// <returns>The device compatible membership information</returns>
-        public TPublicCollection Get(T collection) {
-            return this.GetInternal(collection);
-        }
-
-        private TCollection GetInternal(Guid guid) {
-            bool didFind = this.collections.TryGetValue(guid, out TCollection collection);
-
-            if (didFind) {
-                return collection;
-            }
-
-            return null;
-        }
-
-        private TCollection GetInternal(string label) {
-            return this.collections.Values.FirstOrDefault(collections => collections.Label == label);
-        }
-
-        private TCollection GetInternal(Guid guid, string label) {
-            bool didFind = this.collections.TryGetValue(guid, out TCollection collection);
-
-            if (didFind) {
-                return collection;
-            }
-
-            TCollection newCollection = this.CreateCollectionInternal(guid, label);
-
-            this.collections[newCollection.Guid] = newCollection;
-
-            return newCollection;
-        }
-
-        private TCollection GetInternal(T collection) {
-            bool didFind = this.collections.TryGetValue(collection.Guid, out TCollection foundCollection);
-
-            if (didFind) {
-                return foundCollection;
-            }
-
-            TCollection newCollection = this.CreateCollectionInternal(collection.Guid, collection.Label, collection.UpdatedAt);
-
-            this.collections[newCollection.Guid] = newCollection;
-
-            return newCollection;
-        }
-
-        internal void UpdateMembershipInformation(ILifxDevice device, T newCollection) {
-            if (this.deviceMap.TryGetValue(device, out TCollection previousCollection)) {
-                previousCollection.Remove(device);
-            }
-
-            // Add to new collection
-            TCollection newCollectionStore = this.GetInternal(newCollection);
-
-            newCollectionStore.Add(device);
-
-            this.deviceMap.AddOrUpdate(device, newCollectionStore);
-        }
-
+        /// <inheritdoc />
         public int Count => this.collections.Count;
 
+        /// <inheritdoc />
+        public TPublicCollection GetGrouping(Guid guid) {
+            lock (this.collections) {
+                if (this.collections.TryGetValue(guid, out TCollection collection)) {
+                    return collection;
+                }
+
+                return null;
+            }
+        }
+
+        /// <inheritdoc />
+        public TPublicCollection GetGrouping(Guid guid, string label) {
+            return this.GetOrCreateCollectionInternal(guid, label);
+        }
+
+        /// <inheritdoc />
+        public TPublicCollection GetGrouping(string label) {
+            lock (this.collections) {
+                return this.collections.Values.FirstOrDefault(collections => collections.Label == label);
+            }
+        }
+
+        /// <inheritdoc />
+        public TPublicCollection GetGrouping(ILifxMembershipTag tag) {
+            return this.GetOrCreateCollectionInternal((TTag)tag);
+        }
+
+        /// <inheritdoc />
+        public TPublicCollection Create(string label) {
+            return this.GetOrCreateCollectionInternal(Guid.NewGuid(), label);
+        }
+
+        /// <inheritdoc />
         public IEnumerator<TPublicCollection> GetEnumerator() {
             return this.collections.Values.GetEnumerator();
         }
 
+        /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator() {
             return this.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Removes a <see cref="ILifxDevice"/> from a former grouping and adds it to the grouping specified by <paramref name="newCollection"/>.
+        /// </summary>
+        /// <param name="device">The <see cref="ILifxDevice"/> to updated the membership information for.</param>
+        /// <param name="newCollection">The <typeparamref name="TCollection"/> to add the <see cref="ILifxDevice"/> to.</param>
+        internal void UpdateMembershipInformation(ILifxDevice device, TTag newCollection) {
+            lock (this.deviceMap) {
+                if (this.deviceMap.TryGetValue(device, out TCollection previousCollection)) {
+                    previousCollection.Remove(device);
+                }
+
+                // Add to new collection
+                TCollection newCollectionStore = this.GetOrCreateCollectionInternal(newCollection);
+
+                newCollectionStore.Add(device);
+
+                this.deviceMap.AddOrUpdate(device, newCollectionStore);
+            }
+        }
+
+        /// <summary>
+        /// Used to create a collection.
+        /// </summary>
+        /// <param name="guid">The identifier of the group.</param>
+        /// <param name="label">The label for the group.</param>
+        /// <param name="updatedAt">When the group was last updated.</param>
+        /// <returns>The created <typeparamref name="TCollection"/>.</returns>
+        protected abstract TCollection CreateCollection(Guid guid, string label, DateTime updatedAt);
+
+        private TCollection GetOrCreateCollectionInternal(Guid guid, string label, DateTime updatedAt) {
+            TCollection newCollection = null;
+
+            lock (this.collections) {
+                if (this.collections.TryGetValue(guid, out TCollection collection)) {
+                    // Update label and updatedAt
+                    if (updatedAt > collection.UpdatedAt) {
+                        collection.UpdatedAt = updatedAt;
+
+                        // Synchronise labels if needed
+                        if (collection.Label != label) {
+                            this.RenameTask(collection, label);
+                        }
+                    }
+
+                    return collection;
+                }
+
+                newCollection = this.CreateCollection(guid, label, updatedAt);
+
+                this.collections.Add(guid, newCollection);
+            }
+
+            this.CollectionCreated?.Invoke(this, new LifxMembershipCreatedEventArgs<TPublicCollection, TTag>(newCollection));
+
+            return newCollection;
+        }
+
+        private TCollection GetOrCreateCollectionInternal(Guid guid, string label) {
+            return this.GetOrCreateCollectionInternal(guid, label, DateTime.UtcNow);
+        }
+
+        private TCollection GetOrCreateCollectionInternal(TTag collection) {
+            return this.GetOrCreateCollectionInternal(collection.Guid, collection.Label, collection.UpdatedAt);
+        }
+
+        private async void RenameTask(TCollection collection, string newLabel) {
+            try {
+                await collection.Rename(newLabel);
+            } catch (AggregateException ae) {
+                IEnumerable<Exception> nonTimeoutExceptions = ae.InnerExceptions.Where(e => e is not TimeoutException);
+
+                if (nonTimeoutExceptions.Any()) {
+                    throw new AggregateException(ae.Message, nonTimeoutExceptions);
+                }
+            }
         }
     }
 }

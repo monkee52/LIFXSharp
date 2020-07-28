@@ -1,27 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Represents a LIFX light device with infrared
+    /// Represents a LIFX light device with infrared.
     /// </summary>
     public class LifxInfraredLight : LifxLight, ILifxInfraredLight {
         /// <summary>
-        /// Creates a LIFX light class that supports infrared
+        /// Initializes a new instance of the <see cref="LifxInfraredLight"/> class.
         /// </summary>
-        /// <param name="lifx">The <c>LifxNetwork</c> the device belongs to</param>
-        /// <param name="macAddress">The MAC address of the device</param>
-        /// <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
-        /// <param name="version">The version of the device</param>
+        /// <param name="lifx">The <see cref="LifxNetwork"/> that the device belongs to.</param>
+        /// <param name="macAddress">The <see cref="MacAddress"/> of the device.</param>
+        /// <param name="endPoint">The <see cref="IPEndPoint"/> of the device.</param>
+        /// <param name="version">The <see cref="ILifxVersion"/> of the device.</param>
         protected internal LifxInfraredLight(LifxNetwork lifx, MacAddress macAddress, IPEndPoint endPoint, ILifxVersion version) : base(lifx, macAddress, endPoint, version) {
-
+            // Empty
         }
 
-        // Infrared
         /// <inheritdoc />
         public async Task<ushort> GetInfrared(int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.LightGetInfrared getInfrared = new Messages.LightGetInfrared();
@@ -34,7 +33,7 @@ namespace AydenIO.Lifx {
         /// <inheritdoc />
         public async Task SetInfrared(ushort level, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.LightSetInfrared setInfrared = new Messages.LightSetInfrared() {
-                Level = level
+                Level = level,
             };
 
             await this.Lifx.SendWithAcknowledgement(this, setInfrared, timeoutMs, cancellationToken);

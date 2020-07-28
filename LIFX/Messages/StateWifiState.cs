@@ -1,25 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.IO;
 using System.Net;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Represents a StateWifiState packet.
+    /// </summary>
     internal class StateWifiState : LifxMessage, ILifxWifiState {
-        public const LifxMessageType TYPE = LifxMessageType.StateWifiState;
-
-        public LifxWifiInterface Interface { get; set; }
-
-        public LifxWifiStatus Status { get; set; }
-
-        public IPAddress IPAddressV4 { get; set; }
-
-        public IPAddress IPAddressV6 { get; set; }
-
-        public StateWifiState() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StateWifiState"/> class.
+        /// </summary>
+        public StateWifiState() : base(LifxMessageType.StateWifiState) {
+            // Empty
         }
 
+        /// <inheritdoc />
+        public LifxWifiInterface Interface { get; set; }
+
+        /// <inheritdoc />
+        public LifxWifiStatus Status { get; set; }
+
+        /// <inheritdoc />
+        public IPAddress IPAddressV4 { get; set; }
+
+        /// <inheritdoc />
+        public IPAddress IPAddressV6 { get; set; }
+
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             // Interface
             byte iface = reader.ReadByte();
@@ -42,6 +51,7 @@ namespace AydenIO.Lifx.Messages {
             this.IPAddressV6 = new IPAddress(address6);
         }
 
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint8_t interface */ writer.Write((byte)this.Interface);
             /* uint8_t status */ writer.Write((byte)this.Status);

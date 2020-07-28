@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>AydenIO.Examples.Lifx</AssemblyName>
     <RootNamespace>AydenIO.Examples.Lifx</RootNamespace>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

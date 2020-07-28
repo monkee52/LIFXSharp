@@ -1,160 +1,166 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.Collections.Generic;
-using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Represents a LIFX device
+    /// Represents a LIFX device.
     /// </summary>
     public interface ILifxDevice : ILifxProduct {
-        /// <value>Gets the MAC address of the device. Used as the primary identifier for the device</value>
+        /// <summary>Gets the MAC address of the device. Used as the primary identifier for the device.</summary>
         public MacAddress MacAddress { get; }
 
         /// <summary>
-        /// Gets a list of the services that the device supports
+        /// Gets a list of the services that the device supports.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>A list of services supported by the device</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A list of services supported by the device.</returns>
         public Task<IReadOnlyCollection<ILifxService>> GetServices(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets host info
+        /// Gets host info.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The host info</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The host info.</returns>
         public Task<ILifxHostInfo> GetHostInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets host firmware
+        /// Gets host firmware.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The host firmware</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The host firmware.</returns>
         public Task<ILifxHostFirmware> GetHostFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the wifi info
+        /// Gets the wifi info.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The wifi info</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The wifi info.</returns>
         public Task<ILifxWifiInfo> GetWifiInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the wifi firmware
+        /// Gets the wifi firmware.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The wifi firmware</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The wifi firmware.</returns>
         public Task<ILifxWifiFirmware> GetWifiFirmware(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the device power state
+        /// Gets the device power state.
         /// </summary>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The device power state</returns>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device power state.</returns>
         public Task<bool> GetPower(int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Sets the device power state
+        /// Sets the device power state.
         /// </summary>
-        /// <param name="power">The power state</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <param name="power">The power state.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public Task SetPower(bool power, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Powers on the device
+        /// Powers on the device.
         /// </summary>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public Task PowerOn(int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Powers off the device
+        /// Powers off the device.
         /// </summary>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public Task PowerOff(int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the device label
+        /// Gets the device label.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The device label</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device label.</returns>
         public Task<string> GetLabel(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Sets the device label
+        /// Sets the device label.
         /// </summary>
-        /// <param name="label">The device label</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <param name="label">The device label.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public Task SetLabel(string label, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the device version
+        /// Gets the device version.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The device version</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device version.</returns>
         public Task<ILifxVersion> GetVersion(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the device info
+        /// Gets the device info.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The device info</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device info.</returns>
         public Task<ILifxInfo> GetInfo(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the device location
+        /// Gets the device location.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The device location</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device location.</returns>
         public Task<ILifxLocationTag> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Sets the device location
+        /// Sets the device location.
         /// </summary>
-        /// <param name="location">The location</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <param name="location">The location.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public Task SetLocation(ILifxLocationTag location, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets the device group
+        /// Gets the device group.
         /// </summary>
-        /// <param name="forceRefresh">True to get from the device, false to use a cached value</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The device group</returns>
+        /// <param name="forceRefresh">True to get from the device, false to use a cached value.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device group.</returns>
         public Task<ILifxGroupTag> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Sets the device group
+        /// Sets the device group.
         /// </summary>
-        /// <param name="group">The group</param>
-        /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <param name="group">The group.</param>
+        /// <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public Task SetGroup(ILifxGroupTag group, int? timeoutMs = null, CancellationToken cancellationToken = default);
     }
 }

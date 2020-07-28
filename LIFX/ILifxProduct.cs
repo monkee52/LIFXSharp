@@ -1,43 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
     /// Represents features of a device
-    /// </summary>
+    /// .</summary>
     public interface ILifxProduct {
-        /// <value>Gets the vendor ID</value>
+        /// <summary>Gets the vendor ID.</summary>
         public uint VendorId { get; }
 
-        /// <value>Gets the vendor name</value>
+        /// <summary>Gets the vendor name.</summary>
         public string VendorName { get; }
 
-        /// <value>Gets the product ID</value>
+        /// <summary>Gets the product ID.</summary>
         public uint ProductId { get; }
 
-        /// <value>Gets the device product name</value>
+        /// <summary>Gets the device product name.</summary>
         public string ProductName { get; }
 
-        /// <value>Gets whether the device supports color</value>
+        /// <summary>Gets a value indicating whether the device supports color.</summary>
         public bool SupportsColor { get; }
 
-        /// <value>Gets whether the device supports infrared</value>
+        /// <summary>Gets a value indicating whether the device supports infrared.</summary>
         public bool SupportsInfrared { get; }
 
-        /// <value>Gets whether the device is a multizone device</value>
+        /// <summary>Gets a value indicating whether the device is a multizone device.</summary>
         public bool IsMultizone { get; }
 
-        /// <value>Gets whether the device is a chained device</value>
+        /// <summary>Gets a value indicating whether the device is a chained device.</summary>
         public bool IsChain { get; }
 
-        /// <value>Gets whether the device is a matrix device</value>
+        /// <summary>Gets a value indicating whether the device is a matrix device.</summary>
         public bool IsMatrix { get; }
 
-        /// <value>Gets the minimum kelvin value for the device</value>
+        /// <summary>Gets the minimum kelvin value for the device.</summary>
         public ushort MinKelvin { get; }
 
-        /// <value>Gets the maximum kelvin value for the device</value>
+        /// <summary>Gets the maximum kelvin value for the device.</summary>
         public ushort MaxKelvin { get; }
     }
 }

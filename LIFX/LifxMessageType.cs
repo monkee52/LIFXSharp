@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System.IO;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Possible message types for the LIFX protocol
+    /// Possible message types for the LIFX protocol.
     /// </summary>
     public enum LifxMessageType {
-        /// <summary>A message that hasn't been decoded yet. Used to prevent the <c>LifxMessage.FromBytes</c> method from throwing an exception during decoding</summary>
-        _internal_unknown_ = -1,
+        /// <summary>A message that hasn't been decoded yet. Used to prevent the <see cref="LifxMessage.FromBytes(byte[])"/> method from throwing an <see cref="InvalidDataException"/> during decoding</summary>
+        Unknown = -1,
 
         // Device messages
+
         /// <summary>Sent by a client to acquire responses from all devices on the local network.</summary>
         GetService = 2,
 
@@ -99,6 +101,7 @@ namespace AydenIO.Lifx {
         EchoResponse = 59,
 
         // Light messages
+
         /// <summary>Sent by a client to obtain the light state.</summary>
         LightGet = 101,
 
@@ -133,6 +136,7 @@ namespace AydenIO.Lifx {
         LightSetInfrared = 122,
 
         // MultiZone messages
+
         /// <summary>This messages lets you change all the zones on your device in one message.</summary>
         SetExtendedColorZones = 510,
 
@@ -155,6 +159,7 @@ namespace AydenIO.Lifx {
         StateMultiZone = 506,
 
         // Tile messages
+
         /// <summary>This message returns information about the tiles in the chain.</summary>
         GetDeviceChain = 701,
 
@@ -174,6 +179,7 @@ namespace AydenIO.Lifx {
         SetTileState64 = 715,
 
         // Firmware effects
+
         /// <summary>This messages lets you control a firmware effect on your device.</summary>
         SetMultiZoneEffect = 508,
 
@@ -184,6 +190,7 @@ namespace AydenIO.Lifx {
         StateMultiZoneEffect = 509,
 
         // Tile effects
+
         /// <summary>This messages lets you control a firmware effect on your LIFX Tile.</summary>
         SetTileEffect = 719,
 
@@ -194,6 +201,8 @@ namespace AydenIO.Lifx {
         StateTileEffect = 720,
 
         // Undocumented API
+#pragma warning disable SA1602
+#pragma warning disable CS1591
         GetTime = 4,
 
         SetTime = 5,
@@ -218,6 +227,8 @@ namespace AydenIO.Lifx {
 
         GetAccessPoints = 304,
 
-        StateAccessPoint = 306
+        StateAccessPoint = 306,
+#pragma warning restore CS1591
+#pragma warning restore SA1602
     }
 }

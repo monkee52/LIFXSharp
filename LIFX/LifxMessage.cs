@@ -1,34 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.IO;
-using System.Net.NetworkInformation;
-using System.Text;
 
 namespace AydenIO.Lifx {
+    /// <summary>
+    /// Represents a LIFX protocol message.
+    /// </summary>
     internal class LifxMessage {
-        private const int PROTOCOL = 1024;
-        private const bool ADDRESSABLE = true;
-        private const byte ORIGIN = 0;
+        private const int Protocol = 1024;
+        private const bool Addressable = true;
+        private const byte Origin = 0;
 
-        public int SourceId { get; set; }
-        public byte SequenceNumber { get; set; }
-
-        public MacAddress Target { get; set; }
-
-        public LifxeResponseFlags ResponseFlags { get; set; }
-
-        public LifxMessageType Type { get; private set; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LifxMessage"/> class.
+        /// </summary>
+        /// <param name="type">The <see cref="LifxMessageType"/> that this represents.</param>
         public LifxMessage(LifxMessageType type) {
             this.Type = type;
         }
 
-        // Encoder
+        /// <summary>Gets or sets the source identifier.</summary>
+        public int SourceId { get; set; }
+
+        /// <summary>Gets or sets the sequence identifier.</summary>
+        public byte SequenceNumber { get; set; }
+
+        /// <summary>Gets or sets the target <see cref="MacAddress"/>.</summary>
+        public MacAddress Target { get; set; }
+
+        /// <summary>Gets or sets the response flags.</summary>
+        public LifxeResponseFlags ResponseFlags { get; set; }
+
+        /// <summary>Gets the type of the message.</summary>
+        public LifxMessageType Type { get; private set; }
+
+        /// <summary>
+        /// Gets the packet as a sequence of bytes.
+        /// </summary>
+        /// <returns>The bytes that represent this packet at the time of the call.</returns>
+        public byte[] GetBytes() {
+            using MemoryStream ms = new MemoryStream();
+            using BinaryWriter writer = new BinaryWriter(ms);
+
+            this.WriteFrame(writer);
+            this.WriteFrameAddress(writer);
+            this.WriteProtocolHeader(writer);
+            this.WritePayload(writer);
+
+            byte[] result = ms.ToArray();
+
+            // Write in size uint16_t le
+            result[0] = (byte)result.Length;
+            result[1] = (byte)(result.Length >> 8);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets the properties of the packet from a sequence of bytes.
+        /// </summary>
+        /// <param name="bytes">The bytes that contain the packet.</param>
+        public void FromBytes(byte[] bytes) {
+            using MemoryStream ms = new MemoryStream(bytes);
+            using BinaryReader reader = new BinaryReader(ms);
+
+            this.ReadFrame(reader);
+            this.ReadFrameAddress(reader);
+            this.ReadProtocolHeader(reader);
+            this.ReadPayload(reader);
+        }
+
+        /// <summary>
+        /// Writes the payload as a sequence of bytes.
+        /// </summary>
+        /// <param name="writer">A <see cref="BinaryWriter"/> to write the payload into.</param>
+        protected virtual void WritePayload(BinaryWriter writer) {
+            // Empty
+        }
+
+        /// <summary>
+        /// Reads the payload into the properties of this packet.
+        /// </summary>
+        /// <param name="reader">The <see cref="BinaryReader"/> to read the bytes from.</param>
+        protected virtual void ReadPayload(BinaryReader reader) {
+            // Empty
+        }
+
         private void WriteFrame(BinaryWriter writer) {
             /* uint16_t le size */ writer.Write((ushort)0); // Updated during GetBytes
 
-            int protocolAddressableTaggedOrigin = LifxMessage.PROTOCOL | ((LifxMessage.ADDRESSABLE ? 1 : 0) << 12) | ((this.Target == null ? 1 : 0) << 13) | (LifxMessage.ORIGIN << 14);
+            int protocolAddressableTaggedOrigin = LifxMessage.Protocol | ((LifxMessage.Addressable ? 1 : 0) << 12) | ((this.Target == null ? 1 : 0) << 13) | (LifxMessage.Origin << 14);
 
             /* uint16_t le flags */ writer.Write((ushort)protocolAddressableTaggedOrigin);
             /* uint32_t le source */ writer.Write((uint)this.SourceId);
@@ -41,43 +103,16 @@ namespace AydenIO.Lifx {
             /* uint8_t[2] target_pad */ writer.Write(new byte[2]);
             /* uint8_t[6] reserved */ writer.Write(new byte[6]);
             /* uint8_t flags */ writer.Write((byte)((int)this.ResponseFlags & 3));
-            /* uint8_t sequence */ writer.Write((byte)this.SequenceNumber);
+            /* uint8_t sequence */ writer.Write(this.SequenceNumber);
         }
 
         private void WriteProtocolHeader(BinaryWriter writer) {
-            /* uint64_t le reserved */ writer.Write((ulong)0);
+            /* uint64_t le reserved */ writer.Write(0uL);
             /* uint16_t le type */ writer.Write((ushort)this.Type);
             /* uint16_t le reserved */ writer.Write((ushort)0);
         }
 
-        protected virtual void WritePayload(BinaryWriter writer) {
-            
-        }
-
-        public byte[] GetBytes() {
-            byte[] result;
-
-            using (MemoryStream ms = new MemoryStream()) {
-                using (BinaryWriter writer = new BinaryWriter(ms)) {
-                    this.WriteFrame(writer);
-                    this.WriteFrameAddress(writer);
-                    this.WriteProtocolHeader(writer);
-                    this.WritePayload(writer);
-                }
-
-                result = ms.ToArray();
-            }
-
-            // Write in size uint16_t le
-            result[0] = (byte)result.Length;
-            result[1] = (byte)(result.Length >> 8);
-
-            return result;
-        }
-
         // Decoder
-        //private bool isTagged;
-
         private void ReadFrame(BinaryReader reader) {
             // Size
             _ = reader.ReadUInt16();
@@ -87,21 +122,19 @@ namespace AydenIO.Lifx {
 
             ushort protocol = (ushort)(flags & 0xfff);
             bool addressable = ((flags >> 12) & 1) != 0;
-            //bool tagged = ((flags >> 13) & 1) != 0;
+            /* bool tagged = ((flags >> 13) & 1) != 0; */
             byte origin = (byte)((flags >> 14) & 3);
 
-            if (protocol != LifxMessage.PROTOCOL) {
-                throw new InvalidDataException($"Protocol number must be '{LifxMessage.PROTOCOL}', got '{protocol}'");
+            if (protocol != LifxMessage.Protocol) {
+                throw new InvalidDataException($"Protocol number must be '{LifxMessage.Protocol}', got '{protocol}'");
             }
 
-            if (addressable != LifxMessage.ADDRESSABLE) {
-                throw new InvalidDataException($"Addressable must be be '{LifxMessage.ADDRESSABLE}', got '{addressable}'");
+            if (addressable != LifxMessage.Addressable) {
+                throw new InvalidDataException($"Addressable must be be '{LifxMessage.Addressable}', got '{addressable}'");
             }
 
-            //this.isTagged = tagged;
-
-            if (origin != LifxMessage.ORIGIN) {
-                throw new InvalidDataException($"Origin must be '{LifxMessage.ORIGIN}', got '{origin}'");
+            if (origin != LifxMessage.Origin) {
+                throw new InvalidDataException($"Origin must be '{LifxMessage.Origin}', got '{origin}'");
             }
 
             // Source
@@ -151,20 +184,6 @@ namespace AydenIO.Lifx {
 
             // Reserved
             _ = reader.ReadUInt16();
-        }
-
-        protected virtual void ReadPayload(BinaryReader reader) {
-
-        }
-
-        public void FromBytes(byte[] bytes) {
-            using MemoryStream ms = new MemoryStream(bytes);
-            using BinaryReader reader = new BinaryReader(ms);
-
-            this.ReadFrame(reader);
-            this.ReadFrameAddress(reader);
-            this.ReadProtocolHeader(reader);
-            this.ReadPayload(reader);
         }
     }
 }

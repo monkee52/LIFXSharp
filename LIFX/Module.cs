@@ -1,0 +1,13 @@
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System.Diagnostics.CodeAnalysis;
+
+[module: SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1500:BracesForMultiLineStatementsMustNotShareLine", Justification = "Reviewed.")]
+[module: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1127:GenericTypeConstraintsMustBeOnOwnLine", Justification = "Reviewed.")]
+[module: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1128:ConstructorInitializerMustBeOnOwnLine", Justification = "Reviewed.")]
+
+[module: SuppressMessage("Reliability", "CA2007:", Justification = "Code intended for use in .NET core only.")]
+
+// [module: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1633:FileMustHaveHeader", Justification = "Configuration.")]
+[module: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1200:UsingDirectivesMustBePlacedCorrectly", Justification = "Configuration.")]

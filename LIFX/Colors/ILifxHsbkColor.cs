@@ -1,29 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Represents a LIFX HSBK color type
+    /// Represents a LIFX HSBK color type.
     /// </summary>
     public interface ILifxHsbkColor : ILifxColor {
         /// <summary>
-        /// Hue, between 0 and 65535
+        /// Gets or sets the hue of the color, between 0 and 65535.
         /// </summary>
         public ushort Hue { get; set; }
 
         /// <summary>
-        /// Saturation, between 0 and 65535
+        /// Gets or sets the saturation of the color, between 0 and 65535.
         /// </summary>
         public ushort Saturation { get; set; }
 
         /// <summary>
-        /// Brightness, between 0 and 65535
+        /// Gets or sets the brightness of the color, between 0 and 65535.
         /// </summary>
         public ushort Brightness { get; set; }
 
         /// <summary>
-        /// Kelvin, between a minimum and maximum kelvin depending on the device
+        /// Gets or sets the color temperature of the color, between a minimum and maximum kelvin depending on the device.
+        /// Only affects actual color output when <see cref="Saturation"/> is low.
         /// </summary>
         public ushort Kelvin { get; set; }
     }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,30 +10,18 @@ using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// A collection of devices belonging to a membership information
+    /// A collection of devices belonging to a membership information.
     /// </summary>
-    internal abstract class LifxMembership<T> : ICollection<ILifxDevice>, ILifxMembership<T> where T : ILifxMembershipTag {
-        /// <inheritdoc />
-        public Guid Guid { get; private set; }
-
-        /// <inheritdoc />
-        public string Label { get; private set; }
-
-        /// <inheritdoc />
-        public DateTime UpdatedAt { get; private set; }
-
-        public event EventHandler<LifxDeviceAddedEventArgs> DeviceAdded;
-
-        public event EventHandler<LifxDeviceRemovedEventArgs> DeviceRemoved;
-
+    /// <typeparam name="TTag">The membership tag type.</typeparam>
+    internal abstract class LifxMembership<TTag> : ICollection<ILifxDevice>, ILifxMembership<TTag> where TTag : ILifxMembershipTag {
         private readonly ICollection<EquatableWeakReference<ILifxDevice>> members;
 
         /// <summary>
-        /// Initializes the collection with a guid, label, and updatedAt
+        /// Initializes a new instance of the <see cref="LifxMembership{TTag}"/> class.
         /// </summary>
-        /// <param name="guid">The identifier for the membership information</param>
-        /// <param name="label">The label for the membership information</param>
-        /// <param name="updatedAt">The time the membership information was last updated</param>
+        /// <param name="guid">The identifier for the membership information.</param>
+        /// <param name="label">The label for the membership information.</param>
+        /// <param name="updatedAt">The time the membership information was last updated.</param>
         protected LifxMembership(Guid guid, string label, DateTime updatedAt) {
             this.members = new HashSet<EquatableWeakReference<ILifxDevice>>();
 
@@ -39,16 +30,32 @@ namespace AydenIO.Lifx {
             this.UpdatedAt = updatedAt;
         }
 
-        /// <summary>
-        /// Called for each device that 
-        /// </summary>
-        /// <param name="device"></param>
-        /// <param name="timeoutMs"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        protected abstract Task RenameDeviceMembership(ILifxDevice device, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        /// <inheritdoc />
+        public event EventHandler<LifxDeviceAddedEventArgs> DeviceAdded;
 
-        public async Task Rename(string newLabel, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        /// <inheritdoc />
+        public event EventHandler<LifxDeviceRemovedEventArgs> DeviceRemoved;
+
+        /// <inheritdoc />
+        public int DeviceCount => this.members.Count;
+
+        /// <inheritdoc />
+        public int Count => this.members.Count;
+
+        /// <inheritdoc />
+        public bool IsReadOnly => false;
+
+        /// <inheritdoc />
+        public Guid Guid { get; private set; }
+
+        /// <inheritdoc />
+        public string Label { get; private set; }
+
+        /// <inheritdoc />
+        public DateTime UpdatedAt { get; set; }
+
+        /// <inheritdoc />
+        public Task Rename(string newLabel, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             this.Label = newLabel;
             this.UpdatedAt = DateTime.UtcNow;
 
@@ -62,22 +69,12 @@ namespace AydenIO.Lifx {
             }
 
             // Await all rename tasks and throw aggregate exception if some failed
-            await Task.WhenAll(renameTasks);
+            return Task.WhenAll(renameTasks);
         }
 
+        /// <inheritdoc />
         void ICollection<ILifxDevice>.Clear() {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Removes all stale weak references in the collection
-        /// </summary>
-        protected void Purge() {
-            IList<EquatableWeakReference<ILifxDevice>> devicesToRemove = this.members.Where(x => !x.IsAlive).ToList();
-
-            foreach (EquatableWeakReference<ILifxDevice> weakRef in devicesToRemove) {
-                this.members.Remove(weakRef);
-            }
         }
 
         /// <inheritdoc />
@@ -128,13 +125,24 @@ namespace AydenIO.Lifx {
             return this.GetEnumerator();
         }
 
-        /// <inheritdoc />
-        public int DeviceCount => this.members.Count;
+        /// <summary>
+        /// Called for each device that.
+        /// </summary>
+        /// <param name="device">The device that the membership rename operation is called on.</param>
+        /// <param name="timeoutMs">How long to wait for a response before the call times out.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected abstract Task RenameDeviceMembership(ILifxDevice device, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
-        /// <inheritdoc />
-        public int Count => this.members.Count;
+        /// <summary>
+        /// Removes all stale weak references in the collection.
+        /// </summary>
+        protected void Purge() {
+            IList<EquatableWeakReference<ILifxDevice>> devicesToRemove = this.members.Where(x => !x.IsAlive).ToList();
 
-        /// <inheritdoc />
-        public bool IsReadOnly => false;
+            foreach (EquatableWeakReference<ILifxDevice> weakRef in devicesToRemove) {
+                this.members.Remove(weakRef);
+            }
+        }
     }
 }

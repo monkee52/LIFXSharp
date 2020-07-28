@@ -1,70 +1,56 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common class that connects C# to the LIFX protocol
+    /// Common class that connects C# to the LIFX protocol.
     /// </summary>
     public partial class LifxNetwork : IDisposable {
         /// <summary>
-        /// The default LIFX LAN protocol port
+        /// The default LIFX LAN protocol port.
         /// </summary>
         public const int LifxPort = 56700;
 
+        /// <summary>Gets the default broadcast target.</summary>
+        public static readonly MacAddress LifxBroadcast = new MacAddress(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+
+        private readonly IDictionary<byte, ILifxResponseAwaiter> awaitingSequences;
+
+        private readonly IDictionary<MacAddress, ILifxDevice> deviceLookup;
+
+        private readonly object discoverySyncRoot;
+
+        private readonly LifxLocationCollection locations;
+
+        private readonly LifxGroupCollection groups;
+
         private UdpClient socket;
 
-        /// <value>An identifier to distinguish this <c>LifxNetwork</c> from others in the protocol</value>
-        public int SourceId { get; private set; }
-
         private int sequenceCounter;
-        private readonly IDictionary<byte, ILifxResponseAwaiter> awaitingSequences;
 
         private Thread socketReceiveThread;
 
         private CancellationTokenSource discoveryCancellationTokenSource;
         private Thread discoveryThread;
 
-        private readonly IDictionary<MacAddress, ILifxDevice> deviceLookup;
-
-        /// <value>Gets or sets how long to wait between sending out discovery packets</value>
-        public int DiscoveryInterval { get; set; }
-
-        /// <value>Gets or sets the default time to wait before a call times out, in milliseconds</value>
-        public int ReceiveTimeout { get; set; }
-
-        private readonly object discoverySyncRoot;
-
-        private static readonly MacAddress lifxBroadcast = new MacAddress(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
-
-        /// <value>Gets the LIFX Broadcast target</value>
-        public static MacAddress LifxBroadcast => LifxNetwork.lifxBroadcast;
-
-        private readonly LifxLocationCollection locations;
-
-        private readonly LifxGroupCollection groups;
-
-        /// <value>Gets the location manager for the network</value>
-        public ILifxLocationCollection Locations => this.locations;
-
-        /// <value>Gets the group manager for the network</value>
-        public ILifxGroupCollection Groups => this.groups;
+        private bool isDisposed = false; // To detect redundant calls
 
         /// <summary>
-        /// Initializes the <c>LifxNetwork</c>
+        /// Initializes a new instance of the <see cref="LifxNetwork"/> class.
         /// </summary>
-        /// <param name="discoveryInterval">The default discovery interval <see cref="DiscoveryInterval" /></param>
-        /// <param name="rxTimeout">The default receive timeout <see cref="ReceiveTimeout" /></param>
+        /// <param name="discoveryInterval">The default <see cref="DiscoveryInterval" />.</param>
+        /// <param name="rxTimeout">The default <see cref="ReceiveTimeout" />.</param>
         public LifxNetwork(int discoveryInterval = 5000, int rxTimeout = 500) {
             // Set up discovery fields
             this.discoveryCancellationTokenSource = null;
@@ -73,7 +59,7 @@ namespace AydenIO.Lifx {
             // Set up socket
             this.socket = new UdpClient() {
                 EnableBroadcast = true,
-                ExclusiveAddressUse = false
+                ExclusiveAddressUse = false,
             };
 
             // Allow reuse (exclusive above could be read as anti-reuse, rather than implicit reuse?)
@@ -84,7 +70,7 @@ namespace AydenIO.Lifx {
             // Set up socket thread
             this.socketReceiveThread = new Thread(new ThreadStart(this.SocketReceiveWorker)) {
                 IsBackground = true,
-                Name = nameof(this.SocketReceiveWorker)
+                Name = nameof(this.SocketReceiveWorker),
             };
 
             this.socketReceiveThread.Start();
@@ -112,12 +98,400 @@ namespace AydenIO.Lifx {
             this.groups = new LifxGroupCollection();
         }
 
+        /// <summary>
+        /// Event handler for when a device has been discovered during discovery
+        /// </summary>
+        public event EventHandler<LifxDeviceDiscoveredEventArgs> DeviceDiscovered;
+
+        /// <summary>
+        /// Event handler for when a device hasn't been seen for a while during discovery
+        /// </summary>
+        public event EventHandler<LifxDeviceLostEventArgs> DeviceLost;
+
+        /// <summary>Gets the identifier used to distinguish this <see cref="LifxNetwork"/> from others in the protocol.</summary>
+        public int SourceId { get; private set; }
+
+        /// <summary>Gets or sets how long to wait between sending out discovery packets.</summary>
+        public int DiscoveryInterval { get; set; }
+
+        /// <summary>Gets or sets the default time to wait before a call times out, in milliseconds.</summary>
+        public int ReceiveTimeout { get; set; }
+
+        /// <summary>Gets the location manager for the network.</summary>
+        public ILifxLocationCollection Locations => this.locations;
+
+        /// <summary>Gets the group manager for the network.</summary>
+        public ILifxGroupCollection Groups => this.groups;
+
+        /// <summary>Gets a list of all devices that have been discovered, or explicitly found.</summary>
+        public IReadOnlyCollection<ILifxDevice> Devices => new ReadOnlyDeviceCollection(this.deviceLookup.Values);
+
+        /// <summary>
+        /// Gets the features supported by a device, given a vendor and product ID.
+        /// </summary>
+        /// <param name="version">The LIFX version.</param>
+        /// <returns>An object containing the supported features for that product.</returns>
+        public static ILifxProduct GetFeaturesForProduct(ILifxVersion version) {
+            if (version == null) {
+                throw new ArgumentNullException(nameof(version));
+            }
+
+            return LifxNetwork.GetFeaturesForProduct(version.VendorId, version.ProductId);
+        }
+
+        /// <summary>
+        /// Gets whether a device supports the extended multizone API.
+        /// </summary>
+        /// <param name="version">The LIFX device's version.</param>
+        /// <param name="hostFirmware">The LIFX device's host firmware.</param>
+        /// <returns>Whether the product supports the extended multizone API.</returns>
+        public static bool ProductSupportsExtendedMultizoneApi(ILifxVersion version, ILifxHostFirmware hostFirmware) {
+            if (version == null) {
+                throw new ArgumentNullException(nameof(version));
+            }
+
+            if (hostFirmware == null) {
+                throw new ArgumentNullException(nameof(hostFirmware));
+            }
+
+            return LifxNetwork.ProductSupportsExtendedMultizoneApi(version.VendorId, version.ProductId, hostFirmware.VersionMajor, hostFirmware.VersionMinor);
+        }
+
+        /// <summary>
+        /// Starts the discovery thread.
+        /// </summary>
+        /// <returns>True if the call started the thread, otherwise the thread was not in a state to start.</returns>
+        public bool StartDiscovery() {
+            bool shouldStart = false;
+
+            lock (this.discoverySyncRoot) {
+                if (this.discoveryCancellationTokenSource == null) {
+                    shouldStart = true;
+
+                    this.discoveryCancellationTokenSource = new CancellationTokenSource();
+                }
+            }
+
+            if (shouldStart) {
+                // Create thread
+                this.discoveryThread = new Thread(new ThreadStart(this.DiscoveryWorker)) {
+                    IsBackground = true,
+                    Name = nameof(this.DiscoveryWorker),
+                };
+
+                // Start thread
+                this.discoveryThread.Start();
+            }
+
+            return shouldStart;
+        }
+
+        /// <summary>
+        /// Stops the discovery thread.
+        /// </summary>
+        /// <returns>True if the call stopped the thread, otherwise the thread was not in a state to stop.</returns>
+        public bool StopDiscovery() {
+            bool shouldStop = false;
+
+            lock (this.discoverySyncRoot) {
+                if (this.discoveryCancellationTokenSource != null && !this.discoveryCancellationTokenSource.IsCancellationRequested) {
+                    shouldStop = true;
+
+                    // Signal thread to stop in locked region to prevent race conditions with above check
+                    this.discoveryCancellationTokenSource.Cancel();
+                }
+            }
+
+            if (shouldStop) {
+                // Wiat for thread to join
+                this.discoveryThread.Join();
+
+                this.discoveryThread = null;
+
+                ((IDisposable)this.discoveryCancellationTokenSource)?.Dispose();
+                this.discoveryCancellationTokenSource = null;
+            }
+
+            return shouldStop;
+        }
+
+        /// <summary>
+        /// Sends a single discovery packet.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        public async Task DiscoverOnce(CancellationToken cancellationToken = default) {
+            // Create message
+            LifxMessage getVersion = new Messages.GetVersion();
+
+            // Send message
+            await this.SendWithMultipleResponseDelegated<Messages.StateVersion>(null, getVersion, (LifxResponse<Messages.StateVersion> response) => this.DiscoveryResponseHandler(response, cancellationToken), this.DiscoveryInterval, cancellationToken);
+
+            if (cancellationToken.IsCancellationRequested) {
+                return;
+            }
+
+            // Remove "lost" devices
+            DateTime now = DateTime.UtcNow;
+            TimeSpan lostTimeout = TimeSpan.FromMinutes(5); // Devices more than 5 minutes are considered lost
+            IList<MacAddress> devicesToRemove = new List<MacAddress>(); // Store list of devices that are lost
+
+            // Iterate over all devices
+            foreach (KeyValuePair<MacAddress, ILifxDevice> devicePair in this.deviceLookup) {
+                if (devicePair.Value is LifxDevice clientDevice) {
+                    // Check if device was last seen more than lostTimeout ago
+                    if (now - clientDevice.LastSeen > lostTimeout) {
+                        // Add to lost list
+                        devicesToRemove.Add(devicePair.Key);
+
+                        // Fire event
+                        this.DeviceLost?.Invoke(this, new LifxDeviceLostEventArgs(devicePair.Key));
+                    }
+                }
+            }
+
+            // Iterate over lost devices
+            foreach (MacAddress deviceId in devicesToRemove) {
+                // Remove device
+                this.deviceLookup.Remove(deviceId);
+            }
+        }
+
+        /// <summary>
+        /// Returns whether a given MAC address has been found, and is a device.
+        /// </summary>
+        /// <param name="macAddress">The MAC address to look up.</param>
+        /// <returns>Whether the device has been found.</returns>
+        public bool HasDevice(MacAddress macAddress) {
+            return this.deviceLookup.ContainsKey(macAddress);
+        }
+
+        /// <summary>
+        /// Gets a device with a specific <see cref="MacAddress"/>.
+        /// </summary>
+        /// <param name="macAddress">The mac address to find.</param>
+        /// <param name="port">The port to search.</param>
+        /// <param name="timeoutMs">How long to wait for a response before the call times out.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device.</returns>
+        public async Task<ILifxDevice> GetDevice(MacAddress macAddress, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            if (this.deviceLookup.ContainsKey(macAddress)) {
+                return this.deviceLookup[macAddress];
+            }
+
+            // Create message
+            LifxMessage getVersion = new Messages.GetVersion() {
+                Target = macAddress,
+            };
+
+            // Send message
+            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(new IPEndPoint(IPAddress.Broadcast, port), getVersion, timeoutMs, cancellationToken);
+
+            LifxDevice device = await this.CreateAndAddDevice(response, cancellationToken);
+
+            return device;
+        }
+
+        /// <summary>
+        /// Gets a device at a specific <see cref="IPEndPoint"/>.
+        /// </summary>
+        /// <param name="endPoint">The endpoint to search.</param>
+        /// <param name="timeoutMs">How long to wait for a response before the call times out.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device.</returns>
+        public async Task<ILifxDevice> GetDevice(IPEndPoint endPoint, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            if (endPoint == null) {
+                throw new ArgumentNullException(nameof(endPoint));
+            }
+
+            ILifxDevice device = this.Devices.OfType<LifxDevice>().FirstOrDefault(x => x.EndPoint.Equals(endPoint));
+
+            if (device != null) {
+                return device;
+            }
+
+            // Create message
+            LifxMessage getVersion = new Messages.GetVersion();
+
+            // Send message
+            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(endPoint, getVersion, timeoutMs, cancellationToken);
+
+            return await this.GetDevice(response.Message.Target, (ushort)endPoint.Port, timeoutMs, cancellationToken);
+        }
+
+        /// <summary>
+        /// Gets a device with at an IP address and port.
+        /// </summary>
+        /// <param name="address">IP address to search.</param>
+        /// <param name="port">The port to search.</param>
+        /// <param name="timeoutMs">How long to wait for a response before the call times out.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device.</returns>
+        public Task<ILifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return this.GetDevice(new IPEndPoint(address, port), timeoutMs, cancellationToken);
+        }
+
+        /// <summary>
+        /// Gets a device using an IP or MAC address, and a port.
+        /// </summary>
+        /// <param name="address">The IP or MAC address to search.</param>
+        /// <param name="port">The port to search.</param>
+        /// <param name="timeoutMs">How long to wait for a response before the call times out.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The device.</returns>
+        public Task<ILifxDevice> GetDevice(string address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            bool isIpAddress = IPAddress.TryParse(address, out IPAddress ipAddress);
+
+            if (isIpAddress) {
+                return this.GetDevice(ipAddress, port, timeoutMs, cancellationToken);
+            }
+
+            bool isMacAddress = MacAddress.TryParse(address, out MacAddress macAddress);
+
+            if (isMacAddress) {
+                return this.GetDevice(macAddress, port, timeoutMs, cancellationToken);
+            }
+
+            throw new ArgumentException($"{nameof(address)} is not a valid {nameof(IPAddress)} or {nameof(MacAddress)}.", nameof(address));
+        }
+
+        /// <summary>
+        /// Registers a virtual device with this LIFX network.
+        /// </summary>
+        /// <param name="device">The virtual device.</param>
+        public void RegisterVirtualDevice(LifxVirtualDevice device) {
+            if (device == null) {
+                throw new ArgumentNullException(nameof(device));
+            }
+
+            this.deviceLookup.Add(device.MacAddress, device);
+
+            this.DeviceDiscovered?.Invoke(this, new LifxDeviceDiscoveredEventArgs(device));
+        }
+
+        /// <inheritdoc />
+        public void Dispose() {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            this.Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Informs the location manager that the <paramref name="device"/> is now part of <paramref name="location"/>.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="location">The location.</param>
         internal void UpdateLocationMembershipInformation(ILifxDevice device, ILifxLocationTag location) {
             this.locations.UpdateMembershipInformation(device, location);
         }
 
+        /// <summary>
+        /// Informs the group manager that the <paramref name="device"/> is now part of <paramref name="group"/>.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="group">The group.</param>
         internal void UpdateGroupMembershipInformation(ILifxDevice device, ILifxGroupTag group) {
             this.groups.UpdateMembershipInformation(device, group);
+        }
+
+        /// <summary>
+        /// Sends a message with no response.
+        /// </summary>
+        /// <param name="device">The device to target.</param>
+        /// <param name="message">The message.</param>
+        /// <returns>>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        internal Task Send(LifxDevice device, LifxMessage message) {
+            this.SetMessageHeaderCommon(device, message, LifxeResponseFlags.None);
+
+            return this.SendCommon(device?.EndPoint, message);
+        }
+
+        /// <summary>
+        /// Sends a message, and returns the response.
+        /// </summary>
+        /// <typeparam name="T">The returned <see cref="LifxMessage"/> derived message's type.</typeparam>
+        /// <param name="device">The device to target.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The returned message.</returns>
+        internal async Task<T> SendWithResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken cancellationToken = default) where T : LifxMessage {
+            LifxResponse<T> response = await this.SendWithResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken);
+
+            return response.Message;
+        }
+
+        /// <summary>
+        /// Sends a message, and returns all responses after timeout or cancellation.
+        /// </summary>
+        /// <typeparam name="T">The returned <see cref="LifxMessage"/> derived messages' type.</typeparam>
+        /// <param name="device">The device to target.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The returned message.</returns>
+        internal async Task<IReadOnlyCollection<T>> SendWithMultipleResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken cancellationToken = default) where T : LifxMessage {
+            IReadOnlyCollection<LifxResponse<T>> responses = await this.SendWithMultipleResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken);
+
+            return responses.Select((LifxResponse<T> response) => response.Message).ToList().AsReadOnly();
+        }
+
+        /// <summary>
+        /// Sends a message, and invokes a handler for each response received.
+        /// </summary>
+        /// <typeparam name="T">The returned <see cref="LifxMessage"/> derived messages' type.</typeparam>
+        /// <param name="device">The device to target.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="handler">The handler to call for each received <typeparamref name="T"/> message.</param>
+        /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The returned message.</returns>
+        internal Task SendWithMultipleResponseDelegated<T>(LifxDevice device, LifxMessage message, Action<T> handler, int? timeoutMs = null, CancellationToken cancellationToken = default) where T : LifxMessage {
+            return this.SendWithMultipleResponseDelegated<T>(device?.EndPoint, message, (LifxResponse<T> response) => handler?.Invoke(response.Message), timeoutMs, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends a message, and awaits an acknowledgement.
+        /// </summary>
+        /// <param name="device">The device to target.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        internal Task SendWithAcknowledgement(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+            return this.SendWithResponse<Messages.Acknowledgement>(device?.EndPoint, message, timeoutMs, cancellationToken);
+        }
+
+        /// <summary>
+        /// Internal dispose handler.
+        /// </summary>
+        /// <param name="disposing">Whether the <see cref="Dispose()"/> was called by the user.</param>
+        protected virtual void Dispose(bool disposing) {
+            if (!this.isDisposed) {
+                if (disposing) {
+                    // TODO: dispose managed state (managed objects).
+                    // Stop discovery
+                    this.discoveryCancellationTokenSource?.Cancel();
+
+                    this.discoveryThread?.Join();
+                    this.discoveryThread = null;
+
+                    ((IDisposable)this.discoveryCancellationTokenSource)?.Dispose();
+                    this.discoveryCancellationTokenSource = null;
+
+                    // Close socket
+                    this.socket.Close();
+
+                    this.socketReceiveThread?.Join();
+                    this.socketReceiveThread = null;
+
+                    ((IDisposable)this.socket)?.Dispose();
+                    this.socket = null;
+                }
+
+                this.isDisposed = true;
+            }
         }
 
         private void SocketReceiveWorker() {
@@ -138,11 +512,11 @@ namespace AydenIO.Lifx {
                 }
 
                 // Decode message to determine type
-                LifxMessage origMessage = new LifxMessage(LifxMessageType._internal_unknown_);
+                LifxMessage origMessage = new LifxMessage(LifxMessageType.Unknown);
 
                 try {
                     origMessage.FromBytes(buffer);
-                } catch (Exception e) {
+                } catch (InvalidDataException e) {
                     Debug.WriteLine($"{e.GetType().Name} while decoding message: {e.Message}");
 
                     continue;
@@ -153,7 +527,7 @@ namespace AydenIO.Lifx {
 
                 if (isClient) {
                     // Query no devices
-                    ICollection<LifxVirtualDevice> devicesToQuery = new LifxVirtualDevice[0];
+                    ICollection<LifxVirtualDevice> devicesToQuery = Array.Empty<LifxVirtualDevice>();
 
                     if (origMessage.Target == LifxNetwork.LifxBroadcast) {
                         devicesToQuery = this.Devices.OfType<LifxVirtualDevice>().ToList();
@@ -186,6 +560,7 @@ namespace AydenIO.Lifx {
                             LifxMessageType.GetGroup => new Messages.GetGroup(),
                             LifxMessageType.SetGroup => new Messages.SetGroup(),
                             LifxMessageType.EchoRequest => new Messages.EchoRequest(),
+
                             // Light messages
                             LifxMessageType.LightGet => new Messages.LightGet(),
                             LifxMessageType.LightGetPower => new Messages.LightGetPower(),
@@ -195,6 +570,7 @@ namespace AydenIO.Lifx {
                             LifxMessageType.LightSetWaveformOptional => new Messages.LightSetWaveformOptional(),
                             LifxMessageType.LightGetInfrared => new Messages.LightGetInfrared(),
                             LifxMessageType.LightSetInfrared => new Messages.LightSetInfrared(),
+
                             // MultiZone messages
                             LifxMessageType.GetExtendedColorZones => new Messages.GetExtendedColorZones(),
                             LifxMessageType.SetExtendedColorZones => new Messages.SetExtendedColorZones(),
@@ -208,7 +584,7 @@ namespace AydenIO.Lifx {
 
                             try {
                                 message.FromBytes(buffer);
-                            } catch (Exception e) {
+                            } catch (InvalidDataException e) {
                                 Debug.WriteLine($"{e.GetType().Name} while decoding message: {e.Message}");
 
                                 continue;
@@ -244,14 +620,17 @@ namespace AydenIO.Lifx {
                             LifxMessageType.StateLocation => new Messages.StateLocation(),
                             LifxMessageType.StateGroup => new Messages.StateGroup(),
                             LifxMessageType.EchoResponse => new Messages.EchoResponse(),
+
                             // Light messages
                             LifxMessageType.LightState => new Messages.LightState(),
                             LifxMessageType.LightStatePower => new Messages.LightStatePower(),
                             LifxMessageType.LightStateInfrared => new Messages.LightStateInfrared(),
+
                             // MultiZone messages
                             LifxMessageType.StateExtendedColorZones => new Messages.StateExtendedColorZones(),
                             LifxMessageType.StateZone => new Messages.StateZone(),
                             LifxMessageType.StateMultiZone => new Messages.StateMultiZone(),
+
                             // Undocumented functions
                             LifxMessageType.StateTime => new Messages.StateTime(),
                             LifxMessageType.StateTags => new Messages.StateTags(),
@@ -268,7 +647,7 @@ namespace AydenIO.Lifx {
 
                             try {
                                 message.FromBytes(buffer);
-                            } catch (Exception e) {
+                            } catch (InvalidDataException e) {
                                 Debug.WriteLine($"{e.GetType().Name} while decoding message: {e.Message}");
 
                                 // Should we silently ignore the message, or should we pass it back to the original call that the message is replying to?
@@ -318,16 +697,18 @@ namespace AydenIO.Lifx {
             // Set messages, responses are dealt with below
             switch (request) {
                 // Device messages
-                case Messages.SetPower setPower: { 
+                case Messages.SetPower setPower: {
                     await virtualDevice.SetPower(setPower.PoweredOn);
 
                     break;
                 }
-                case Messages.SetLabel setLabel: { 
+
+                case Messages.SetLabel setLabel: {
                     await virtualDevice.SetLabel(setLabel.Label);
 
                     break;
                 }
+
                 case Messages.SetLocation setLocation: {
                     await virtualDevice.SetLocation(setLocation);
 
@@ -335,29 +716,34 @@ namespace AydenIO.Lifx {
 
                     break;
                 }
-                case Messages.SetGroup setGroup: { 
+
+                case Messages.SetGroup setGroup: {
                     await virtualDevice.SetGroup(setGroup);
 
                     this.UpdateGroupMembershipInformation(virtualDevice, setGroup);
 
                     break;
                 }
+
                 // Light messages
                 case Messages.LightSetPower lightSetPower when isVirtualLight: {
                     await virtualLight.SetPower(lightSetPower.PoweredOn, lightSetPower.Duration);
 
                     break;
                 }
+
                 case Messages.LightSetColor lightSetColor when isVirtualLight: {
                     await virtualLight.SetColor(lightSetColor, lightSetColor.Duration);
 
                     break;
                 }
+
                 case Messages.LightSetInfrared lightSetInfrared when isVirtualInfraredLight: {
                     await virtualInfraredLight.SetInfrared(lightSetInfrared.Level);
 
                     break;
                 }
+
                 // Multizone messages
                 case Messages.SetColorZones setColorZones when isVirtualMultizoneLight: {
                     int colorCount = setColorZones.EndIndex - setColorZones.StartIndex + 1;
@@ -368,6 +754,7 @@ namespace AydenIO.Lifx {
 
                     break;
                 }
+
                 case Messages.SetExtendedColorZones setExtendedColorZones when isVirtualInfraredLight: {
                     await virtualMultizoneLight.SetMultizoneState(setExtendedColorZones.Apply, setExtendedColorZones.Index, setExtendedColorZones.Colors, setExtendedColorZones.Duration);
 
@@ -388,6 +775,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetHostInfo: {
                         ILifxHostInfo hostInfo = await virtualDevice.GetHostInfo();
 
@@ -395,6 +783,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetHostFirmware: {
                         ILifxHostFirmware hostFirmware = await virtualDevice.GetHostFirmware();
 
@@ -402,6 +791,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetWifiInfo: {
                         ILifxWifiInfo wifiInfo = await virtualDevice.GetWifiInfo();
 
@@ -409,6 +799,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetWifiFirmware: {
                         ILifxWifiFirmware wifiFirmware = await virtualDevice.GetWifiFirmware();
 
@@ -416,6 +807,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetPower: {
                         bool poweredOn = await virtualDevice.GetPower();
 
@@ -423,6 +815,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetLabel: {
                         string label = await virtualDevice.GetLabel();
 
@@ -430,6 +823,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetVersion: {
                         ILifxVersion version = await virtualDevice.GetVersion();
 
@@ -437,6 +831,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetInfo: {
                         ILifxInfo info = await virtualDevice.GetInfo();
 
@@ -444,6 +839,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetLocation: {
                         ILifxLocationTag location = await virtualDevice.GetLocation();
 
@@ -453,6 +849,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetGroup: {
                         ILifxGroupTag group = await virtualDevice.GetGroup();
 
@@ -462,11 +859,13 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.EchoRequest echoRequest: {
                         responses.Add(new Messages.EchoResponse(echoRequest));
 
                         break;
                     }
+
                     // Light messages
                     case Messages.LightSetColor when isVirtualLight:
                     case Messages.LightSetWaveform when isVirtualLight:
@@ -478,6 +877,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.LightGetPower when isVirtualLight: {
                         bool poweredOn = await virtualLight.GetPower();
 
@@ -485,6 +885,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.LightGetInfrared when isVirtualInfraredLight: {
                         ushort level = await virtualInfraredLight.GetInfrared();
 
@@ -492,6 +893,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     // Multizone messages
                     case Messages.SetExtendedColorZones setExtendedColorZones when isVirtualMultizoneLight: {
                         int count = setExtendedColorZones.Colors.Count;
@@ -504,7 +906,7 @@ namespace AydenIO.Lifx {
 
                             Messages.StateExtendedColorZones stateExtendedColorZones = new Messages.StateExtendedColorZones() {
                                 ZoneCount = state.ZoneCount,
-                                Index = (ushort)index
+                                Index = (ushort)index,
                             };
 
                             IEnumerable<ILifxHsbkColor> colors = state.Colors.Skip(i).Take(Messages.StateExtendedColorZones.MaxZoneCount);
@@ -518,6 +920,7 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetExtendedColorZones when isVirtualMultizoneLight: {
                         ILifxColorMultiZoneState state = await virtualMultizoneLight.GetMultizoneState();
 
@@ -529,7 +932,7 @@ namespace AydenIO.Lifx {
 
                             Messages.StateExtendedColorZones stateExtendedColorZones = new Messages.StateExtendedColorZones() {
                                 ZoneCount = state.ZoneCount,
-                                Index = (ushort)index
+                                Index = (ushort)index,
                             };
 
                             IEnumerable<ILifxHsbkColor> colors = state.Colors.Skip(i).Take(Messages.StateExtendedColorZones.MaxZoneCount);
@@ -543,28 +946,29 @@ namespace AydenIO.Lifx {
 
                         break;
                     }
+
                     case Messages.GetColorZones getColorZones when isVirtualMultizoneLight: {
-                            int count = getColorZones.EndIndex - getColorZones.StartIndex + 1;
+                        int count = getColorZones.EndIndex - getColorZones.StartIndex + 1;
 
-                            ILifxColorMultiZoneState state = await virtualMultizoneLight.GetMultizoneState(getColorZones.StartIndex, (ushort)count);
+                        ILifxColorMultiZoneState state = await virtualMultizoneLight.GetMultizoneState(getColorZones.StartIndex, (ushort)count);
 
-                            // Fragment message
-                            for (int i = 0; i < count; i += Messages.StateMultiZone.MaxZoneCount) {
-                                int index = getColorZones.StartIndex + i;
+                        // Fragment message
+                        for (int i = 0; i < count; i += Messages.StateMultiZone.MaxZoneCount) {
+                            int index = getColorZones.StartIndex + i;
 
-                                Messages.StateMultiZone stateMultiZone = new Messages.StateMultiZone() {
-                                    ZoneCount = state.ZoneCount,
-                                    Index = (ushort)index
-                                };
+                            Messages.StateMultiZone stateMultiZone = new Messages.StateMultiZone() {
+                                ZoneCount = state.ZoneCount,
+                                Index = (ushort)index,
+                            };
 
-                                IEnumerable<ILifxHsbkColor> colors = state.Colors.Skip(i).Take(Messages.StateMultiZone.MaxZoneCount);
+                            IEnumerable<ILifxHsbkColor> colors = state.Colors.Skip(i).Take(Messages.StateMultiZone.MaxZoneCount);
 
-                                foreach (ILifxHsbkColor color in colors) {
-                                    stateMultiZone.Colors.Add(color);
-                                }
-
-                                responses.Add(stateMultiZone);
+                            foreach (ILifxHsbkColor color in colors) {
+                                stateMultiZone.Colors.Add(color);
                             }
+
+                            responses.Add(stateMultiZone);
+                        }
 
                         break;
                     }
@@ -584,77 +988,6 @@ namespace AydenIO.Lifx {
             }
         }
 
-        /// <summary>
-        /// Event handler for when a device has been discovered during discovery
-        /// </summary>
-        public event EventHandler<LifxDeviceDiscoveredEventArgs> DeviceDiscovered;
-
-        /// <summary>
-        /// Event handler for when a device hasn't been seen for a while during discovery
-        /// </summary>
-        public event EventHandler<LifxDeviceLostEventArgs> DeviceLost;
-
-        /// <value>Gets a list of all devices that have been discovered, or explicitly found</value>
-        public IReadOnlyCollection<ILifxDevice> Devices => new ReadOnlyDeviceCollection(this.deviceLookup.Values);
-
-        /// <summary>
-        /// Starts the discovery thread
-        /// </summary>
-        /// <returns>True if the call started the thread, otherwise the thread was not in a state to start</returns>
-        public bool StartDiscovery() {
-            bool shouldStart = false;
-
-            lock (this.discoverySyncRoot) {
-                if (this.discoveryCancellationTokenSource == null) {
-                    shouldStart = true;
-
-                    this.discoveryCancellationTokenSource = new CancellationTokenSource();
-                }
-            }
-
-            if (shouldStart) {
-                // Create thread
-                this.discoveryThread = new Thread(new ThreadStart(this.DiscoveryWorker)) {
-                    IsBackground = true,
-                    Name = nameof(this.DiscoveryWorker)
-                };
-
-                // Start thread
-                this.discoveryThread.Start();
-            }
-
-            return shouldStart;
-        }
-
-        /// <summary>
-        /// Synchronous version of <c>StopDiscovery</c>
-        /// </summary>
-        /// <returns>True if the call stopped the thread, otherwise the thread was not in a state to stop</returns>
-        public bool StopDiscovery() {
-            bool shouldStop = false;
-
-            lock (this.discoverySyncRoot) {
-                if (this.discoveryCancellationTokenSource != null && !this.discoveryCancellationTokenSource.IsCancellationRequested) {
-                    shouldStop = true;
-
-                    // Signal thread to stop in locked region to prevent race conditions with above check
-                    this.discoveryCancellationTokenSource.Cancel();
-                }
-            }
-
-            if (shouldStop) {
-                // Wiat for thread to join
-                this.discoveryThread.Join();
-
-                this.discoveryThread = null;
-
-                ((IDisposable)this.discoveryCancellationTokenSource)?.Dispose();
-                this.discoveryCancellationTokenSource = null;
-            }
-
-            return shouldStop;
-        }
-
         private void DiscoveryResponseHandler(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
             bool didFind = this.deviceLookup.TryGetValue(response.Message.Target, out ILifxDevice device);
 
@@ -668,47 +1001,7 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Sends a single discovery packet
-        /// </summary>
-        public async Task DiscoverOnce(CancellationToken cancellationToken = default) {
-            // Create message
-            LifxMessage getVersion = new Messages.GetVersion();
-
-            // Send message
-            await this.SendWithMultipleResponseDelegated<Messages.StateVersion>(null, getVersion, (LifxResponse<Messages.StateVersion> response) => this.DiscoveryResponseHandler(response, cancellationToken), this.DiscoveryInterval, cancellationToken);
-
-            if (cancellationToken.IsCancellationRequested) {
-                return;
-            }
-
-            // Remove "lost" devices
-            DateTime now = DateTime.UtcNow;
-            TimeSpan lostTimeout = TimeSpan.FromMinutes(5); // Devices more than 5 minutes are considered lost
-            IList<MacAddress> devicesToRemove = new List<MacAddress>(); // Store list of devices that are lost
-
-            // Iterate over all devices
-            foreach (KeyValuePair<MacAddress, ILifxDevice> devicePair in this.deviceLookup) {
-                if (devicePair.Value is LifxDevice clientDevice) {
-                    // Check if device was last seen more than lostTimeout ago
-                    if (now - clientDevice.LastSeen > lostTimeout) {
-                        // Add to lost list
-                        devicesToRemove.Add(devicePair.Key);
-
-                        // Fire event
-                        this.DeviceLost?.Invoke(this, new LifxDeviceLostEventArgs(devicePair.Key));
-                    }
-                }
-            }
-
-            // Iterate over lost devices
-            foreach (MacAddress deviceId in devicesToRemove) {
-                // Remove device
-                this.deviceLookup.Remove(deviceId);
-            }
-        }
-
-        /// <summary>
-        /// Thread worker that calls DiscoverOnce repeatedly every <c>DiscoveryInterval</c> milliseconds
+        /// Thread worker that calls DiscoverOnce repeatedly every <see cref="DiscoveryInterval"/> milliseconds.
         /// </summary>
         private void DiscoveryWorker() {
             // Only discover every DiscoverInterval milliseconds
@@ -718,15 +1011,6 @@ namespace AydenIO.Lifx {
             }
         }
 
-        /// <summary>
-        /// Returns whether a given MAC address has been found, and is a device
-        /// </summary>
-        /// <param name="macAddress">The MAC address to look up</param>
-        /// <returns>Whether the device has been found</returns>
-        public bool HasDevice(MacAddress macAddress) {
-            return this.deviceLookup.ContainsKey(macAddress);
-        }
-
         private async Task<LifxDevice> CreateAndAddDevice(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
             LifxDevice device;
 
@@ -734,7 +1018,7 @@ namespace AydenIO.Lifx {
 
             if (product.IsMultizone) {
                 Messages.GetHostFirmware getHostFirmware = new Messages.GetHostFirmware() {
-                    Target = response.Message.Target
+                    Target = response.Message.Target,
                 };
 
                 ILifxHostFirmware hostFirmware = (await this.SendWithResponse<Messages.StateHostFirmware>(response.EndPoint, getHostFirmware, null, cancellationToken)).Message;
@@ -765,95 +1049,10 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Gets a device with a specific <c>MacAddress</c>
-        /// </summary>
-        /// <param name="macAddress">The mac address to find</param>
-        /// <param name="port">The port to search</param>
-        /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The device</returns>
-        public async Task<ILifxDevice> GetDevice(MacAddress macAddress, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            if (this.deviceLookup.ContainsKey(macAddress)) {
-                return this.deviceLookup[macAddress];
-            }
-
-            // Create message
-            LifxMessage getVersion = new Messages.GetVersion() {
-                Target = macAddress
-            };
-
-            // Send message
-            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(new IPEndPoint(IPAddress.Broadcast, port), getVersion, timeoutMs, cancellationToken);
-
-            LifxDevice device = await this.CreateAndAddDevice(response, cancellationToken);
-
-            return device;
-        }
-
-        /// <summary>
-        /// Gets a device with a specific <c>MacAddress</c>
-        /// </summary>
-        /// <param name="endPoint">The endpoint to search</param>
-        /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns>The device</returns>
-        public async Task<ILifxDevice> GetDevice(IPEndPoint endPoint, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            ILifxDevice device = this.Devices.OfType<LifxDevice>().FirstOrDefault(x => x.EndPoint.Equals(endPoint));
-
-            if (device != null) {
-                return device;
-            }
-
-            // Create message
-            LifxMessage getVersion = new Messages.GetVersion();
-
-            // Send message
-            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(endPoint, getVersion, timeoutMs, cancellationToken);
-
-            return await this.GetDevice(response.Message.Target, (ushort)endPoint.Port, timeoutMs, cancellationToken);
-        }
-
-        /// <summary>
-        /// Gets a device with at an IP address and port
-        /// </summary>
-        /// <param name="address">IP address to search</param>
-        /// <param name="port">The port to search</param>
-        /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns></returns>
-        public Task<ILifxDevice> GetDevice(IPAddress address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            return this.GetDevice(new IPEndPoint(address, port), timeoutMs, cancellationToken);
-        }
-
-        /// <summary>
-        /// Gets a device using an IP or MAC address, and a port
-        /// </summary>
-        /// <param name="address">The IP or MAC address to search</param>
-        /// <param name="port">The port to search</param>
-        /// <param name="timeoutMs">How long to wait for a response before the call times out</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <returns></returns>
-        public Task<ILifxDevice> GetDevice(string address, ushort port = LifxNetwork.LifxPort, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            bool isIpAddress = IPAddress.TryParse(address, out IPAddress ipAddress);
-
-            if (isIpAddress) {
-                return this.GetDevice(ipAddress, port, timeoutMs, cancellationToken);
-            }
-
-            bool isMacAddress = MacAddress.TryParse(address, out MacAddress macAddress);
-
-            if (isMacAddress) {
-                return this.GetDevice(macAddress, port, timeoutMs, cancellationToken);
-            }
-
-            throw new ArgumentException($"{nameof(address)} is not a valid {nameof(IPAddress)} or {nameof(MacAddress)}.", nameof(address));
-        }
-
-        /// <summary>
         /// Converts a message to bytes, and sends it.
         /// </summary>
-        /// <param name="endPoint">The destination, or null if message is to be broadcast</param>
-        /// <param name="message">The message</param>
+        /// <param name="endPoint">The destination, or null if message is to be broadcast.</param>
+        /// <param name="message">The message.</param>
         private Task<int> SendCommon(IPEndPoint endPoint, LifxMessage message) {
             // Broadcast if no endpoint
             endPoint ??= new IPEndPoint(IPAddress.Broadcast, LifxNetwork.LifxPort);
@@ -866,12 +1065,12 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Sets common header fields of the message
+        /// Sets common header fields of the <paramref name="message"/>.
         /// </summary>
-        /// <param name="device">The device to target, or null if message is to be broadcast</param>
-        /// <param name="message">The message</param>
-        /// <param name="responseFlags">The type of response required from the device</param>
-        /// <returns>An 8-bit sequence number</returns>
+        /// <param name="device">The device to target, or null if message is to be broadcast.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="responseFlags">The type of response required from the device.</param>
+        /// <returns>An 8-bit sequence number.</returns>
         private byte SetMessageHeaderCommon(LifxDevice device, LifxMessage message, LifxeResponseFlags responseFlags) {
             // Set target if available
             if (device != null) {
@@ -891,25 +1090,14 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Sends a message with no response
+        /// Sends a message, and returns the response.
         /// </summary>
-        /// <param name="device">The device to target</param>
-        /// <param name="message">The message</param>
-        internal async Task Send(LifxDevice device, LifxMessage message) {
-            this.SetMessageHeaderCommon(device, message, LifxeResponseFlags.None);
-
-            await this.SendCommon(device?.EndPoint, message);
-        }
-
-        /// <summary>
-        /// Sends a message, and returns the response
-        /// </summary>
-        /// <param name="endPoint">The endpoint to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="awaiter">The awaiter that handles the response</param>
-        /// <param name="timeoutMs">How long before the call times out if there is no response</param>
-        /// <param name="isAcknowledgement">Whether the return type is <c>Messages.Acknowledgement</c></param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        /// <param name="endPoint">The endpoint to target.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="awaiter">The awaiter that handles the response.</param>
+        /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
+        /// <param name="isAcknowledgement">Whether the return type is <see cref="Messages.Acknowledgement"/>.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
         private async Task SendWithResponseCommon(IPEndPoint endPoint, LifxMessage message, ILifxResponseAwaiter awaiter, int? timeoutMs, bool isAcknowledgement, CancellationToken cancellationToken) {
             // Determine responseFlags
             LifxeResponseFlags responseFlags = isAcknowledgement ? LifxeResponseFlags.AcknowledgementRequired : LifxeResponseFlags.ResponseRequired;
@@ -962,14 +1150,14 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Sends a message, and returns the response
+        /// Sends a message, and returns the response.
         /// </summary>
-        /// <typeparam name="T">The returned <c>LifxMessage</c> message type</typeparam>
-        /// <param name="endPoint">The endpoint to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <param name="timeoutMs">How long before the call times out if there is no response</param>
-        /// <returns>The returned message</returns>
+        /// <typeparam name="T">The returned <see cref="LifxMessage"/> derived message type.</typeparam>
+        /// <param name="endPoint">The endpoint to target.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The returned message.</returns>
         private async Task<LifxResponse<T>> SendWithResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
             bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
 
@@ -983,14 +1171,14 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Sends a message, and returns all responses after timeout
+        /// Sends a message, and returns all responses after timeout, or cancellation.
         /// </summary>
-        /// <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
-        /// <param name="endPoint">The endpoint to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <param name="timeoutMs">How long before the call takes before the responses are returned</param>
-        /// <returns>The returned messages</returns>
+        /// <typeparam name="T">The returned <see cref="LifxMessage"/> derived messages' type.</typeparam>
+        /// <param name="endPoint">The endpoint to target.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+        /// <returns>The returned messages.</returns>
         private async Task<IReadOnlyCollection<LifxResponse<T>>> SendWithMultipleResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
             bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
 
@@ -1004,14 +1192,14 @@ namespace AydenIO.Lifx {
         }
 
         /// <summary>
-        /// Sends a message, and invokes a handler for each response received
+        /// Sends a message, and invokes a handler for each response received.
         /// </summary>
-        /// <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
-        /// <param name="endPoint">The endpoint to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="handler">The delegate to invoke for each response</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <param name="timeoutMs">How long before the call takes before the call completes</param>
+        /// <typeparam name="T">The returned <see cref="LifxMessage"/> derived messages' type.</typeparam>
+        /// <param name="endPoint">The endpoint to target.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="handler">The delegate to invoke for each response.</param>
+        /// <param name="timeoutMs">How long before the call takes before the call completes.</param>
+        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
         private async Task SendWithMultipleResponseDelegated<T>(IPEndPoint endPoint, LifxMessage message, Action<LifxResponse<T>> handler, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
             bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
 
@@ -1024,128 +1212,5 @@ namespace AydenIO.Lifx {
             // Wait for timeout or cancellation
             await awaiter.Task;
         }
-
-        /// <summary>
-        /// Sends a message, and returns the response
-        /// </summary>
-        /// <typeparam name="T">The returned <c>LifxMessage</c> message type</typeparam>
-        /// <param name="device">The device to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <param name="timeoutMs">How long before the call times out if there is no response</param>
-        /// <returns>The returned message</returns>
-        internal async Task<T> SendWithResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken cancellationToken = default) where T : LifxMessage {
-            LifxResponse<T> response = await this.SendWithResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken);
-
-            return response.Message;
-        }
-
-        /// <summary>
-        /// Sends a message, and returns all responses after timeout
-        /// </summary>
-        /// <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
-        /// <param name="device">The device to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <param name="timeoutMs">How long before the call takes before the responses are returned</param>
-        /// <returns>The returned messages</returns>
-        internal async Task<IReadOnlyCollection<T>> SendWithMultipleResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken cancellationToken = default) where T : LifxMessage {
-            IReadOnlyCollection<LifxResponse<T>> responses = await this.SendWithMultipleResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken);
-
-            return responses.Select((LifxResponse<T> response) => response.Message).ToList().AsReadOnly();
-        }
-
-        /// <summary>
-        /// Sends a message, and invokes a handler for each response received
-        /// </summary>
-        /// <typeparam name="T">The returned <c>LifxMessage</c> message's type</typeparam>
-        /// <param name="device">The device to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="handler">The delegate to invoke for each response</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <param name="timeoutMs">How long before the call takes before the responses are returned</param>
-        /// <returns>The returned messages</returns>
-        internal Task SendWithMultipleResponseDelegated<T>(LifxDevice device, LifxMessage message, Action<T> handler, int? timeoutMs = null, CancellationToken cancellationToken = default) where T : LifxMessage {
-            return this.SendWithMultipleResponseDelegated<T>(device?.EndPoint, message, (LifxResponse<T> response) => handler?.Invoke(response.Message), timeoutMs, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends a message, and awaits an acknowledgement
-        /// </summary>
-        /// <param name="device">The device to target</param>
-        /// <param name="message">The message</param>
-        /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        /// <param name="timeoutMs">How long before the call times out if there is no response</param>
-        internal async Task SendWithAcknowledgement(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            await this.SendWithResponse<Messages.Acknowledgement>(device?.EndPoint, message, timeoutMs, cancellationToken);
-        }
-
-        /// <summary>
-        /// Registers a virtual device with this LIFX network
-        /// </summary>
-        /// <param name="device">The virtual device</param>
-        public void RegisterVirtualDevice(LifxVirtualDevice device) {
-            this.deviceLookup.Add(device.MacAddress, device);
-
-            this.DeviceDiscovered?.Invoke(this, new LifxDeviceDiscoveredEventArgs(device));
-        }
-
-        /// <summary>
-        /// Gets the features supported by a device, given a vendor and product ID
-        /// </summary>
-        /// <param name="version">The LIFX version</param>
-        /// <returns>An object containing the supported features for that product</returns>
-        public static ILifxProduct GetFeaturesForProduct(ILifxVersion version) {
-            return LifxNetwork.GetFeaturesForProduct(version.VendorId, version.ProductId);
-        }
-
-        /// <summary>
-        /// Gets whether a device supports the extended multizone API
-        /// </summary>
-        /// <param name="version">The LIFX device's version</param>
-        /// <param name="hostFirmware">The LIFX device's host firmware</param>
-        /// <returns></returns>
-        public static bool ProductSupportsExtendedMultizoneApi(ILifxVersion version, ILifxHostFirmware hostFirmware) {
-            return LifxNetwork.ProductSupportsExtendedMultizoneApi(version.VendorId, version.ProductId, hostFirmware.VersionMajor, hostFirmware.VersionMinor);
-        }
-
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        /// <inheritdoc />
-        protected virtual void Dispose(bool disposing) {
-            if (!this.disposedValue) {
-                if (disposing) {
-                    // TODO: dispose managed state (managed objects).
-                    // Stop discovery
-                    this.discoveryCancellationTokenSource?.Cancel();
-
-                    this.discoveryThread?.Join();
-                    this.discoveryThread = null;
-
-                    ((IDisposable)this.discoveryCancellationTokenSource)?.Dispose();
-                    this.discoveryCancellationTokenSource = null;
-
-                    // Close socket
-                    this.socket.Close();
-
-                    this.socketReceiveThread?.Join();
-                    this.socketReceiveThread = null;
-
-                    ((IDisposable)this.socket)?.Dispose();
-                    this.socket = null;
-                }
-
-                this.disposedValue = true;
-            }
-        }
-
-        // This code added to correctly implement the disposable pattern.
-        /// <inheritdoc />
-        public void Dispose() {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            this.Dispose(true);
-        }
-        #endregion
     }
 }

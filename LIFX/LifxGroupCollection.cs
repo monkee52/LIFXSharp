@@ -1,16 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 
 namespace AydenIO.Lifx {
-
     /// <summary>
-    /// Manages groups known to the <c>LifxNetwork</c>
+    /// Manages groups known to the <see cref="LifxNetwork"/>.
     /// </summary>
     internal class LifxGroupCollection : LifxMembershipCollection<LifxGroup, ILifxGroup, ILifxGroupTag>, ILifxGroupCollection {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LifxGroupCollection"/> class.
+        /// </summary>
         internal LifxGroupCollection() : base() {
-
+            // Empty
         }
 
         /// <inheritdoc />

@@ -1,18 +1,27 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// A collection of devices belong to a LIFX location
+    /// A collection of devices belong to a LIFX location.
     /// </summary>
     internal class LifxLocation : LifxMembership<ILifxLocationTag>, ILifxLocation {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LifxLocation"/> class.
+        /// </summary>
+        /// <param name="guid">The identifier of the location.</param>
+        /// <param name="label">The label for the location.</param>
+        /// <param name="updatedAt">When the location was last updated.</param>
+        internal LifxLocation(Guid guid, string label, DateTime updatedAt) : base(guid, label, updatedAt) {
+            // Empty
+        }
+
         /// <inheritdoc />
         public Guid Location => this.Guid;
-
-        internal LifxLocation(Guid guid, string label, DateTime updatedAt) : base(guid, label, updatedAt) {
-
-        }
 
         /// <inheritdoc />
         protected override Task RenameDeviceMembership(ILifxDevice device, int? timeoutMs = null, CancellationToken cancellationToken = default) {

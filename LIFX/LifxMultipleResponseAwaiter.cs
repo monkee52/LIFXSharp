@@ -1,32 +1,34 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// An <c>ILifxResponseAwaiter</c> that waits for all responses before the user cancels, or it times out
+    /// An <see cref="ILifxResponseAwaiter"/> that waits for all responses before the user cancels, or it times out.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The response type.</typeparam>
     internal class LifxMultipleResponseAwaiter<T> : ILifxResponseAwaiter where T : LifxMessage {
         private readonly TaskCompletionSource<IReadOnlyCollection<LifxResponse<T>>> taskCompletionSource;
 
         private readonly List<LifxResponse<T>> responses;
 
-        /// <value>Gets the awaitable task</value>
-        public Task<IReadOnlyCollection<LifxResponse<T>>> Task => this.taskCompletionSource.Task;
-
-        /// <inheritdoc />
-        Task ILifxResponseAwaiter.Task => this.taskCompletionSource.Task;
-
         /// <summary>
-        /// Creates an awaiter that waits for all responses before the user cancels, or it times out
+        /// Initializes a new instance of the <see cref="LifxMultipleResponseAwaiter{T}"/> class.
         /// </summary>
         public LifxMultipleResponseAwaiter() {
             this.taskCompletionSource = new TaskCompletionSource<IReadOnlyCollection<LifxResponse<T>>>();
 
             this.responses = new List<LifxResponse<T>>();
         }
+
+        /// <summary>Gets the awaitable task.</summary>
+        public Task<IReadOnlyCollection<LifxResponse<T>>> Task => this.taskCompletionSource.Task;
+
+        /// <inheritdoc />
+        Task ILifxResponseAwaiter.Task => this.taskCompletionSource.Task;
 
         /// <inheritdoc />
         public void HandleResponse(LifxResponse response) {
