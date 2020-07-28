@@ -17,22 +17,43 @@ namespace AydenIO.Examples.Lifx {
             lifx.DeviceDiscovered += Program.DeviceDiscovered;
             lifx.DeviceLost += Program.DeviceLost;
 
+            lifx.Locations.CollectionCreated += (sender, e) => Console.WriteLine($"Location created: [Guid = {e.Collection.Guid}, Label = {e.Collection.Label}, UpdatedAt = {e.Collection.UpdatedAt}]");
+            lifx.Groups.CollectionCreated += (sender, e) => Console.WriteLine($"Group created: [Guid = {e.Collection.Guid}, Label = {e.Collection.Label}, UpdatedAt = {e.Collection.UpdatedAt}]");
+
             //lifx.StartDiscovery();
 
             while (lifx.Devices.Count == 0) {
                 lifx.DiscoverOnce().Wait();
             }
 
-            LifxDevice device = lifx.Devices.First(x => x.GetLabel().Result == "Left") as LifxDevice;
+            LifxDevice firstDevice = lifx.Devices.First(x => x.GetLabel().Result == "Left") as LifxDevice;
 
-            DateTime dt = device.GetTime().Result;
+            DateTime dt = firstDevice.GetTime().Result;
 
             Console.WriteLine(dt);
 
-            IReadOnlyCollection<ILifxDevice> devicesInLocation = lifx.LocationManager.GetMembers(device.GetLocation().Result);
+            Console.WriteLine($"{lifx.Locations.Count} locations");
 
-            foreach (ILifxDevice deviceInLocation in devicesInLocation) {
-                Console.WriteLine(deviceInLocation.GetLabel().Result);
+            foreach (ILifxLocation location in lifx.Locations) {
+                Console.WriteLine($"  {location.Label} [Guid = {location.Location}, UpdatedAt = {location.UpdatedAt}]");
+
+                Console.WriteLine($"    {location.DeviceCount} members");
+
+                foreach (ILifxDevice device in location) {
+                    Console.WriteLine($"      {device.GetLabel().Result}");
+                }
+            }
+
+            Console.WriteLine($"{lifx.Groups.Count}");
+
+            foreach (ILifxGroup group in lifx.Groups) {
+                Console.WriteLine($"  {group.Label} [Guid = {group.Group}, UpdatedAt = {group.UpdatedAt}]");
+
+                Console.WriteLine($"    {group.DeviceCount} members");
+
+                foreach (ILifxDevice device in group) {
+                    Console.WriteLine($"      {device.GetLabel().Result}");
+                }
             }
 
             Console.ReadLine();
@@ -42,7 +63,7 @@ namespace AydenIO.Examples.Lifx {
 
         private static async Task PrintDevice(ILifxDevice device) {
             // Location
-            ILifxLocation location = null;
+            ILifxLocationTag location = null;
 
             try {
                 location = await device.GetLocation();
@@ -51,7 +72,7 @@ namespace AydenIO.Examples.Lifx {
             }
 
             // Group
-            ILifxGroup group = null;
+            ILifxGroupTag group = null;
 
             try {
                 group = await device.GetGroup();

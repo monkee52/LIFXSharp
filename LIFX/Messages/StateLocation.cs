@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
-    internal class StateLocation : LifxMessage, ILifxLocation {
+    internal class StateLocation : LifxMessage, ILifxLocationTag {
         public const LifxMessageType TYPE = LifxMessageType.StateLocation;
 
         public StateLocation() : base(TYPE) {
 
         }
 
-        public StateLocation(ILifxLocation location) : this() {
+        public StateLocation(ILifxLocationTag location) : this() {
             this.Location = location.Location;
             this.Label = location.Label;
             this.UpdatedAt = location.UpdatedAt;

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
-    internal class SetLocation : LifxMessage, ILifxLocation {
+    internal class SetLocation : LifxMessage, ILifxLocationTag {
         public const LifxMessageType TYPE = LifxMessageType.SetLocation;
 
         public SetLocation() : base(TYPE) {

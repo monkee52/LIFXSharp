@@ -1,128 +1,154 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// A collection of devices belonging to a membership information
+    /// Manages collections known to the <c>LifxNetwork</c>
     /// </summary>
-    /// <typeparam name="T">The membership information type</typeparam>
-    public abstract class LifxMembershipCollection<T> : ICollection<ILifxDevice>, IReadOnlyCollection<ILifxDevice>, ILifxMembershipInfo where T : ILifxMembershipInfo {
-        /// <inheritdoc />
-        public Guid Guid { get; private set; }
+    /// <typeparam name="TCollection">The collection's type</typeparam>
+    /// <typeparam name="TPublicCollection">The collection's public type</typeparam>
+    /// <typeparam name="T">The collection's membership information type as known to devices</typeparam>
+    internal abstract class LifxMembershipCollection<TCollection, TPublicCollection, T> : ILifxMembershipCollection<TPublicCollection, T> where TCollection : LifxMembership<T>, TPublicCollection, T where TPublicCollection : ILifxMembership<T> where T : ILifxMembershipTag {
+        private readonly IDictionary<Guid, TCollection> collections;
+        private readonly ConditionalWeakTable<ILifxDevice, TCollection> deviceMap;
 
-        /// <inheritdoc />
-        public string Label { get; private set; }
-
-        /// <inheritdoc />
-        public DateTime UpdatedAt { get; private set; }
-
-        private readonly ICollection<EquatableWeakReference<ILifxDevice>> members;
+        public event EventHandler<LifxMembershipCreatedEventArgs<TPublicCollection, T>> CollectionCreated;
 
         /// <summary>
-        /// Initializes the collection with a guid, label, and updatedAt
+        /// Initializes the manager
         /// </summary>
-        /// <param name="guid">The identifier for the membership information</param>
-        /// <param name="label">The label for the membership information</param>
-        /// <param name="updatedAt">The time the membership information was last updated</param>
-        protected LifxMembershipCollection(Guid guid, string label, DateTime updatedAt) {
-            this.members = new HashSet<EquatableWeakReference<ILifxDevice>>();
-
-            this.Guid = guid;
-            this.Label = label;
-            this.UpdatedAt = updatedAt;
+        protected LifxMembershipCollection() {
+            this.collections = new ConcurrentDictionary<Guid, TCollection>();
+            this.deviceMap = new ConditionalWeakTable<ILifxDevice, TCollection>();
         }
 
         /// <summary>
-        /// Called for each device that 
+        /// Used to create a backing store
         /// </summary>
-        /// <param name="device"></param>
-        /// <param name="timeoutMs"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        protected abstract Task RenameDeviceMembership(ILifxDevice device, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        /// <param name="guid">The identifier for the created store</param>
+        /// <param name="label">The label for the store</param>
+        /// <param name="updatedAt">The updatedAt time for the store</param>
+        /// <returns>The created backing store</returns>
+        protected abstract TCollection CreateCollection(Guid guid, string label, DateTime updatedAt);
 
-        internal async Task Rename(string newLabel, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            this.Label = newLabel;
-            this.UpdatedAt = DateTime.UtcNow;
+        private TCollection CreateCollectionInternal(Guid guid, string label, DateTime updatedAt) {
+            TCollection collection = this.CreateCollection(guid, label, updatedAt);
 
-            this.Purge();
+            this.CollectionCreated?.Invoke(this, new LifxMembershipCreatedEventArgs<TPublicCollection, T>(collection));
 
-            ICollection<Task> renameTasks = new List<Task>();
-
-            // Change each devices membership
-            foreach (ILifxDevice device in this) {
-                renameTasks.Add(this.RenameDeviceMembership(device, timeoutMs, cancellationToken));
-            }
-
-            // Await all rename tasks and throw aggregate exception if some failed
-            await Task.WhenAll(renameTasks);
+            return collection;
         }
 
-        void ICollection<ILifxDevice>.Clear() {
-            throw new NotImplementedException();
+        private TCollection CreateCollectionInternal(Guid guid, string label) {
+            return this.CreateCollectionInternal(guid, label, DateTime.UtcNow);
         }
 
         /// <summary>
-        /// Removes all stale weak references in the collection
+        /// Gets the device compatible membership information by its identifier
         /// </summary>
-        protected void Purge() {
-            IList<EquatableWeakReference<ILifxDevice>> devicesToRemove = this.members.Where(x => !x.IsAlive).ToList();
+        /// <param name="guid">The identifier to get the membership information for</param>
+        /// <returns>The device compatible membership information</returns>
+        public TPublicCollection Get(Guid guid) {
+            return this.GetInternal(guid);
+        }
 
-            foreach (EquatableWeakReference<ILifxDevice> weakRef in devicesToRemove) {
-                this.members.Remove(weakRef);
+        /// <summary>
+        /// Gets the device compatible membership information by its identifier, and creates it if it cannot be found
+        /// </summary>
+        /// <param name="guid">The identifier to get the membership information for</param>
+        /// <param name="label">The label to use if the membership information needs to be created</param>
+        /// <returns>The device compatible membership information</returns>
+        public TPublicCollection Get(Guid guid, string label) {
+            return this.GetInternal(guid, label);
+        }
+
+        /// <summary>
+        /// Gets the device compatible membership information by its label
+        /// </summary>
+        /// <param name="label">The label to search for</param>
+        /// <returns>The device compatible membership information, or null if it cannot be found</returns>
+        public TPublicCollection Get(string label) {
+            return this.GetInternal(label);
+        }
+
+        /// <summary>
+        /// Gets the most recent membership information by a potentially stale membership information
+        /// </summary>
+        /// <param name="collection">The membership information to search for</param>
+        /// <returns>The device compatible membership information</returns>
+        public TPublicCollection Get(T collection) {
+            return this.GetInternal(collection);
+        }
+
+        private TCollection GetInternal(Guid guid) {
+            bool didFind = this.collections.TryGetValue(guid, out TCollection collection);
+
+            if (didFind) {
+                return collection;
             }
+
+            return null;
         }
 
-        /// <inheritdoc />
-        public void Add(ILifxDevice device) {
-            this.members.Add(new EquatableWeakReference<ILifxDevice>(device));
+        private TCollection GetInternal(string label) {
+            return this.collections.Values.FirstOrDefault(collections => collections.Label == label);
         }
 
-        /// <inheritdoc />
-        public bool Remove(ILifxDevice device) {
-            EquatableWeakReference<ILifxDevice> deviceRef = this.members.FirstOrDefault(x => x.Target == device);
+        private TCollection GetInternal(Guid guid, string label) {
+            bool didFind = this.collections.TryGetValue(guid, out TCollection collection);
 
-            if (deviceRef != null) {
-                return this.members.Remove(deviceRef);
+            if (didFind) {
+                return collection;
             }
 
-            return false;
+            TCollection newCollection = this.CreateCollectionInternal(guid, label);
+
+            this.collections[newCollection.Guid] = newCollection;
+
+            return newCollection;
         }
 
-        /// <inheritdoc />
-        public bool Contains(ILifxDevice device) {
-            return this.members.Any(members => members.Target == device);
-        }
+        private TCollection GetInternal(T collection) {
+            bool didFind = this.collections.TryGetValue(collection.Guid, out TCollection foundCollection);
 
-        /// <inheritdoc />
-        public IEnumerator<ILifxDevice> GetEnumerator() {
-            foreach (EquatableWeakReference<ILifxDevice> deviceRef in this.members) {
-                if (deviceRef.TryGetTarget(out ILifxDevice device)) {
-                    yield return device;
-                }
+            if (didFind) {
+                return foundCollection;
             }
+
+            TCollection newCollection = this.CreateCollectionInternal(collection.Guid, collection.Label, collection.UpdatedAt);
+
+            this.collections[newCollection.Guid] = newCollection;
+
+            return newCollection;
         }
 
-        /// <inheritdoc />
-        public void CopyTo(ILifxDevice[] destination, int start) {
-            foreach (ILifxDevice device in this) {
-                destination[start++] = device;
+        internal void UpdateMembershipInformation(ILifxDevice device, T newCollection) {
+            if (this.deviceMap.TryGetValue(device, out TCollection previousCollection)) {
+                previousCollection.Remove(device);
             }
+
+            // Add to new collection
+            TCollection newCollectionStore = this.GetInternal(newCollection);
+
+            newCollectionStore.Add(device);
+
+            this.deviceMap.AddOrUpdate(device, newCollectionStore);
         }
 
-        /// <inheritdoc />
+        public int Count => this.collections.Count;
+
+        public IEnumerator<TPublicCollection> GetEnumerator() {
+            return this.collections.Values.GetEnumerator();
+        }
+
         IEnumerator IEnumerable.GetEnumerator() {
             return this.GetEnumerator();
         }
-
-        /// <inheritdoc />
-        public int Count => this.members.Count;
-
-        /// <inheritdoc />
-        public bool IsReadOnly => false;
     }
 }

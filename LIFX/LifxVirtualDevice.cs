@@ -244,16 +244,16 @@ namespace AydenIO.Lifx {
 
         // Methods that virtual devices can implement
         /// <inheritdoc />
-        public abstract Task<ILifxLocation> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        public abstract Task<ILifxLocationTag> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <inheritdoc />
-        public abstract Task SetLocation(ILifxLocation location, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        public abstract Task SetLocation(ILifxLocationTag location, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <inheritdoc />
-        public abstract Task<ILifxGroup> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        public abstract Task<ILifxGroupTag> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <inheritdoc />
-        public abstract Task SetGroup(ILifxGroup group, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        public abstract Task SetGroup(ILifxGroupTag group, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <inheritdoc />
         public abstract Task<string> GetLabel(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);

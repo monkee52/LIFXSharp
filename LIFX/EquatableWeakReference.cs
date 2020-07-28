@@ -50,6 +50,7 @@ namespace AydenIO.Lifx {
             return target != null;
         }
 
+        /// <inheritdoc />
         public override bool Equals(object other) {
             if (other is EquatableWeakReference<T> weakRef) {
                 return this.Equals(weakRef);
@@ -62,6 +63,11 @@ namespace AydenIO.Lifx {
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the specified <c>EquatableWeakReference&lt;T&gt;</c> is equal to the curent <c>EquatableWeakReference&lt;T&gt;</c>
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns><c>true</c> if the specified <c>EquatableWeakReference&lt;<typeparamref name="T"/>&gt; <paramref name="other"/></c> is equal to the current <c>EquatableWeakReference&lt;T&gt;</c>; otherwise <c>false</c></returns>
         public bool Equals(EquatableWeakReference<T> other) {
             if (this.GetHashCode() == other.GetHashCode()) {
                 return this.Equals(other.Target);
@@ -70,6 +76,11 @@ namespace AydenIO.Lifx {
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the specified <c>T</c> is equal to the curent <c>EquatableWeakReference&lt;T&gt;.Target</c>
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns><c>true</c> if the specified <typeparamref name="T"/> <paramref name="other"/> is equal to the current <c>EquatableWeakReference&lt;T&gt;.Target</c>; otherwise <c>false</c></returns>
         public bool Equals(T other) {
             return this.Target == other;
         }

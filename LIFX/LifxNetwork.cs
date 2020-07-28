@@ -50,11 +50,15 @@ namespace AydenIO.Lifx {
         /// <value>Gets the LIFX Broadcast target</value>
         public static MacAddress LifxBroadcast => LifxNetwork.lifxBroadcast;
 
+        private readonly LifxLocationCollection locations;
+
+        private readonly LifxGroupCollection groups;
+
         /// <value>Gets the location manager for the network</value>
-        public LifxLocationManager LocationManager { get; private set; }
+        public ILifxLocationCollection Locations => this.locations;
 
         /// <value>Gets the group manager for the network</value>
-        public LifxGroupManager GroupManager { get; private set; }
+        public ILifxGroupCollection Groups => this.groups;
 
         /// <summary>
         /// Initializes the <c>LifxNetwork</c>
@@ -104,8 +108,16 @@ namespace AydenIO.Lifx {
             Debug.WriteLine($"Build time: {LifxNetwork.BuildDate}");
 
             // Set up membership managers
-            this.LocationManager = new LifxLocationManager();
-            this.GroupManager = new LifxGroupManager();
+            this.locations = new LifxLocationCollection();
+            this.groups = new LifxGroupCollection();
+        }
+
+        internal void UpdateLocationMembershipInformation(ILifxDevice device, ILifxLocationTag location) {
+            this.locations.UpdateMembershipInformation(device, location);
+        }
+
+        internal void UpdateGroupMembershipInformation(ILifxDevice device, ILifxGroupTag group) {
+            this.groups.UpdateMembershipInformation(device, group);
         }
 
         private void SocketReceiveWorker() {
@@ -319,14 +331,14 @@ namespace AydenIO.Lifx {
                 case Messages.SetLocation setLocation: {
                     await virtualDevice.SetLocation(setLocation);
 
-                    this.LocationManager.UpdateMembershipInformation(virtualDevice, setLocation);
+                    this.UpdateLocationMembershipInformation(virtualDevice, setLocation);
 
                     break;
                 }
                 case Messages.SetGroup setGroup: { 
                     await virtualDevice.SetGroup(setGroup);
 
-                    this.GroupManager.UpdateMembershipInformation(virtualDevice, setGroup);
+                    this.UpdateGroupMembershipInformation(virtualDevice, setGroup);
 
                     break;
                 }
@@ -433,20 +445,20 @@ namespace AydenIO.Lifx {
                         break;
                     }
                     case Messages.GetLocation: {
-                        ILifxLocation location = await virtualDevice.GetLocation();
+                        ILifxLocationTag location = await virtualDevice.GetLocation();
 
                         responses.Add(new Messages.StateLocation(location));
 
-                        this.LocationManager.UpdateMembershipInformation(virtualDevice, location);
+                        this.locations.UpdateMembershipInformation(virtualDevice, location);
 
                         break;
                     }
                     case Messages.GetGroup: {
-                        ILifxGroup group = await virtualDevice.GetGroup();
+                        ILifxGroupTag group = await virtualDevice.GetGroup();
 
                         responses.Add(new Messages.StateGroup(group));
 
-                        this.GroupManager.UpdateMembershipInformation(virtualDevice, group);
+                        this.groups.UpdateMembershipInformation(virtualDevice, group);
 
                         break;
                     }

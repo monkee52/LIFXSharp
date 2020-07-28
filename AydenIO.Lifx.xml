@@ -157,6 +157,23 @@
             <param name="target">Contains the target object, if initialized</param>
             <returns></returns>
         </member>
+        <member name="M:AydenIO.Lifx.EquatableWeakReference`1.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.EquatableWeakReference`1.Equals(AydenIO.Lifx.EquatableWeakReference{`0})">
+            <summary>
+            Determines whether the specified <c>EquatableWeakReference&lt;T&gt;</c> is equal to the curent <c>EquatableWeakReference&lt;T&gt;</c>
+            </summary>
+            <param name="other"></param>
+            <returns><c>true</c> if the specified <c>EquatableWeakReference&lt;<typeparamref name="T"/>&gt; <paramref name="other"/></c> is equal to the current <c>EquatableWeakReference&lt;T&gt;</c>; otherwise <c>false</c></returns>
+        </member>
+        <member name="M:AydenIO.Lifx.EquatableWeakReference`1.Equals(`0)">
+            <summary>
+            Determines whether the specified <c>T</c> is equal to the curent <c>EquatableWeakReference&lt;T&gt;.Target</c>
+            </summary>
+            <param name="other"></param>
+            <returns><c>true</c> if the specified <typeparamref name="T"/> <paramref name="other"/> is equal to the current <c>EquatableWeakReference&lt;T&gt;.Target</c>; otherwise <c>false</c></returns>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxDevice">
             <summary>
             Represents a LIFX device
@@ -284,7 +301,7 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <returns>The device location</returns>
         </member>
-        <member name="M:AydenIO.Lifx.ILifxDevice.SetLocation(AydenIO.Lifx.ILifxLocation,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.ILifxDevice.SetLocation(AydenIO.Lifx.ILifxLocationTag,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Sets the device location
             </summary>
@@ -301,13 +318,23 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
             <returns>The device group</returns>
         </member>
-        <member name="M:AydenIO.Lifx.ILifxDevice.SetGroup(AydenIO.Lifx.ILifxGroup,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.ILifxDevice.SetGroup(AydenIO.Lifx.ILifxGroupTag,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Sets the device group
             </summary>
             <param name="group">The group</param>
             <param name="timeoutMs">How long before the call times out, in milliseconds</param>
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxGroup">
+            <summary>
+            A collection of <c>ILifxGroup</c>s
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxGroupCollection">
+            <summary>
+            A manager for <c>ILifxGroup</c>s
+            </summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxInfraredLight">
             <summary>
@@ -447,6 +474,90 @@
             <param name="rapid">Whether an acknowledgement is required</param>
             <param name="timeoutMs">How long before the call times out, in milliseconds</param>
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxLocation">
+            <summary>
+            A collection of <c>ILifxLocation</c>s
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxLocationCollection">
+            <summary>
+            A manager for <c>ILifxLocation</c>s
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxMembership`1">
+            <summary>
+            A collection of LIFX devices belonging to a "group"
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxMembership`1.Rename(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Renames the membership information, and informs all devices known as part of the collection.
+            </summary>
+            <param name="newLabel">The new label for the collection</param>
+            <param name="timeoutMs">How long before the call takes before the responses are returned</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
+        </member>
+        <member name="E:AydenIO.Lifx.ILifxMembership`1.DeviceAdded">
+            <summary>
+            Invoked whenever a new device has been added
+            </summary>
+        </member>
+        <member name="E:AydenIO.Lifx.ILifxMembership`1.DeviceRemoved">
+            <summary>
+            Invoked whenever a device has been removed
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxMembership`1.DeviceCount">
+            <value>Gets the number of devices that are part of this group</value>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxMembershipCollection`2">
+            <summary>
+            A manager that holds all collections for a given "group" type
+            </summary>
+            <typeparam name="TCollection">The collection's type</typeparam>
+            <typeparam name="T">The collection's membership information type as known to devices</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxMembershipCollection`2.Get(System.Guid)">
+            <summary>
+            Gets the membership collection given an identifier
+            </summary>
+            <param name="guid">The identifier</param>
+            <returns>The collection, or null if not found</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxMembershipCollection`2.Get(System.Guid,System.String)">
+            <summary>
+            Gets the membership collection given an identifier, and creates it if it does not exist
+            </summary>
+            <param name="guid">The identifier</param>
+            <param name="label">The label to use if creating the collection</param>
+            <returns>The collection</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxMembershipCollection`2.Get(`1)">
+            <summary>
+            Gets the membership collection given a "group" type
+            </summary>
+            <param name="membership">The "group"</param>
+            <returns>The collection</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxMembershipCollection`2.Get(System.String)">
+            <summary>
+            Gets the membership collection given a label
+            </summary>
+            <param name="label">The label to search for</param>
+            <returns>The collection, or null if not found</returns>
+        </member>
+        <member name="E:AydenIO.Lifx.ILifxMembershipCollection`2.CollectionCreated">
+            <summary>
+            Invoked whenever a new collection has been created
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxMembershipMananger`1">
+            <summary>
+            A manager that holds all collections for a given "group" type
+            </summary>
+            <typeparam name="T">The collection's membership information type as known to devices</typeparam>
         </member>
         <member name="T:AydenIO.Lifx.ILifxMultizoneLight">
             <summary>
@@ -638,13 +749,13 @@
         <member name="M:AydenIO.Lifx.LifxDevice.GetLocation(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.SetLocation(AydenIO.Lifx.ILifxLocation,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxDevice.SetLocation(AydenIO.Lifx.ILifxLocationTag,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.GetGroup(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.SetGroup(AydenIO.Lifx.ILifxGroup,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxDevice.SetGroup(AydenIO.Lifx.ILifxGroupTag,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Collections.Generic.IEnumerable{System.Byte},System.Nullable{System.Int32},System.Threading.CancellationToken)">
@@ -669,9 +780,6 @@
             Event arguments for when a device is discovered
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs.Device">
-            <value>Gets the device that has been discovered</value>
-        </member>
         <member name="T:AydenIO.Lifx.LifxDeviceLostEventArgs">
             <summary>
             Event arguments for when a device has been lost
@@ -680,23 +788,23 @@
         <member name="P:AydenIO.Lifx.LifxDeviceLostEventArgs.MacAddress">
             <value>Gets the MAC address of the device that has been lost</value>
         </member>
-        <member name="T:AydenIO.Lifx.LifxGroupManager">
-            <summary>
-            Manages groups known to the <c>LifxNetwork</c>
-            </summary>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxGroupManager.CreateStore(System.Guid,System.String,System.DateTime)">
-            <inheritdoc />
-        </member>
-        <member name="T:AydenIO.Lifx.LifxGroupStore">
+        <member name="T:AydenIO.Lifx.LifxGroup">
             <summary>
             A collection of devices belong to a LIFX group
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.LifxGroupStore.Group">
+        <member name="P:AydenIO.Lifx.LifxGroup.Group">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxGroupStore.RenameDeviceMembership(AydenIO.Lifx.ILifxDevice,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxGroup.RenameDeviceMembership(AydenIO.Lifx.ILifxDevice,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxGroupCollection">
+            <summary>
+            Manages groups known to the <c>LifxNetwork</c>
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxGroupCollection.CreateCollection(System.Guid,System.String,System.DateTime)">
             <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxInfraredLight">
@@ -766,129 +874,62 @@
         <member name="M:AydenIO.Lifx.LifxLight.SetColor(AydenIO.Lifx.ILifxColor,System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="T:AydenIO.Lifx.LifxLocationManager">
-            <summary>
-            Manages locations known to the <c>LifxNetwork</c>
-            </summary>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxLocationManager.CreateStore(System.Guid,System.String,System.DateTime)">
-            <inheritdoc />
-        </member>
-        <member name="T:AydenIO.Lifx.LifxLocationStore">
+        <member name="T:AydenIO.Lifx.LifxLocation">
             <summary>
             A collection of devices belong to a LIFX location
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.LifxLocationStore.Location">
+        <member name="P:AydenIO.Lifx.LifxLocation.Location">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxLocationStore.RenameDeviceMembership(AydenIO.Lifx.ILifxDevice,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxLocation.RenameDeviceMembership(AydenIO.Lifx.ILifxDevice,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="T:AydenIO.Lifx.LifxMembershipMananger`2">
+        <member name="T:AydenIO.Lifx.LifxLocationCollection">
             <summary>
-            Manages collections known to the <c>LifxNetwork</c>
-            </summary>
-            <typeparam name="TStore">The collection type</typeparam>
-            <typeparam name="TType">The collection type as known to devices</typeparam>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.#ctor">
-            <summary>
-            Initializes the manager
+            Manages locations known to the <c>LifxNetwork</c>
             </summary>
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.CreateStore(System.Guid,System.String,System.DateTime)">
-            <summary>
-            Used to create a backing store
-            </summary>
-            <param name="guid">The identifier for the created store</param>
-            <param name="label">The label for the store</param>
-            <param name="updatedAt">The updatedAt time for the store</param>
-            <returns>The created backing store</returns>
+        <member name="M:AydenIO.Lifx.LifxLocationCollection.CreateCollection(System.Guid,System.String,System.DateTime)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.Get(System.Guid)">
+        <member name="T:AydenIO.Lifx.LifxDeviceAddedEventArgs">
             <summary>
-            Gets the device compatible membership information by its identifier
+            Event arguments for when a device has been added to a collection
             </summary>
-            <param name="guid">The identifier to get the membership information for</param>
-            <returns>The device compatible membership information</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.Get(System.Guid,System.String)">
+        <member name="P:AydenIO.Lifx.LifxDeviceAddedEventArgs.Device">
+            <value>The added device</value>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxDeviceRemovedEventArgs">
             <summary>
-            Gets the device compatible membership information by its identifier, and creates it if it cannot be found
+            Event arguments for when a device is removed from a collection
             </summary>
-            <param name="guid">The identifier to get the membership information for</param>
-            <param name="label">The label to use if the membership information needs to be created</param>
-            <returns>The device compatible membership information</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.Get(System.String)">
+        <member name="P:AydenIO.Lifx.LifxDeviceRemovedEventArgs.Device">
+            <value>Gets the device that was removed</value>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDeviceRemovedEventArgs.#ctor(AydenIO.Lifx.ILifxDevice)">
             <summary>
-            Gets the device compatible membership information by its label
+            Initializes the event arguments
             </summary>
-            <param name="label">The label to search for</param>
-            <returns>The device compatible membership information, or null if it cannot be found</returns>
+            <param name="device">The removed device</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.Get(`1)">
-            <summary>
-            Gets the most recent membership information by a potentially stale membership information
-            </summary>
-            <param name="collection">The membership information to search for</param>
-            <returns>The device compatible membership information</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.Rename(`1,System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <summary>
-            Renames the membership information, and informs all devices known as part of the collection.
-            </summary>
-            <param name="type">The membership information to update</param>
-            <param name="newLabel">The new label for the collection</param>
-            <param name="timeoutMs">How long before the call takes before the responses are returned</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.GetMembers(`1)">
-            <summary>
-            Gets members of the collection by its membership information
-            </summary>
-            <param name="collection">The membership information to look up</param>
-            <returns>A read-only collection of the devices in the collection</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.GetMembers(System.Guid)">
-            <summary>
-            Gets members of the collection by its identifier
-            </summary>
-            <param name="guid">The identifier to look up</param>
-            <returns>A read-only collection of the devices in the collection</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.GetMembers(System.Guid,System.String)">
-            <summary>
-            Gets members of the collection by its identifier, or creates a collection if it does not exist
-            </summary>
-            <param name="guid">The identifier to look up</param>
-            <param name="label">The label to create the collection with if it does not exist</param>
-            <returns>A read-only collection of the devices in the collection</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipMananger`2.GetMembers(System.String)">
-            <summary>
-            Gets members of the collection by its label
-            </summary>
-            <param name="label">The label to search for</param>
-            <returns>A read-only collection of the devices in the collection</returns>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxMembershipStore`1">
+        <member name="T:AydenIO.Lifx.LifxMembership`1">
             <summary>
             A collection of devices belonging to a membership information
             </summary>
-            <typeparam name="T">The membership information type</typeparam>
         </member>
-        <member name="P:AydenIO.Lifx.LifxMembershipStore`1.Guid">
+        <member name="P:AydenIO.Lifx.LifxMembership`1.Guid">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxMembershipStore`1.Label">
+        <member name="P:AydenIO.Lifx.LifxMembership`1.Label">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxMembershipStore`1.UpdatedAt">
+        <member name="P:AydenIO.Lifx.LifxMembership`1.UpdatedAt">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipStore`1.#ctor(System.Guid,System.String,System.DateTime)">
+        <member name="M:AydenIO.Lifx.LifxMembership`1.#ctor(System.Guid,System.String,System.DateTime)">
             <summary>
             Initializes the collection with a guid, label, and updatedAt
             </summary>
@@ -896,7 +937,7 @@
             <param name="label">The label for the membership information</param>
             <param name="updatedAt">The time the membership information was last updated</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipStore`1.RenameDeviceMembership(AydenIO.Lifx.ILifxDevice,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxMembership`1.RenameDeviceMembership(AydenIO.Lifx.ILifxDevice,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Called for each device that 
             </summary>
@@ -905,34 +946,97 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipStore`1.Purge">
+        <member name="M:AydenIO.Lifx.LifxMembership`1.Purge">
             <summary>
             Removes all stale weak references in the collection
             </summary>
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipStore`1.Add(AydenIO.Lifx.ILifxDevice)">
+        <member name="M:AydenIO.Lifx.LifxMembership`1.Add(AydenIO.Lifx.ILifxDevice)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipStore`1.Remove(AydenIO.Lifx.ILifxDevice)">
+        <member name="M:AydenIO.Lifx.LifxMembership`1.Remove(AydenIO.Lifx.ILifxDevice)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipStore`1.Contains(AydenIO.Lifx.ILifxDevice)">
+        <member name="M:AydenIO.Lifx.LifxMembership`1.Contains(AydenIO.Lifx.ILifxDevice)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipStore`1.GetEnumerator">
+        <member name="M:AydenIO.Lifx.LifxMembership`1.GetEnumerator">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipStore`1.CopyTo(AydenIO.Lifx.ILifxDevice[],System.Int32)">
+        <member name="M:AydenIO.Lifx.LifxMembership`1.CopyTo(AydenIO.Lifx.ILifxDevice[],System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipStore`1.System#Collections#IEnumerable#GetEnumerator">
+        <member name="M:AydenIO.Lifx.LifxMembership`1.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxMembershipStore`1.Count">
+        <member name="P:AydenIO.Lifx.LifxMembership`1.DeviceCount">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxMembershipStore`1.IsReadOnly">
+        <member name="P:AydenIO.Lifx.LifxMembership`1.Count">
             <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxMembership`1.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxMembershipCollection`3">
+            <summary>
+            Manages collections known to the <c>LifxNetwork</c>
+            </summary>
+            <typeparam name="TCollection">The collection's type</typeparam>
+            <typeparam name="TPublicCollection">The collection's public type</typeparam>
+            <typeparam name="T">The collection's membership information type as known to devices</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.#ctor">
+            <summary>
+            Initializes the manager
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.CreateCollection(System.Guid,System.String,System.DateTime)">
+            <summary>
+            Used to create a backing store
+            </summary>
+            <param name="guid">The identifier for the created store</param>
+            <param name="label">The label for the store</param>
+            <param name="updatedAt">The updatedAt time for the store</param>
+            <returns>The created backing store</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.Get(System.Guid)">
+            <summary>
+            Gets the device compatible membership information by its identifier
+            </summary>
+            <param name="guid">The identifier to get the membership information for</param>
+            <returns>The device compatible membership information</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.Get(System.Guid,System.String)">
+            <summary>
+            Gets the device compatible membership information by its identifier, and creates it if it cannot be found
+            </summary>
+            <param name="guid">The identifier to get the membership information for</param>
+            <param name="label">The label to use if the membership information needs to be created</param>
+            <returns>The device compatible membership information</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.Get(System.String)">
+            <summary>
+            Gets the device compatible membership information by its label
+            </summary>
+            <param name="label">The label to search for</param>
+            <returns>The device compatible membership information, or null if it cannot be found</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.Get(`2)">
+            <summary>
+            Gets the most recent membership information by a potentially stale membership information
+            </summary>
+            <param name="collection">The membership information to search for</param>
+            <returns>The device compatible membership information</returns>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxMembershipCreatedEventArgs`2">
+            <summary>
+            Event arguments for whenever a new collection has been created
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxMembershipCreatedEventArgs`2.Collection">
+            <value>Gets the collection that was created</value>
         </member>
         <member name="T:AydenIO.Lifx.LifxMessageType">
             <summary>
@@ -1181,10 +1285,10 @@
         <member name="P:AydenIO.Lifx.LifxNetwork.LifxBroadcast">
             <value>Gets the LIFX Broadcast target</value>
         </member>
-        <member name="P:AydenIO.Lifx.LifxNetwork.LocationManager">
+        <member name="P:AydenIO.Lifx.LifxNetwork.Locations">
             <value>Gets the location manager for the network</value>
         </member>
-        <member name="P:AydenIO.Lifx.LifxNetwork.GroupManager">
+        <member name="P:AydenIO.Lifx.LifxNetwork.Groups">
             <value>Gets the group manager for the network</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.#ctor(System.Int32,System.Int32)">
@@ -1574,13 +1678,13 @@
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetLocation(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetLocation(AydenIO.Lifx.ILifxLocation,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetLocation(AydenIO.Lifx.ILifxLocationTag,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetGroup(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetGroup(AydenIO.Lifx.ILifxGroup,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetGroup(AydenIO.Lifx.ILifxGroupTag,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetLabel(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
@@ -1878,12 +1982,12 @@
             </summary>
             <param name="payload">The payload</param>
         </member>
-        <member name="T:AydenIO.Lifx.ILifxGroup">
+        <member name="T:AydenIO.Lifx.ILifxGroupTag">
             <summary>
             Represents a group membership for a device.
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxGroup.Group">
+        <member name="P:AydenIO.Lifx.ILifxGroupTag.Group">
             <value>The group identifier</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxHostFirmware">
@@ -1952,26 +2056,26 @@
             Common properties for <c>Messages.LightState</c>
             </summary>
         </member>
-        <member name="T:AydenIO.Lifx.ILifxLocation">
+        <member name="T:AydenIO.Lifx.ILifxLocationTag">
             <summary>
             Common properties for <c>Messages.SetLocation</c> and <c>Messages.StateLocation</c>
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxLocation.Location">
+        <member name="P:AydenIO.Lifx.ILifxLocationTag.Location">
             <value>The location identifier</value>
         </member>
-        <member name="T:AydenIO.Lifx.ILifxMembershipInfo">
+        <member name="T:AydenIO.Lifx.ILifxMembershipTag">
             <summary>
             Represents a collection that the device is a member of
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxMembershipInfo.Guid">
+        <member name="P:AydenIO.Lifx.ILifxMembershipTag.Guid">
             <value>The identifier for the membership information</value>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxMembershipInfo.Label">
+        <member name="P:AydenIO.Lifx.ILifxMembershipTag.Label">
             <value>The label for the membership information</value>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxMembershipInfo.UpdatedAt">
+        <member name="P:AydenIO.Lifx.ILifxMembershipTag.UpdatedAt">
             <value>When the membership information was updated</value>
         </member>
         <member name="T:AydenIO.Lifx.ILifxPower">

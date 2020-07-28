@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 
 namespace AydenIO.Lifx.Messages {
-    internal class StateGroup : LifxMessage, ILifxGroup {
+    internal class StateGroup : LifxMessage, ILifxGroupTag {
         public const LifxMessageType TYPE = LifxMessageType.StateGroup;
 
         public StateGroup() : base(TYPE) {
 
         }
 
-        public StateGroup(ILifxGroup group) : this() {
+        public StateGroup(ILifxGroupTag group) : this() {
             this.Group = group.Group;
             this.Label = group.Label;
             this.UpdatedAt = group.UpdatedAt;

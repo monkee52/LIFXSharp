@@ -95,9 +95,9 @@ namespace AydenIO.Examples.Lifx {
         // Location
         public event EventHandler LocationChanged;
 
-        private ILifxLocation location;
+        private ILifxLocationTag location;
 
-        protected ILifxLocation Location {
+        protected ILifxLocationTag Location {
             get => this.location;
             set {
                 if (this.location is null || value.UpdatedAt > this.location?.UpdatedAt) {
@@ -112,20 +112,20 @@ namespace AydenIO.Examples.Lifx {
             this.LocationChanged?.Invoke(this, new EventArgs());
         }
 
-        public override Task SetLocation(ILifxLocation location, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public override Task SetLocation(ILifxLocationTag location, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             this.Location = location;
 
             return Task.CompletedTask;
         }
 
-        public override Task<ILifxLocation> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.Location);
+        public override Task<ILifxLocationTag> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.Location);
 
         // Group
         public event EventHandler GroupChanged;
 
-        private ILifxGroup group;
+        private ILifxGroupTag group;
 
-        protected ILifxGroup Group {
+        protected ILifxGroupTag Group {
             get => this.group;
             set {
                 if (this.group is null || value.UpdatedAt > this.group?.UpdatedAt) {
@@ -140,13 +140,13 @@ namespace AydenIO.Examples.Lifx {
             this.GroupChanged?.Invoke(this, new EventArgs());
         }
 
-        public override Task SetGroup(ILifxGroup group, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public override Task SetGroup(ILifxGroupTag group, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             this.Group = group;
 
             return Task.CompletedTask;
         }
 
-        public override Task<ILifxGroup> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.Group);
+        public override Task<ILifxGroupTag> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) => Task.FromResult(this.Group);
 
         // Label
         public event EventHandler LabelChanged;

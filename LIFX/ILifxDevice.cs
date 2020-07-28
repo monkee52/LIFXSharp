@@ -130,7 +130,7 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device location</returns>
-        public Task<ILifxLocation> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        public Task<ILifxLocationTag> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Sets the device location
@@ -138,7 +138,7 @@ namespace AydenIO.Lifx {
         /// <param name="location">The location</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        public Task SetLocation(ILifxLocation location, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        public Task SetLocation(ILifxLocationTag location, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets the device group
@@ -147,7 +147,7 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
         /// <returns>The device group</returns>
-        public Task<ILifxGroup> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        public Task<ILifxGroupTag> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Sets the device group
@@ -155,6 +155,6 @@ namespace AydenIO.Lifx {
         /// <param name="group">The group</param>
         /// <param name="timeoutMs">How long before the call times out, in milliseconds</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-        public Task SetGroup(ILifxGroup group, int? timeoutMs = null, CancellationToken cancellationToken = default);
+        public Task SetGroup(ILifxGroupTag group, int? timeoutMs = null, CancellationToken cancellationToken = default);
     }
 }

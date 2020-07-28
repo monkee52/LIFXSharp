@@ -4,7 +4,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Represents a collection that the device is a member of
     /// </summary>
-    public interface ILifxMembershipInfo {
+    public interface ILifxMembershipTag {
         /// <value>The identifier for the membership information</value>
         public Guid Guid { get; }
 

@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace AydenIO.Lifx {
-    /// <summary>
-    /// A collection of devices belong to a LIFX group
-    /// </summary>
-    public class LifxGroupCollection : LifxMembershipCollection<ILifxGroup>, ILifxGroup {
-        /// <inheritdoc />
-        public Guid Group => this.Guid;
 
-        internal LifxGroupCollection(Guid guid, string label, DateTime updatedAt) : base(guid, label, updatedAt) {
+    /// <summary>
+    /// Manages groups known to the <c>LifxNetwork</c>
+    /// </summary>
+    internal class LifxGroupCollection : LifxMembershipCollection<LifxGroup, ILifxGroup, ILifxGroupTag>, ILifxGroupCollection {
+        internal LifxGroupCollection() : base() {
 
         }
 
         /// <inheritdoc />
-        protected override Task RenameDeviceMembership(ILifxDevice device, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            return device.SetGroup(this, timeoutMs, cancellationToken);
+        protected override LifxGroup CreateCollection(Guid guid, string label, DateTime updatedAt) {
+            return new LifxGroup(guid, label, updatedAt);
         }
     }
 }

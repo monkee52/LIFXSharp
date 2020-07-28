@@ -284,10 +284,10 @@ namespace AydenIO.Lifx {
         }
 
         // Location
-        private ILifxLocation location;
+        private ILifxLocationTag location;
 
         /// <inheritdoc />
-        public async Task<ILifxLocation> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxLocationTag> GetLocation(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.location != null) {
                 return this.location;
             }
@@ -298,13 +298,13 @@ namespace AydenIO.Lifx {
 
             this.location = location;
 
-            this.Lifx.LocationManager.UpdateMembershipInformation(this, location);
+            this.Lifx.UpdateLocationMembershipInformation(this, location);
 
             return location;
         }
 
         /// <inheritdoc />
-        public async Task SetLocation(ILifxLocation location, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task SetLocation(ILifxLocationTag location, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.SetLocation setLocation = new Messages.SetLocation() {
                 Location = location.Location,
                 Label = location.Label,
@@ -313,14 +313,14 @@ namespace AydenIO.Lifx {
 
             await this.Lifx.SendWithAcknowledgement(this, setLocation, timeoutMs, cancellationToken);
 
-            this.Lifx.LocationManager.UpdateMembershipInformation(this, location);
+            this.Lifx.UpdateLocationMembershipInformation(this, location);
         }
 
         // Group
-        private ILifxGroup group;
+        private ILifxGroupTag group;
 
         /// <inheritdoc />
-        public async Task<ILifxGroup> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task<ILifxGroupTag> GetGroup(bool forceRefresh = false, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             if (!forceRefresh && this.group != null) {
                 return this.group;
             }
@@ -331,13 +331,13 @@ namespace AydenIO.Lifx {
 
             this.group = group;
 
-            this.Lifx.GroupManager.UpdateMembershipInformation(this, group);
+            this.Lifx.UpdateGroupMembershipInformation(this, group);
 
             return group;
         }
 
         /// <inheritdoc />
-        public async Task SetGroup(ILifxGroup group, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+        public async Task SetGroup(ILifxGroupTag group, int? timeoutMs = null, CancellationToken cancellationToken = default) {
             Messages.SetGroup setGroup = new Messages.SetGroup() {
                 Group = group.Group,
                 Label = group.Label,
@@ -346,7 +346,7 @@ namespace AydenIO.Lifx {
 
             await this.Lifx.SendWithAcknowledgement(this, setGroup, timeoutMs, cancellationToken);
 
-            this.Lifx.GroupManager.UpdateMembershipInformation(this, group);
+            this.Lifx.UpdateGroupMembershipInformation(this, group);
         }
 
         // Echo
