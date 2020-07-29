@@ -352,7 +352,7 @@ namespace AydenIO.Lifx {
                 return this.GetDevice(macAddress, port, timeoutMs, cancellationToken);
             }
 
-            throw new ArgumentException($"{nameof(address)} is not a valid {nameof(IPAddress)} or {nameof(MacAddress)}.", nameof(address));
+            throw new FormatException(Utilities.GetResourceString("bad_mac_or_ip_address"));
         }
 
         /// <summary>
@@ -492,6 +492,14 @@ namespace AydenIO.Lifx {
 
                 this.isDisposed = true;
             }
+        }
+
+        private static void SetReplyMessageHeaderCommon(ILifxDevice device, LifxMessage request, LifxMessage reply) {
+            reply.Target = device.MacAddress;
+
+            reply.SourceId = request.SourceId;
+            reply.SequenceNumber = request.SequenceNumber;
+            reply.ResponseFlags = LifxeResponseFlags.None;
         }
 
         private void SocketReceiveWorker() {
@@ -669,14 +677,6 @@ namespace AydenIO.Lifx {
                     }
                 }
             }
-        }
-
-        private void SetReplyMessageHeaderCommon(ILifxDevice device, LifxMessage request, LifxMessage reply) {
-            reply.Target = device.MacAddress;
-
-            reply.SourceId = request.SourceId;
-            reply.SequenceNumber = request.SequenceNumber;
-            reply.ResponseFlags = LifxeResponseFlags.None;
         }
 
         private async Task QueryVirtualDevice(IPEndPoint replyToEndPoint, LifxMessage request, LifxVirtualDevice virtualDevice) {
@@ -980,7 +980,7 @@ namespace AydenIO.Lifx {
             }
 
             foreach (LifxMessage response in responses) {
-                this.SetReplyMessageHeaderCommon(virtualDevice, request, response);
+                LifxNetwork.SetReplyMessageHeaderCommon(virtualDevice, request, response);
 
                 int sentBytes = await this.SendCommon(replyToEndPoint, response);
 
@@ -1110,7 +1110,7 @@ namespace AydenIO.Lifx {
 
             if (!canAwaitResponse) {
                 // TODO: Throw unqueued message because queue is full
-                awaiter.HandleException(new OverflowException("The queue is already awaiting a response with the same sequence number."));
+                awaiter.HandleException(new Exception(Utilities.GetResourceString("duplicate_sequence")));
 
                 await awaiter.Task;
 
@@ -1120,7 +1120,7 @@ namespace AydenIO.Lifx {
             // Remove message from queue when finished
             _ = awaiter.Task.ContinueWith(_ => {
                 this.awaitingSequences.Remove(seq);
-            });
+            }, TaskScheduler.Default);
 
             await this.SendCommon(endPoint, message);
 
@@ -1138,9 +1138,9 @@ namespace AydenIO.Lifx {
             // Handle timeout
             _ = Task.Delay(timeoutMs ?? this.ReceiveTimeout, linkedCancellationSource.Token).ContinueWith(_ => {
                  if (!timeoutCancellationSource.Token.IsCancellationRequested) {
-                    awaiter.HandleException(new TimeoutException("Time out while waiting for response."));
+                    awaiter.HandleException(new TimeoutException(Utilities.GetResourceString("timeout")));
                 }
-            }, linkedCancellationSource.Token);
+            }, linkedCancellationSource.Token, TaskContinuationOptions.None, TaskScheduler.Default);
 
             // Await received messages
             await awaiter.Task;

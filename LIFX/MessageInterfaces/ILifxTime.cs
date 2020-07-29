@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 
 namespace AydenIO.Lifx {
+    /// <summary>
+    /// Device's time.
+    /// </summary>
     public interface ILifxTime {
-        /// <value>Current time</value>
+        /// <summary>Gets turrent time from the device.</summary>
         public DateTime Time { get; }
     }
 }

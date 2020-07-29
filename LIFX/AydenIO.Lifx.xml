@@ -75,16 +75,16 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxRgbColor.Red">
-            <value>Gets or sets the red value for the color</value>
+            <summary>Gets or sets the red value for the color</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxRgbColor.Green">
-            <value>Gets or sets the green value for the color</value>
+            <summary>Gets or sets the green value for the color</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxRgbColor.Blue">
-            <value>Gets or sets the blue value for the color</value>
+            <summary>Gets or sets the blue value for the color</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxRgbColor.Kelvin">
-            <value>Gets or sets the kelvin value for the color</value>
+            <summary>Gets or sets the kelvin value for the color</summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxRgbColor.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
             <inheritdoc />
@@ -98,16 +98,16 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxRgbColor16Bit.Red">
-            <value>Gets or sets the red value for the color</value>
+            <summary>Gets or sets the red value for the color</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxRgbColor16Bit.Green">
-            <value>Gets or sets the green value for the color</value>
+            <summary>Gets or sets the green value for the color</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxRgbColor16Bit.Blue">
-            <value>Gets or sets the blue value for the color</value>
+            <summary>Gets or sets the blue value for the color</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxRgbColor16Bit.Kelvin">
-            <value>Gets or sets the kelvin value for the color</value>
+            <summary>Gets or sets the kelvin value for the color</summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxRgbColor16Bit.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
             <inheritdoc />
@@ -121,28 +121,28 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.Name">
-            <value>Gets the device product name</value>
+            <summary>Gets the device product name</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.SupportsColor">
-            <value>Gets whether the device supports color</value>
+            <summary>Gets whether the device supports color</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.SupportsTemperature">
-            <value>Gets whether the device supports temperature</value>
+            <summary>Gets whether the device supports temperature</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.SupportsInfrared">
-            <value>Gets whether the device supports infrared</value>
+            <summary>Gets whether the device supports infrared</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.IsMultizone">
-            <value>Gets whether the device is a multizone device</value>
+            <summary>Gets whether the device is a multizone device</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.IsChain">
-            <value>Gets whether the device is a chained device</value>
+            <summary>Gets whether the device is a chained device</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.MinKelvin">
-            <value>Gets the minimum kelvin value for the device</value>
+            <summary>Gets the minimum kelvin value for the device</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxDeviceFeatures.MaxKelvin">
-            <value>Gets the maximum kelvin value for the device</value>
+            <summary>Gets the maximum kelvin value for the device</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxDevice">
             <summary>
@@ -150,7 +150,7 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.Lifx">
-            <value>Gets the associated <c>LifxNetwork</c> for the device</value>
+            <summary>Gets the associated <c>LifxNetwork</c> for the device</summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion)">
             <summary>
@@ -186,13 +186,13 @@
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.EndPoint">
-            <value>Gets the <c>IPEndPoint</c> of the device</value>
+            <summary>Gets the <c>IPEndPoint</c> of the device</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.MacAddress">
-            <value>Gets the MAC address of the device</value>
+            <summary>Gets the MAC address of the device</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.LastSeen">
-            <value>Gets the last time the device was seen by discovery</value>
+            <summary>Gets the last time the device was seen by discovery</summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.GetServices(System.Boolean,System.Nullable{System.Int32})">
             <summary>
@@ -336,7 +336,7 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs.Device">
-            <value>Gets the device that has been discovered</value>
+            <summary>Gets the device that has been discovered</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxDeviceLostEventArgs">
             <summary>
@@ -344,7 +344,7 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxDeviceLostEventArgs.MacAddress">
-            <value>Gets the MAC address of the device that has been lost</value>
+            <summary>Gets the MAC address of the device that has been lost</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxLight">
             <summary>
@@ -513,13 +513,13 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxNetwork.SourceId">
-            <value>An identifier to distinguish this <c>LifxNetwork</c> from others in the protocol</value>
+            <summary>An identifier to distinguish this <c>LifxNetwork</c> from others in the protocol</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxNetwork.DiscoveryInterval">
-            <value>Gets or sets how long to wait between sending out discovery packets</value>
+            <summary>Gets or sets how long to wait between sending out discovery packets</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxNetwork.ReceiveTimeout">
-            <value>Gets or sets the default time to wait before a call times out, in milliseconds</value>
+            <summary>Gets or sets the default time to wait before a call times out, in milliseconds</summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.#ctor(System.Int32,System.Int32)">
             <summary>
@@ -539,7 +539,7 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxNetwork.Devices">
-            <value>Gets a list of all devices that have been discovered, or explicitly found</value>
+            <summary>Gets a list of all devices that have been discovered, or explicitly found</summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxNetwork.StartDiscovery">
             <summary>

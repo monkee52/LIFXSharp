@@ -1,18 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.IO;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Seny by a device to state its tags.
+    /// </summary>
     internal class StateTags : LifxMessage, ILifxTagId {
-        public const LifxMessageType TYPE = LifxMessageType.StateTags;
-
-        public ulong TagId { get; set; }
-
-        public StateTags() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StateTags"/> class.
+        /// </summary>
+        public StateTags() : base(LifxMessageType.StateTags) {
+            // Empty
         }
 
+        /// <inheritdoc />
+        public ulong TagId { get; set; }
+
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             // Tags
             ulong tags = reader.ReadUInt64();
@@ -20,6 +26,7 @@ namespace AydenIO.Lifx.Messages {
             this.TagId = tags;
         }
 
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint64_t le tags */ writer.Write(this.TagId);
         }

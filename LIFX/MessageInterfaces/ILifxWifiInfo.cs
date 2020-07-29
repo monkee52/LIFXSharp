@@ -1,21 +1,24 @@
-﻿namespace AydenIO.Lifx {
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>Messages.StateWifiInfo</c>
+    /// A device's wifi state.
     /// </summary>
     public interface ILifxWifiInfo {
-        /// <value>Radio receive signal strength</value>
+        /// <summary>Gets the radio receive signal strength.</summary>
         public float Signal { get; }
 
-        /// <value>Transmitted bytes since power on</value>
+        /// <summary>Gets the count of transmitted bytes since power on.</summary>
         public uint TransmittedBytes { get; }
 
-        /// <value>Received bytes since power on</value>
+        /// <summary>Gets the count of received bytes since power on.</summary>
         public uint ReceivedBytes { get; }
 
         /// <summary>
         /// Returns the signal strength as a normalised value.
         /// </summary>
-        /// <returns>The quality of the received signal</returns>
+        /// <returns>The quality of the received signal.</returns>
         public LifxSignalStrength GetSignalStrength();
     }
 }

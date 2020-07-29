@@ -1,27 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Sent from a device stating the group that the device is a part of.
+    /// </summary>
     internal class StateGroup : LifxMessage, ILifxGroupTag {
-        public const LifxMessageType TYPE = LifxMessageType.StateGroup;
-
-        public StateGroup() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StateGroup"/> class.
+        /// </summary>
+        public StateGroup() : base(LifxMessageType.StateGroup) {
+            // Empty
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StateGroup"/> class.
+        /// </summary>
+        /// <param name="group">The <see cref="ILifxGroupTag"/> to initialize this message from.</param>
         public StateGroup(ILifxGroupTag group) : this() {
             this.Group = group.Group;
             this.Label = group.Label;
             this.UpdatedAt = group.UpdatedAt;
         }
 
+        /// <inheritdoc />
         public Guid Group { get; set; }
+
+        /// <inheritdoc />
         public string Label { get; set; }
+
+        /// <inheritdoc />
         public DateTime UpdatedAt { get; set; }
 
+        /// <inheritdoc />
+        Guid ILifxMembershipTag.GetIdentifier() {
+            return this.Group;
+        }
+
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint8_t[16] guid */ writer.Write(this.Group.ToByteArray());
 
@@ -30,6 +49,7 @@ namespace AydenIO.Lifx.Messages {
             /* uint64_t le updated_at */ writer.Write(Utilities.DateTimeToNanoseconds(this.UpdatedAt));
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             byte[] guid = reader.ReadBytes(16);
 

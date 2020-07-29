@@ -1,28 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.IO;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Sent by a multizone device to state the color of a single zone.
+    /// </summary>
     internal class StateZone : LifxMessage, ILifxColorZoneState {
-        public const LifxMessageType TYPE = LifxMessageType.StateZone;
-
-        public StateZone() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StateZone"/> class.
+        /// </summary>
+        public StateZone() : base(LifxMessageType.StateZone) {
+            // Empty
         }
-        
+
+        /// <inheritdoc />
         public ushort ZoneCount { get; set; }
 
+        /// <inheritdoc />
         public ushort Index { get; set; }
 
+        /// <inheritdoc />
         public ushort Hue { get; set; }
 
+        /// <inheritdoc />
         public ushort Saturation { get; set; }
 
+        /// <inheritdoc />
         public ushort Brightness { get; set; }
 
+        /// <inheritdoc />
         public ushort Kelvin { get; set; }
 
+        /// <inheritdoc />
+        public ILifxHsbkColor ToHsbk() {
+            return this;
+        }
+
+        /// <inheritdoc />
+        public void FromHsbk(ILifxHsbkColor color) {
+            if (this != color && color is not null) {
+                this.Hue = color.Hue;
+                this.Saturation = color.Saturation;
+                this.Brightness = color.Brightness;
+                this.Kelvin = color.Kelvin;
+            }
+        }
+
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint8_t count */ writer.Write((byte)this.ZoneCount);
             /* uint8_t index */ writer.Write((byte)this.Index);
@@ -34,6 +60,7 @@ namespace AydenIO.Lifx.Messages {
             /* uint16_t le kelvin */ writer.Write(this.Kelvin);
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             byte zoneCount = reader.ReadByte();
 
@@ -59,19 +86,6 @@ namespace AydenIO.Lifx.Messages {
             ushort kelvin = reader.ReadUInt16();
 
             this.Kelvin = kelvin;
-        }
-
-        public ILifxHsbkColor ToHsbk() {
-            return this;
-        }
-
-        public void FromHsbk(ILifxHsbkColor color) {
-            if (this != color) {
-                this.Hue = color.Hue;
-                this.Saturation = color.Saturation;
-                this.Brightness = color.Brightness;
-                this.Kelvin = color.Kelvin;
-            }
         }
     }
 }

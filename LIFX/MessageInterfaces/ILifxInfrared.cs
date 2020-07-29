@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>Messages.SetInfrared</c> and <c>Messages.StateInfrared</c>
+    /// Device's infrared state.
     /// </summary>
     public interface ILifxInfrared {
-        /// <value>The current maximum setting for the infrared channel</value>
+        /// <summary>Gets the current maximum setting for the infrared channel.</summary>
         public ushort Level { get; }
     }
 }

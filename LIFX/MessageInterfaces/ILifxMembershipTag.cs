@@ -1,17 +1,21 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Represents a collection that the device is a member of
+    /// Represents a collection that the device is a member of.
     /// </summary>
     public interface ILifxMembershipTag {
-        /// <value>The identifier for the membership information</value>
-        public Guid Guid { get; }
-
-        /// <value>The label for the membership information</value>
+        /// <summary>Gets the label for the membership information.</summary>
         public string Label { get; }
 
-        /// <value>When the membership information was updated</value>
+        /// <summary>Gets when the membership information was updated.</summary>
         public DateTime UpdatedAt { get; }
+
+        /// <summary>Gets the identifier for the membership information.</summary>
+        /// <returns>The identifier.</returns>
+        public Guid GetIdentifier();
     }
 }

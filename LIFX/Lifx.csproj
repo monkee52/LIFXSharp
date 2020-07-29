@@ -9,22 +9,38 @@
 
   <PropertyGroup>
     <DocumentationFile>..\AydenIO.Lifx.xml</DocumentationFile>
-    <Copyright>Copyright © $([System.DateTime]::UtcNow.Year) Ayden Hull</Copyright>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.Year) Ayden Hull. All rights reserved.</Copyright>
     <Authors>Ayden Hull</Authors>
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <Product>LIFX#</Product>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Messages\SetTagLabel.cs" />
+    <Compile Remove="Messages\SetTags.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Messages\SetTagLabel.cs" />
+    <None Include="Messages\SetTags.cs" />
   </ItemGroup>
 
   <ItemGroup>

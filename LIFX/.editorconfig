@@ -72,7 +72,7 @@ csharp_style_expression_bodied_properties = true:suggestion
 #prefer out variables to be declared inline in the argument list of a method call when possible
 csharp_style_inlined_variable_declaration = true:suggestion
 #prefer the type name for member access expressions, instead of the language keyword
-dotnet_style_predefined_type_for_member_access = false:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
 
 #Style - Expression-level  preferences
 
@@ -94,6 +94,8 @@ csharp_style_var_when_type_is_apparent = false:suggestion
 
 #prefer the language keyword for local variables, method parameters, and class members, instead of the type name, for types that have a keyword to represent them
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+
+dotnet_style_predefined_type_for_member_access = false:suggestion
 
 #Style - modifier options
 

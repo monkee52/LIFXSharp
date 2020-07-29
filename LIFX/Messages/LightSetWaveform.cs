@@ -1,33 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.IO;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Apply an effect to the bulb.
     /// </summary>
     internal class LightSetWaveform : LifxMessage, ILifxWaveform {
-        public const LifxMessageType TYPE = LifxMessageType.LightSetWaveform;
-
-        public LightSetWaveform() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LightSetWaveform"/> class.
+        /// </summary>
+        public LightSetWaveform() : base(LifxMessageType.LightSetWaveform) {
+            // Empty
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LightSetWaveform"/> class.
+        /// </summary>
+        /// <param name="type">The type of the packet when the class is derived.</param>
         internal LightSetWaveform(LifxMessageType type) : base(type) {
-
+            // Empty
         }
 
+        /// <inheritdoc />
         public bool Transient { get; set; }
+
+        /// <inheritdoc />
         public ushort Hue { get; set; }
+
+        /// <inheritdoc />
         public ushort Saturation { get; set; }
+
+        /// <inheritdoc />
         public ushort Brightness { get; set; }
+
+        /// <inheritdoc />
         public ushort Kelvin { get; set; }
+
+        /// <inheritdoc />
         public TimeSpan Period { get; set; }
+
+        /// <inheritdoc />
         public float Cycles { get; set; }
+
+        /// <inheritdoc />
         public short SkewRatio { get; set; }
+
+        /// <inheritdoc />
         public LifxWaveform Waveform { get; set; }
 
+        /// <inheritdoc />
+        public void FromHsbk(ILifxHsbkColor hsbk) {
+            if (hsbk != this && hsbk is not null) {
+                this.Hue = hsbk.Hue;
+                this.Saturation = hsbk.Saturation;
+                this.Brightness = hsbk.Brightness;
+                this.Kelvin = hsbk.Kelvin;
+            }
+        }
+
+        /// <inheritdoc />
+        public ILifxHsbkColor ToHsbk() {
+            return this;
+        }
+
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint8_t reserved */ writer.Write((byte)0);
             /* uint8_t transient */ writer.Write((byte)(this.Transient ? 1 : 0));
@@ -44,6 +83,7 @@ namespace AydenIO.Lifx.Messages {
             /* uint8_t waveform */ writer.Write((byte)this.Waveform);
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             /* uint8_t reserved */ reader.ReadByte();
 
@@ -83,19 +123,6 @@ namespace AydenIO.Lifx.Messages {
             byte waveform = reader.ReadByte();
 
             this.Waveform = (LifxWaveform)waveform;
-        }
-
-        public void FromHsbk(ILifxHsbkColor hsbk) {
-            if (hsbk != this) {
-                this.Hue = hsbk.Hue;
-                this.Saturation = hsbk.Saturation;
-                this.Brightness = hsbk.Brightness;
-                this.Kelvin = hsbk.Kelvin;
-            }
-        }
-
-        public ILifxHsbkColor ToHsbk() {
-            return this;
         }
     }
 }

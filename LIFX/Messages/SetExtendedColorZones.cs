@@ -1,30 +1,38 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// This messages lets you change all the zones on your device in one message.
     /// </summary>
     internal class SetExtendedColorZones : LifxMessage, ILifxTransition, ILifxApplicationRequest, ILifxColorZones {
-        public const LifxMessageType TYPE = LifxMessageType.SetExtendedColorZones;
-
-        /// <value>The current maximum number of zones in a LIFX MultiZone device</value>
-        public static int MaxZoneCount => 82;
-
-        public SetExtendedColorZones() : base(TYPE) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SetExtendedColorZones"/> class.
+        /// </summary>
+        public SetExtendedColorZones() : base(LifxMessageType.SetExtendedColorZones) {
             this.Colors = new List<ILifxHsbkColor>();
         }
 
+        /// <summary>Gets the current maximum number of zones in a LIFX MultiZone device.</summary>
+        public static int MaxZoneCount => 82;
+
+        /// <inheritdoc />
         public TimeSpan Duration { get; set; }
 
+        /// <inheritdoc />
         public LifxApplicationRequest Apply { get; set; }
 
+        /// <inheritdoc />
         public ushort Index { get; set; }
 
+        /// <inheritdoc />
         public IList<ILifxHsbkColor> Colors { get; private set; }
 
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint32_t le duration */ writer.Write((uint)this.Duration.TotalMilliseconds);
             /* uint8_t apply */ writer.Write((byte)this.Apply);
@@ -53,6 +61,7 @@ namespace AydenIO.Lifx.Messages {
             }
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             // Duration
             uint duration = reader.ReadUInt32();
@@ -88,7 +97,7 @@ namespace AydenIO.Lifx.Messages {
                         Hue = hue,
                         Saturation = saturation,
                         Brightness = brightness,
-                        Kelvin = kelvin
+                        Kelvin = kelvin,
                     };
 
                     this.Colors.Add(color);

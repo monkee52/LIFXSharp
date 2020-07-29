@@ -1,21 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Sent to a device to update its location.
+    /// </summary>
     internal class SetLocation : LifxMessage, ILifxLocationTag {
-        public const LifxMessageType TYPE = LifxMessageType.SetLocation;
-
-        public SetLocation() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SetLocation"/> class.
+        /// </summary>
+        public SetLocation() : base(LifxMessageType.SetLocation) {
+            // Empty
         }
 
+        /// <inheritdoc />
         public Guid Location { get; set; }
+
+        /// <inheritdoc />
         public string Label { get; set; }
+
+        /// <inheritdoc />
         public DateTime UpdatedAt { get; set; }
 
+        /// <inheritdoc />
+        Guid ILifxMembershipTag.GetIdentifier() {
+            return this.Location;
+        }
+
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint8_t[16] guid */ writer.Write(this.Location.ToByteArray());
 
@@ -24,6 +39,7 @@ namespace AydenIO.Lifx.Messages {
             /* uint64_t le updated_at */ writer.Write(Utilities.DateTimeToNanoseconds(this.UpdatedAt));
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             // Location
             byte[] guid = reader.ReadBytes(16);

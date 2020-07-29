@@ -391,8 +391,6 @@ namespace AydenIO.Lifx {
 #pragma warning disable CS1591
         [Obsolete("The use of this function is unsupported.")]
         public async Task<IReadOnlyCollection<ILifxAccessPoint>> GetAccessPoints(int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            Utilities.AssertCallerIgnoreUnsupported();
-
             Messages.GetAccessPoints getAccessPoints = new Messages.GetAccessPoints();
 
             return await this.Lifx.SendWithMultipleResponse<Messages.StateAccessPoint>(this, getAccessPoints, timeoutMs, cancellationToken);
@@ -400,8 +398,6 @@ namespace AydenIO.Lifx {
 
         [Obsolete("The use of this function is unsupported.")]
         public async Task<ILifxWifiState> GetWifiState(int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            Utilities.AssertCallerIgnoreUnsupported();
-
             Messages.GetWifiState getWifiState = new Messages.GetWifiState();
 
             return await this.Lifx.SendWithResponse<Messages.StateWifiState>(this, getWifiState, timeoutMs, cancellationToken);
@@ -409,8 +405,6 @@ namespace AydenIO.Lifx {
 
         [Obsolete("The use of this function is unsupported.")]
         public async Task<DateTime> GetTime(int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            Utilities.AssertCallerIgnoreUnsupported();
-
             Messages.GetTime getTime = new Messages.GetTime();
 
             ILifxTime time = await this.Lifx.SendWithResponse<Messages.StateTime>(this, getTime, timeoutMs, cancellationToken);
@@ -420,8 +414,6 @@ namespace AydenIO.Lifx {
 
         [Obsolete("The use of this function is unsupported.")]
         public async Task<IReadOnlyCollection<ILifxTagId>> GetTagIds(int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            Utilities.AssertCallerIgnoreUnsupported();
-
             Messages.GetTags getTags = new Messages.GetTags();
 
             return await this.Lifx.SendWithMultipleResponse<Messages.StateTags>(this, getTags, timeoutMs, cancellationToken);
@@ -429,8 +421,6 @@ namespace AydenIO.Lifx {
 
         [Obsolete("The use of this function is unsupported.")]
         public async Task<ILifxTag> GetTag(ulong tagId, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            Utilities.AssertCallerIgnoreUnsupported();
-
             Messages.GetTagLabel getTagLabel = new Messages.GetTagLabel() {
                 TagId = tagId,
             };

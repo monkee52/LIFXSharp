@@ -1,25 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>Messages.LightSetWaveform</c>
+    /// A waveform for a light.
     /// </summary>
     public interface ILifxWaveform : ILifxHsbkColor {
-        /// <value>True if the color does not persist.</value>
+        /// <summary>Gets a value indicating whether the color does not persist.</summary>
         public bool Transient { get; }
 
-        /// <value>Duration of a cycle</value>
+        /// <summary>Gets the duration of a cycle.</summary>
         public TimeSpan Period { get; }
 
-        /// <value>Number of cycles</value>
+        /// <summary>Gets the number of cycles.</summary>
         public float Cycles { get; }
 
-        /// <value>Waveform skew</value>
+        /// <summary>Gets the waveform skew.</summary>
         public short SkewRatio { get; }
 
-        /// <value>The waveform type</value>
+        /// <summary>Gets the waveform type.</summary>
         public LifxWaveform Waveform { get; }
     }
 }

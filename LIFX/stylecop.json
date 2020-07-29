@@ -9,14 +9,15 @@
   "settings": {
     "documentationRules": {
       "companyName": "AydenIO",
-      "xmlHeader": false
+      "xmlHeader": false,
+      "copyrightText": "Copyright (c) Ayden Hull 2020. All rights reserved.\nSee LICENSE for more information."
     },
     "layoutRules": {
       "newlineAtEndOfFile": "require",
       "allowConsecutiveUsings": false
     },
     "orderingRules": {
-      "systemUsingDirectivesFirst": false,
+      "systemUsingDirectivesFirst": true,
       "usingDirectivesPlacement": "outsideNamespace"
     },
     "readabilityRules": {

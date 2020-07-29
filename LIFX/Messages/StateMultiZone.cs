@@ -1,25 +1,34 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Sent by a multizone device to state up to 8 zones of color.
+    /// </summary>
     internal class StateMultiZone : LifxMessage, ILifxColorMultiZoneState {
-        public const LifxMessageType TYPE = LifxMessageType.StateMultiZone;
-
-        /// <value>Gets the maximum number of zones supported by this message</value>
-        public static int MaxZoneCount => 8;
-
-        public StateMultiZone() : base(TYPE) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StateMultiZone"/> class.
+        /// </summary>
+        public StateMultiZone() : base(LifxMessageType.StateMultiZone) {
             this.Colors = new List<ILifxHsbkColor>();
         }
 
+        /// <summary>Gets the maximum number of zones supported by this message.</summary>
+        public static int MaxZoneCount => 8;
+
+        /// <inheritdoc />
         public ushort ZoneCount { get; set; }
 
+        /// <inheritdoc />
         public ushort Index { get; set; }
 
+        /// <inheritdoc />
         public IList<ILifxHsbkColor> Colors { get; private set; }
 
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint8_t count */ writer.Write((byte)this.ZoneCount);
             /* uint8_t index */ writer.Write((byte)this.ZoneCount);
@@ -44,6 +53,7 @@ namespace AydenIO.Lifx.Messages {
             }
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             byte zoneCount = reader.ReadByte();
 

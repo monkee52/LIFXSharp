@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>Messages.LightSetWaveformOptional</c>
+    /// A waveform for a light, with optional end parameters.
     /// </summary>
     public interface ILifxWaveformOptional : ILifxWaveform {
-        /// <value>True to use end color's hue</value>
+        /// <summary>Gets a value indicating whether to use the end color's hue.</summary>
         public bool SetHue { get; }
 
-        /// <value>True to use end color's saturation</value>
+        /// <summary>Gets a value indicating whether to use the end color's saturation.</summary>
         public bool SetSaturation { get; }
 
-        /// <value>True to use end color's brightness</value>
+        /// <summary>Gets a value indicating whether to use the end color's brightness.</summary>
         public bool SetBrightness { get; }
 
-        /// <value>True to use end color's kelvin</value>
+        /// <summary>Gets a value indicating whether to use the end color's color temperature.</summary>
         public bool SetKelvin { get; }
     }
 }

@@ -1,22 +1,23 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.Collections.Generic;
-using System.Text;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>EchoRequest</c> and <c>EchoResponse</c>
+    /// Holds a payload for pings.
     /// </summary>
     public interface ILifxEcho {
         /// <summary>
-        /// Gets the payload of the EchoRequest or EchoResponse
+        /// Gets the payload.
         /// </summary>
-        /// <returns>The payload</returns>
+        /// <returns>The payload.</returns>
         public IReadOnlyList<byte> GetPayload();
 
         /// <summary>
-        /// Sets the payload of the EchoRequest or EchoResponse
+        /// Sets the payload.
         /// </summary>
-        /// <param name="payload">The payload</param>
+        /// <param name="payload">The payload.</param>
         public void SetPayload(IEnumerable<byte> payload);
     }
 }

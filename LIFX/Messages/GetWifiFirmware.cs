@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Get Wifi subsystem firmware.
     /// </summary>
     internal class GetWifiFirmware : LifxMessage {
-        public const LifxMessageType TYPE = LifxMessageType.GetWifiFirmware;
-
-        public GetWifiFirmware() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetWifiFirmware"/> class.
+        /// </summary>
+        public GetWifiFirmware() : base(LifxMessageType.GetWifiFirmware) {
+            // Empty
         }
     }
 }

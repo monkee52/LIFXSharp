@@ -55,6 +55,7 @@ namespace AydenIO.Lifx {{
 
             sourceBuilder.Append(@"namespace AydenIO.Lifx {
     public partial class LifxNetwork {
+#pragma warning disable CS1591
         public static ILifxProduct GetFeaturesForProduct(uint vendorId, uint productId) {
             return (vendorId, productId) switch {
 ");
@@ -137,6 +138,7 @@ namespace AydenIO.Lifx {{
             sourceBuilder.Append(@"
             };
         }
+#pragma warning restore CS1591
     }
 }
 ");

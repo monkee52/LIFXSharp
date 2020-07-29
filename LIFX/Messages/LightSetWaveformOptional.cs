@@ -1,24 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.IO;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Optionally set effect parameters. Same as SetWaveform but allows some parameters to be set from the current value on device.
     /// </summary>
     internal class LightSetWaveformOptional : LightSetWaveform, ILifxWaveformOptional {
-        public new const LifxMessageType TYPE = LifxMessageType.LightSetWaveformOptional;
-
-        public LightSetWaveformOptional() : base(TYPE) {
-            
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LightSetWaveformOptional"/> class.
+        /// </summary>
+        public LightSetWaveformOptional() : base(LifxMessageType.LightSetWaveformOptional) {
+            // Empty
         }
 
+        /// <inheritdoc />
         public bool SetHue { get; set; }
+
+        /// <inheritdoc />
         public bool SetSaturation { get; set; }
+
+        /// <inheritdoc />
         public bool SetBrightness { get; set; }
+
+        /// <inheritdoc />
         public bool SetKelvin { get; set; }
 
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             base.WritePayload(writer);
 
@@ -29,6 +38,7 @@ namespace AydenIO.Lifx.Messages {
             /* uint8_t set_kelvin */ writer.Write((byte)(this.SetKelvin ? 1 : 0));
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             base.ReadPayload(reader);
 

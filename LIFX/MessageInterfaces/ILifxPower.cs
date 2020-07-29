@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>Messages.SetPower</c>, <c>Messages.StatePower</c>, <c>Messages.LightSetPower</c>, <c>Messages.LightStatePower</c>
+    /// Device's power state.
     /// </summary>
     public interface ILifxPower {
-        /// <value>Whether the device is powered on</value>
+        /// <summary>Gets a value indicating whether the device is powered on.</summary>
         public bool PoweredOn { get; }
     }
 }

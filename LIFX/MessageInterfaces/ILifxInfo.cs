@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>Messages.StateInfo</c>
+    /// Device's info.
     /// </summary>
     public interface ILifxInfo : ILifxTime {
-        /// <value>Time since last power on</value>
+        /// <summary>Gets the time since last power on.</summary>
         public TimeSpan Uptime { get; }
 
-        /// <value>Last power off period (5-second accuracy)</value>
+        /// <summary>Gets the lLast power off period (5-second accuracy).</summary>
         public TimeSpan Downtime { get; }
     }
 }

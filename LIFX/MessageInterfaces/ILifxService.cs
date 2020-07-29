@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>Messages.StateService</c>
+    /// A service supported by a device.
     /// </summary>
     public interface ILifxService {
-        /// <value>The service type</value>
+        /// <summary>Gets the service type.</summary>
         public LifxService Service { get; }
 
-        /// <value>The port that the service is on</value>
+        /// <summary>Gets the port that the service is on.</summary>
         public uint Port { get; }
     }
 }

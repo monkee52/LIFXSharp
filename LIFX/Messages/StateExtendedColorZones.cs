@@ -1,19 +1,25 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Sent from a multizone device and contains the state of the zones.
+    /// </summary>
     internal class StateExtendedColorZones : LifxMessage, ILifxColorMultiZoneState {
-        public const LifxMessageType TYPE = LifxMessageType.StateExtendedColorZones;
-
-        /// <value>The current maximum number of zones in a LIFX MultiZone device</value>
-        public static int MaxZoneCount => 82;
-
-        public StateExtendedColorZones() : base(TYPE) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StateExtendedColorZones"/> class.
+        /// </summary>
+        public StateExtendedColorZones() : base(LifxMessageType.StateExtendedColorZones) {
             this.Colors = new List<ILifxHsbkColor>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StateExtendedColorZones"/> class.
+        /// </summary>
+        /// <param name="state">The <see cref="ILifxColorMultiZoneState"/> to initialize this message from.</param>
         public StateExtendedColorZones(ILifxColorMultiZoneState state) : this() {
             this.Index = state.Index;
             this.ZoneCount = state.ZoneCount;
@@ -23,12 +29,19 @@ namespace AydenIO.Lifx.Messages {
             }
         }
 
+        /// <summary>Gets the current maximum number of zones in a LIFX MultiZone device.</summary>
+        public static int MaxZoneCount => 82;
+
+        /// <inheritdoc />
         public ushort ZoneCount { get; set; }
 
+        /// <inheritdoc />
         public ushort Index { get; set; }
 
+        /// <inheritdoc />
         public IList<ILifxHsbkColor> Colors { get; private set; }
 
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint16_t le count */ writer.Write(this.ZoneCount);
             /* uint16_t le index */ writer.Write(this.Index);
@@ -56,6 +69,7 @@ namespace AydenIO.Lifx.Messages {
             }
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             // ZoneCount
             ushort zoneCount = reader.ReadUInt16();
@@ -86,7 +100,7 @@ namespace AydenIO.Lifx.Messages {
                         Hue = hue,
                         Saturation = saturation,
                         Brightness = brightness,
-                        Kelvin = kelvin
+                        Kelvin = kelvin,
                     };
 
                     this.Colors.Add(color);

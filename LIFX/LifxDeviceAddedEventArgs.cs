@@ -11,12 +11,12 @@ namespace AydenIO.Lifx {
         /// <summary>
         /// Initializes a new instance of the <see cref="LifxDeviceAddedEventArgs"/> class.
         /// </summary>
-        /// <param name="device"></param>
+        /// <param name="device">The added <see cref="ILifxDevice"/>.</param>
         internal LifxDeviceAddedEventArgs(ILifxDevice device) {
             this.Device = device;
         }
 
-        /// <summary>The added <see cref="ILifxDevice"/>.</summary>
+        /// <summary>Gets the added <see cref="ILifxDevice"/>.</summary>
         public ILifxDevice Device { get; private set; }
     }
 }

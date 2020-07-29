@@ -577,105 +577,132 @@
             <param name="label">The label to create the new collection with.</param>
             <returns>The new collection.</returns>
         </member>
+        <member name="T:AydenIO.Lifx.ILifxMembershipCreatedEventArgs`2">
+            <summary>
+            The event arguments interface for when a collection of <see cref="T:AydenIO.Lifx.ILifxDevice"/>s is created.
+            Needed for covariance.
+            </summary>
+            <typeparam name="TMembership">The collection's type.</typeparam>
+            <typeparam name="TTag">The collection's type's tag.</typeparam>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxMembershipCreatedEventArgs`2.Collection">
+            <summary>Gets the <typeparamref name="TMembership"/> collection.</summary>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxMultizoneLight">
             <summary>
-            Represents a LIFX multizone light device
+            Represents a LIFX multizone light device.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxProduct">
             <summary>
             Represents features of a device
-            </summary>
+            .</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.VendorId">
-            <value>Gets the vendor ID</value>
+            <summary>Gets the vendor ID.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.VendorName">
-            <value>Gets the vendor name</value>
+            <summary>Gets the vendor name.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.ProductId">
-            <value>Gets the product ID</value>
+            <summary>Gets the product ID.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.ProductName">
-            <value>Gets the device product name</value>
+            <summary>Gets the device product name.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.SupportsColor">
-            <value>Gets whether the device supports color</value>
+            <summary>Gets a value indicating whether the device supports color.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.SupportsInfrared">
-            <value>Gets whether the device supports infrared</value>
+            <summary>Gets a value indicating whether the device supports infrared.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.IsMultizone">
-            <value>Gets whether the device is a multizone device</value>
+            <summary>Gets a value indicating whether the device is a multizone device.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.IsChain">
-            <value>Gets whether the device is a chained device</value>
+            <summary>Gets a value indicating whether the device is a chained device.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.IsMatrix">
-            <value>Gets whether the device is a matrix device</value>
+            <summary>Gets a value indicating whether the device is a matrix device.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.MinKelvin">
-            <value>Gets the minimum kelvin value for the device</value>
+            <summary>Gets the minimum kelvin value for the device.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxProduct.MaxKelvin">
-            <value>Gets the maximum kelvin value for the device</value>
+            <summary>Gets the maximum kelvin value for the device.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxResponseAwaiter">
             <summary>
-            Allows response(s) to be handled when received on the socket
+            Allows response(s) to be handled when received on the socket.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxResponseAwaiter.Task">
-            <value>Gets the awaitable task</value>
+            <summary>Gets the awaitable task.</summary>
         </member>
         <member name="M:AydenIO.Lifx.ILifxResponseAwaiter.HandleResponse(AydenIO.Lifx.LifxResponse)">
             <summary>
-            Called whenever a response is received
+            Called whenever a response is received.
             </summary>
-            <param name="response">The response that was received</param>
+            <param name="response">The response that was received.</param>
         </member>
         <member name="M:AydenIO.Lifx.ILifxResponseAwaiter.HandleException(System.Exception)">
             <summary>
-            Called whenever an exception is generated while waiting for a response
+            Called whenever an exception is generated while waiting for a response.
             </summary>
-            <param name="exception">The exception that was generated</param>
+            <param name="exception">The exception that was generated.</param>
         </member>
         <member name="T:AydenIO.Lifx.LifxApplicationRequest">
             <summary>
-            Controls how/when multizone devices apply color changes
+            Controls how/when multizone devices apply color changes.
             </summary>
         </member>
         <member name="F:AydenIO.Lifx.LifxApplicationRequest.NoApply">
-            <summary>
-            Don't apply the requested changes until a message with Apply or ApplyOnly is sent
-            </summary>
+            <summary>Don't apply the requested changes until a message with Apply or ApplyOnly is sent</summary>
         </member>
         <member name="F:AydenIO.Lifx.LifxApplicationRequest.Apply">
-            <summary>
-            Apply the changes immediately and apply any pending changes
-            </summary>
+            <summary>Apply the changes immediately and apply any pending changes.</summary>
         </member>
         <member name="F:AydenIO.Lifx.LifxApplicationRequest.ApplyOnly">
+            <summary>Ignore the requested changes in this message and only apply pending changes.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxColorMultizoneState">
             <summary>
-            Ignore the requested changes in this message and only apply pending changes
+            Represents a state of zones with colors for a multizone device.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxColorMultizoneState.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxColorMultizoneState"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxColorMultizoneState.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxColorMultizoneState"/> class.
+            </summary>
+            <param name="size">The number colors to initially create for the <see cref="P:AydenIO.Lifx.LifxColorMultizoneState.Colors"/> list.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxColorMultizoneState.ZoneCount">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxColorMultizoneState.Index">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxColorMultizoneState.Colors">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxDevice">
             <summary>
-            Represents a LIFX device
+            Represents a LIFX device.
             </summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxDevice.Lifx">
-            <value>Gets the associated <c>LifxNetwork</c> for the device</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion)">
             <summary>
-            Creates a LIFX device class
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxDevice"/> class.
             </summary>
-            <param name="lifx">The <c>LifxNetwork</c> the device belongs to</param>
-            <param name="macAddress">The MAC address of the device</param>
-            <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
-            <param name="version">The version of the device</param>
+            <param name="lifx">The <c>LifxNetwork</c> the device belongs to.</param>
+            <param name="macAddress">The MAC address of the device.</param>
+            <param name="endPoint">The <c>IPEndPoint</c> of the device.</param>
+            <param name="version">The version of the device.</param>
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.VendorId">
             <inheritdoc />
@@ -711,13 +738,16 @@
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.EndPoint">
-            <value>Gets the <c>IPEndPoint</c> of the device</value>
+            .<summary>Gets the <c>IPEndPoint</c> of the device.</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.MacAddress">
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxDevice.LastSeen">
-            <value>Gets the last time the device was seen by discovery</value>
+            .<summary>Gets the last time the device was seen by discovery.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDevice.Lifx">
+            <summary>Gets the associated <c>LifxNetwork</c> for the device.</summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.GetServices(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -727,12 +757,6 @@
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.GetHostFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxDevice.SetHostFirmwareCachedValue(AydenIO.Lifx.ILifxHostFirmware)">
-            <summary>
-            Sets the internal cached value for host firmware, used when different firmware versions have different APIs
-            </summary>
-            <param name="hostFirmware">The host firmware for the device</param>
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.GetWifiInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -778,38 +802,116 @@
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Collections.Generic.IEnumerable{System.Byte},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
-            Request a device to echo back a specific payload
+            Request a device to echo back a specific payload.
             </summary>
-            <param name="payload">The payload to be echoed</param>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>Whether the device responded, and whether the response matched the payload</returns>
+            <param name="payload">The payload to be echoed.</param>
+            <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+            <returns>Whether the device responded, and whether the response matched the payload.</returns>
         </member>
         <member name="M:AydenIO.Lifx.LifxDevice.Ping(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
-            Request a device to echo back a random payload
+            Request a device to echo back a random payload.
             </summary>
-            <param name="timeoutMs">How long before the call times out, in milliseconds</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result</param>
-            <returns>Whether the device responded, and whether the response matched the payload</returns>
+            <param name="timeoutMs">How long before the call times out, in milliseconds.</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+            <returns>Whether the device responded, and whether the response matched the payload.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDevice.SetHostFirmwareCachedValue(AydenIO.Lifx.ILifxHostFirmware)">
+            <summary>
+            Sets the internal cached value for host firmware. Used when different firmware versions have different APIs.
+            </summary>
+            <param name="hostFirmware">The host firmware for the device.</param>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxDeviceAddedEventArgs">
+            <summary>
+            Event arguments for when a device has been added to a collection.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDeviceAddedEventArgs.#ctor(AydenIO.Lifx.ILifxDevice)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxDeviceAddedEventArgs"/> class.
+            </summary>
+            <param name="device">The added <see cref="T:AydenIO.Lifx.ILifxDevice"/>.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDeviceAddedEventArgs.Device">
+            <summary>Gets the added <see cref="T:AydenIO.Lifx.ILifxDevice"/>.</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs">
             <summary>
-            Event arguments for when a device is discovered
+            Event arguments for when a device is discovered.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs.#ctor(AydenIO.Lifx.ILifxDevice)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs"/> class.
+            </summary>
+            <param name="device">The discovered <see cref="T:AydenIO.Lifx.ILifxDevice"/>.</param>
         </member>
         <member name="T:AydenIO.Lifx.LifxDeviceLostEventArgs">
             <summary>
-            Event arguments for when a device has been lost
+            Event arguments for when a device has been lost.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.LifxDeviceLostEventArgs.#ctor(AydenIO.Lifx.MacAddress)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxDeviceLostEventArgs"/> class.
+            </summary>
+            <param name="macAddress">The <see cref="T:AydenIO.Lifx.MacAddress"/> of the lost device.</param>
+        </member>
         <member name="P:AydenIO.Lifx.LifxDeviceLostEventArgs.MacAddress">
-            <value>Gets the MAC address of the device that has been lost</value>
+            <summary>Gets the MAC address of the device that has been lost.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxDeviceRemovedEventArgs">
+            <summary>
+            Event arguments for when a device is removed from a collection.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxDeviceRemovedEventArgs.#ctor(AydenIO.Lifx.ILifxDevice)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxDeviceRemovedEventArgs"/> class.
+            </summary>
+            <param name="device">The removed <see cref="T:AydenIO.Lifx.ILifxDevice"/>.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDeviceRemovedEventArgs.Device">
+            <summary>Gets the device that was removed.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxExtendedMultizoneLight">
+            <summary>
+            Represents a multizone light that supports the extended API.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxExtendedMultizoneLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion,AydenIO.Lifx.ILifxHostFirmware)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxExtendedMultizoneLight"/> class.
+            </summary>
+            <param name="lifx">The <see cref="T:AydenIO.Lifx.LifxNetwork"/> that the device belongs to.</param>
+            <param name="macAddress">The <see cref="T:AydenIO.Lifx.MacAddress"/> of the device.</param>
+            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> of the device.</param>
+            <param name="version">The <see cref="T:AydenIO.Lifx.ILifxVersion"/> of the device.</param>
+            <param name="hostFirmware">The <see cref="T:AydenIO.Lifx.ILifxHostFirmware"/> of the device.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxExtendedMultizoneLight.GetMultizoneState(System.UInt16,System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxExtendedMultizoneLight.SetMultizoneState(AydenIO.Lifx.LifxApplicationRequest,System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.TimeSpan,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxExtendedMultizoneLight.SetMultizoneState(System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxGroup">
             <summary>
-            A collection of devices belong to a LIFX group
+            A collection of devices belong to a LIFX group.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxGroup.#ctor(System.Guid,System.String,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxGroup"/> class.
+            </summary>
+            <param name="guid">The identifier of the group.</param>
+            <param name="label">The label for the group.</param>
+            <param name="updatedAt">When the group was last updated.</param>
         </member>
         <member name="P:AydenIO.Lifx.LifxGroup.Group">
             <inheritdoc />
@@ -819,7 +921,12 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxGroupCollection">
             <summary>
-            Manages groups known to the <c>LifxNetwork</c>
+            Manages groups known to the <see cref="T:AydenIO.Lifx.LifxNetwork"/>.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxGroupCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxGroupCollection"/> class.
             </summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxGroupCollection.CreateCollection(System.Guid,System.String,System.DateTime)">
@@ -827,17 +934,17 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxInfraredLight">
             <summary>
-            Represents a LIFX light device with infrared
+            Represents a LIFX light device with infrared.
             </summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxInfraredLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion)">
             <summary>
-            Creates a LIFX light class that supports infrared
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxInfraredLight"/> class.
             </summary>
-            <param name="lifx">The <c>LifxNetwork</c> the device belongs to</param>
-            <param name="macAddress">The MAC address of the device</param>
-            <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
-            <param name="version">The version of the device</param>
+            <param name="lifx">The <see cref="T:AydenIO.Lifx.LifxNetwork"/> that the device belongs to.</param>
+            <param name="macAddress">The <see cref="T:AydenIO.Lifx.MacAddress"/> of the device.</param>
+            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> of the device.</param>
+            <param name="version">The <see cref="T:AydenIO.Lifx.ILifxVersion"/> of the device.</param>
         </member>
         <member name="M:AydenIO.Lifx.LifxInfraredLight.GetInfrared(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -847,17 +954,17 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxLight">
             <summary>
-            Represents a LIFX light device
+            Represents a LIFX light device.
             </summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion)">
             <summary>
-            Creates a LIFX device class
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxLight"/> class.
             </summary>
-            <param name="lifx">The <c>LifxNetwork</c> the device belongs to</param>
-            <param name="macAddress">The MAC address of the device</param>
-            <param name="endPoint">The <c>IPEndPoint</c> of the device</param>
-            <param name="version">The version of the device</param>
+            <param name="lifx">The <see cref="T:AydenIO.Lifx.LifxNetwork"/> that the device belongs to.</param>
+            <param name="macAddress">The <see cref="T:AydenIO.Lifx.MacAddress"/> of the device.</param>
+            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> of the device.</param>
+            <param name="version">The <see cref="T:AydenIO.Lifx.ILifxVersion"/> of the device.</param>
         </member>
         <member name="M:AydenIO.Lifx.LifxLight.GetState(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -894,8 +1001,16 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxLocation">
             <summary>
-            A collection of devices belong to a LIFX location
+            A collection of devices belong to a LIFX location.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLocation.#ctor(System.Guid,System.String,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxLocation"/> class.
+            </summary>
+            <param name="guid">The identifier of the location.</param>
+            <param name="label">The label for the location.</param>
+            <param name="updatedAt">When the location was last updated.</param>
         </member>
         <member name="P:AydenIO.Lifx.LifxLocation.Location">
             <inheritdoc />
@@ -905,33 +1020,16 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxLocationCollection">
             <summary>
-            Manages locations known to the <c>LifxNetwork</c>
+            Manages locations known to the <see cref="T:AydenIO.Lifx.LifxNetwork"/>.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxLocationCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxLocationCollection"/> class.
             </summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxLocationCollection.CreateCollection(System.Guid,System.String,System.DateTime)">
             <inheritdoc />
-        </member>
-        <member name="T:AydenIO.Lifx.LifxDeviceAddedEventArgs">
-            <summary>
-            Event arguments for when a device has been added to a collection
-            </summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxDeviceAddedEventArgs.Device">
-            <value>The added device</value>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxDeviceRemovedEventArgs">
-            <summary>
-            Event arguments for when a device is removed from a collection
-            </summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxDeviceRemovedEventArgs.Device">
-            <value>Gets the device that was removed</value>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxDeviceRemovedEventArgs.#ctor(AydenIO.Lifx.ILifxDevice)">
-            <summary>
-            Initializes the event arguments
-            </summary>
-            <param name="device">The removed device</param>
         </member>
         <member name="T:AydenIO.Lifx.LifxMembership`1">
             <summary>
@@ -962,13 +1060,13 @@
         <member name="P:AydenIO.Lifx.LifxMembership`1.IsReadOnly">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxMembership`1.Guid">
-            <inheritdoc />
-        </member>
         <member name="P:AydenIO.Lifx.LifxMembership`1.Label">
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxMembership`1.UpdatedAt">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembership`1.GetIdentifier">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxMembership`1.Rename(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
@@ -1011,25 +1109,22 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxMembershipCollection`3">
             <summary>
-            Manages collections known to the <c>LifxNetwork</c>
+            Manages collections known to the <see cref="T:AydenIO.Lifx.LifxNetwork"/>.
             </summary>
-            <typeparam name="TCollection">The collection's type</typeparam>
-            <typeparam name="TPublicCollection">The collection's public type</typeparam>
-            <typeparam name="TTag">The collection's membership information type as known to devices</typeparam>
+            <typeparam name="TCollection">The collection's type.</typeparam>
+            <typeparam name="TPublicCollection">The collection's interface type.</typeparam>
+            <typeparam name="TTag">The collection's membership information type as known to devices.</typeparam>
         </member>
         <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.#ctor">
             <summary>
-            Initializes the manager
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxMembershipCollection`3"/> class.
             </summary>
         </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.CreateCollection(System.Guid,System.String,System.DateTime)">
-            <summary>
-            Used to create a backing store
-            </summary>
-            <param name="guid">The identifier for the created store</param>
-            <param name="label">The label for the store</param>
-            <param name="updatedAt">The updatedAt time for the store</param>
-            <returns>The created backing store</returns>
+        <member name="E:AydenIO.Lifx.LifxMembershipCollection`3.CollectionCreated">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.LifxMembershipCollection`3.Count">
+            <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.GetGrouping(System.Guid)">
             <inheritdoc />
@@ -1045,6 +1140,28 @@
         </member>
         <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.Create(System.String)">
             <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.UpdateMembershipInformation(AydenIO.Lifx.ILifxDevice,`2)">
+            <summary>
+            Removes a <see cref="T:AydenIO.Lifx.ILifxDevice"/> from a former grouping and adds it to the grouping specified by <paramref name="newCollection"/>.
+            </summary>
+            <param name="device">The <see cref="T:AydenIO.Lifx.ILifxDevice"/> to updated the membership information for.</param>
+            <param name="newCollection">The <typeparamref name="TCollection"/> to add the <see cref="T:AydenIO.Lifx.ILifxDevice"/> to.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.CreateCollection(System.Guid,System.String,System.DateTime)">
+            <summary>
+            Used to create a collection.
+            </summary>
+            <param name="guid">The identifier of the group.</param>
+            <param name="label">The label for the group.</param>
+            <param name="updatedAt">When the group was last updated.</param>
+            <returns>The created <typeparamref name="TCollection"/>.</returns>
         </member>
         <member name="T:AydenIO.Lifx.LifxMembershipCreatedEventHandler`2">
             <summary>
@@ -1121,13 +1238,27 @@
             </summary>
             <param name="reader">The <see cref="T:System.IO.BinaryReader"/> to read the bytes from.</param>
         </member>
-        <member name="T:AydenIO.Lifx.LifxMessageType">
+        <member name="T:AydenIO.Lifx.LifxeResponseFlags">
             <summary>
-            Possible message types for the LIFX protocol
+            Determines whether an acknowledgement, response, both, or neither are required.
             </summary>
         </member>
-        <member name="F:AydenIO.Lifx.LifxMessageType._internal_unknown_">
-            <summary>A message that hasn't been decoded yet. Used to prevent the <c>LifxMessage.FromBytes</c> method from throwing an exception during decoding</summary>
+        <member name="F:AydenIO.Lifx.LifxeResponseFlags.None">
+            <summary>No response or acknowledgement is required.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxeResponseFlags.ResponseRequired">
+            <summary>A response is required.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxeResponseFlags.AcknowledgementRequired">
+            <summary>An acknowledgement is required.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxMessageType">
+            <summary>
+            Possible message types for the LIFX protocol.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxMessageType.Unknown">
+            <summary>A message that hasn't been decoded yet. Used to prevent the <see cref="M:AydenIO.Lifx.LifxMessage.FromBytes(System.Byte[])"/> method from throwing an <see cref="T:System.IO.InvalidDataException"/> during decoding</summary>
         </member>
         <member name="F:AydenIO.Lifx.LifxMessageType.GetService">
             <summary>Sent by a client to acquire responses from all devices on the local network.</summary>
@@ -1308,20 +1439,20 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxMultipleResponseAwaiter`1">
             <summary>
-            An <c>ILifxResponseAwaiter</c> that waits for all responses before the user cancels, or it times out
+            An <see cref="T:AydenIO.Lifx.ILifxResponseAwaiter"/> that waits for all responses before the user cancels, or it times out.
             </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.Task">
-            <value>Gets the awaitable task</value>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.AydenIO#Lifx#ILifxResponseAwaiter#Task">
-            <inheritdoc />
+            <typeparam name="T">The response type.</typeparam>
         </member>
         <member name="M:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.#ctor">
             <summary>
-            Creates an awaiter that waits for all responses before the user cancels, or it times out
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxMultipleResponseAwaiter`1"/> class.
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.Task">
+            <summary>Gets the awaitable task.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.AydenIO#Lifx#ILifxResponseAwaiter#Task">
+            <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.LifxResponse)">
             <inheritdoc />
@@ -1331,19 +1462,55 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1">
             <summary>
-            A <c>ILifxResponseAwaiter</c> that calls a delegate whenever a response is received, until the user cancels, or it times out
+            An <see cref="T:AydenIO.Lifx.ILifxResponseAwaiter"/> that calls a delegate whenever a response is received, until the user cancels, or it times out.
             </summary>
-            <typeparam name="T">The returned message type</typeparam>
+            <typeparam name="T">The returned message type.</typeparam>
         </member>
         <member name="M:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.#ctor">
             <summary>
-            Creates an awaiter that calls a delegate when responses are received before cancelled or timed out
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1"/> class.
             </summary>
+        </member>
+        <member name="E:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.ResponseReceived">
+            <summary>An event that is invoked for every response received.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.Task">
+            <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.HandleResponse(AydenIO.Lifx.LifxResponse)">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.HandleException(System.Exception)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxMultizoneLight">
+            <summary>
+            Represents a multizone lifx light.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMultizoneLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion,AydenIO.Lifx.ILifxHostFirmware)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxMultizoneLight"/> class.
+            </summary>
+            <param name="lifx">The <see cref="T:AydenIO.Lifx.LifxNetwork"/> that the device belongs to.</param>
+            <param name="macAddress">The <see cref="T:AydenIO.Lifx.MacAddress"/> of the device.</param>
+            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> of the device.</param>
+            <param name="version">The <see cref="T:AydenIO.Lifx.ILifxVersion"/> of the device.</param>
+            <param name="hostFirmware">The <see cref="T:AydenIO.Lifx.ILifxHostFirmware"/> of the device.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMultizoneLight.GetMultizoneState(System.UInt16,System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMultizoneLight.SetMultizoneState(AydenIO.Lifx.LifxApplicationRequest,System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.UInt32,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMultizoneLight.SetMultizoneState(System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.UInt32,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMultizoneLight.SetMultizoneState(AydenIO.Lifx.LifxApplicationRequest,System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.TimeSpan,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxMultizoneLight.SetMultizoneState(System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxNetwork">
@@ -1620,13 +1787,108 @@
             <param name="timeoutMs">How long before the call takes before the call completes.</param>
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
         </member>
+        <member name="T:AydenIO.Lifx.LifxProduct">
+            <summary>
+            Default implementation of <see cref="T:AydenIO.Lifx.ILifxProduct"/>.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.VendorId">
+            <summary>Gets or sets the <see cref="P:AydenIO.Lifx.LifxProduct.VendorId"/>.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.VendorName">
+            <summary>Gets or sets the <see cref="P:AydenIO.Lifx.LifxProduct.VendorName"/>.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.ProductId">
+            <summary>Gets or sets the <see cref="P:AydenIO.Lifx.LifxProduct.ProductId"/>.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.ProductName">
+            <summary>Gets or sets the <see cref="P:AydenIO.Lifx.LifxProduct.ProductName"/>.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.SupportsColor">
+            <summary>Gets or sets a value indicating whether the product supports colors.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.SupportsInfrared">
+            <summary>Gets or sets a value indicating whether the product supports infrared.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.IsMultizone">
+            <summary>Gets or sets a value indicating whether the product is a multizone product.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.IsChain">
+            <summary>Gets or sets a value indicating whether the product is a chain product.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.IsMatrix">
+            <summary>Gets or sets a value indicating whether the product is a matrix product.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.MinKelvin">
+            <summary>Gets or sets the <see cref="P:AydenIO.Lifx.LifxProduct.MinKelvin"/>.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxProduct.MaxKelvin">
+            <summary>Gets or sets the <see cref="P:AydenIO.Lifx.LifxProduct.MaxKelvin"/>.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxResponse">
+            <summary>
+            Holds a grouping of an <see cref="T:System.Net.IPEndPoint"/> and an untyped response.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxResponse.#ctor(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxResponse"/> class.
+            </summary>
+            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxResponse`1">
+            <summary>
+            Holds a grouping of an <see cref="T:System.Net.IPEndPoint"/> and a <typeparamref name="TMessage"/> message.
+            </summary>
+            <typeparam name="TMessage">The message type.</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxResponse`1.#ctor(System.Net.IPEndPoint,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxResponse`1"/> class.
+            </summary>
+            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxResponse`1.EndPoint">
+            <summary>Gets the <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxResponse`1.Message">
+            <summary>Gets the message.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxSecurityProtocol">
+            <summary>
+            Represents security types supported by LIFX devices.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSecurityProtocol.Open">
+            <summary>No security</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSecurityProtocol.WepPsk">
+            <summary>WEP with pre-shared key (Unsupported).</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSecurityProtocol.WpaTkipPsk">
+            <summary>WPA (TKIP encryption) with pre-shared key.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSecurityProtocol.WpaAesPsk">
+            <summary>WPA (AES encryption) with pre-shared key.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSecurityProtocol.Wpa2AesPsk">
+            <summary>WPA2 (AES encryption) with pre-shared key.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSecurityProtocol.Wpa2TkipPsk">
+            <summary>WPA2 (TKIP encryption) with pre-shared key.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxSecurityProtocol.Wpa2MixedPsk">
+            <summary>WPA2 (AES and TKIP encryption) with pre-shared key.</summary>
+        </member>
         <member name="T:AydenIO.Lifx.LifxService">
             <summary>
-            Possible (public) service types for devices
+            Possible (public) service types for devices.
             </summary>
         </member>
         <member name="F:AydenIO.Lifx.LifxService.Udp">
-            <summary>The LIFX Protocol utilizes UDP/IP for all messages covered by the public API</summary>
+            <summary>The LIFX Protocol utilizes UDP/IP for all messages covered by the public API.</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxSignalStrength">
             <summary>
@@ -1650,20 +1912,20 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxSingleResponseAwaiter`1">
             <summary>
-            An <c>ILifxResponseAwaiter</c> that waits for a single response before completing
+            An <see cref="T:AydenIO.Lifx.ILifxResponseAwaiter"/> that waits for a single response before completing.
             </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxSingleResponseAwaiter`1.Task">
-            <value>Gets the awaitable task</value>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxSingleResponseAwaiter`1.AydenIO#Lifx#ILifxResponseAwaiter#Task">
-            <inheritdoc />
+            <typeparam name="TMessage">The message type.</typeparam>
         </member>
         <member name="M:AydenIO.Lifx.LifxSingleResponseAwaiter`1.#ctor">
             <summary>
-            Creates an awaiter that waits for a single response
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxSingleResponseAwaiter`1"/> class.
             </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxSingleResponseAwaiter`1.Task">
+            <summary>Gets the awaitable task.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxSingleResponseAwaiter`1.AydenIO#Lifx#ILifxResponseAwaiter#Task">
+            <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxSingleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.LifxResponse)">
             <inheritdoc />
@@ -1671,16 +1933,44 @@
         <member name="M:AydenIO.Lifx.LifxSingleResponseAwaiter`1.HandleException(System.Exception)">
             <inheritdoc />
         </member>
-        <member name="T:AydenIO.Lifx.LifxVirtualDevice">
+        <member name="T:AydenIO.Lifx.LifxStandardMultizoneLight">
             <summary>
-            Represents a virtual LIFX device
+            Represents a multizone light that doesn't support the extended API.
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Lifx">
-            <value>Gets the <c>LifxNetwork></c> this virtual device is associated with</value>
+        <member name="M:AydenIO.Lifx.LifxStandardMultizoneLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress,System.Net.IPEndPoint,AydenIO.Lifx.ILifxVersion,AydenIO.Lifx.ILifxHostFirmware)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxStandardMultizoneLight"/> class.
+            </summary>
+            <param name="lifx">The <see cref="T:AydenIO.Lifx.LifxNetwork"/> that the device belongs to.</param>
+            <param name="macAddress">The <see cref="T:AydenIO.Lifx.MacAddress"/> of the device.</param>
+            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> of the device.</param>
+            <param name="version">The <see cref="T:AydenIO.Lifx.ILifxVersion"/> of the device.</param>
+            <param name="hostFirmware">The <see cref="T:AydenIO.Lifx.ILifxHostFirmware"/> of the device.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxStandardMultizoneLight.GetMultizoneState(System.UInt16,System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxStandardMultizoneLight.SetMultizoneState(AydenIO.Lifx.LifxApplicationRequest,System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.TimeSpan,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.LifxStandardMultizoneLight.SetMultizoneState(System.UInt16,System.Collections.Generic.IEnumerable{AydenIO.Lifx.ILifxColor},System.TimeSpan,System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.LifxVirtualDevice">
+            <summary>
+            Represents a virtual LIFX device.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxVirtualDevice"/> class.
+            </summary>
+            <param name="lifx">The <see cref="T:AydenIO.Lifx.LifxNetwork"/> to associated this virtual device with.</param>
+            <param name="macAddress">The <see cref="P:AydenIO.Lifx.LifxVirtualDevice.MacAddress"/> of this virtual device.</param>
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.MacAddress">
-            <value>Gets the virtual MAC address for the device</value>
+            <summary>Gets the virtual MAC address for the device.</summary>
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.VendorId">
             <inheritdoc />
@@ -1716,59 +2006,55 @@
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualDevice.VersionNumber">
-            <value>Gets the "hardware" version of this virtual device</value>
+            <summary>Gets the "hardware" version of this virtual device.</summary>
         </member>
-        <member name="M:AydenIO.Lifx.LifxVirtualDevice.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
-            <summary>
-            Creates a new virtual LIFX device
-            </summary>
-            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual device with</param>
-            <param name="macAddress">The <c>MacAddress</c> of this virtual device</param>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Lifx">
+            <summary>Gets the <c>LifxNetwork></c> this virtual device is associated with.</summary>
         </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Services">
-            <value>Gets the internal collection of supported services</value>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.ServicesValue">
+            <summary>Gets the internal collection of supported services.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.HostInfoValue">
+            <summary>Gets the internal host info.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.WifiInfoValue">
+            <summary>Gets the internal wifi info.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.HostFirmwareValue">
+            <summary>Gets the internal host firmware.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.WifiFirmwareValue">
+            <summary>Gets the internal wifi firmware.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.StartTime">
+            <summary>Gets the time that this virtual device was started.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.LastDownTime">
+            <summary>Gets the time that this virtual device was last stopped.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.InfoValue">
+            <summary>Gets the internal info value.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualDevice.VersionValue">
+            <summary>Gets the internal version value.</summary>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetServices(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.HostInfo">
-            <value>Gets the internal host info</value>
-        </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetHostInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.WifiInfo">
-            <value>Gets the internal wifi info</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetWifiInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.HostFirmware">
-            <value>Gets the internal host firmware</value>
-        </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetHostFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.WifiFirmware">
-            <value>Gets the internal wifi firmware</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetWifiFirmware(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.StartTime">
-            <value>Gets the time that this virtual device was started</value>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.LastDownTime">
-            <value>Gets the time that this virtual device was last stopped</value>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Info">
-            <value>Gets the internal info value</value>
-        </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetInfo(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualDevice.Version">
-            <value>Gets the internal version value</value>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.GetVersion(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -1803,20 +2089,32 @@
         <member name="M:AydenIO.Lifx.LifxVirtualDevice.SetPower(System.Boolean,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.AddTxBytes(System.UInt32)">
+            <summary>
+            Adds <paramref name="x"/> to the internal transmitted byte counter.
+            </summary>
+            <param name="x">The additional byte count.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualDevice.AddRxBytes(System.UInt32)">
+            <summary>
+            Adds <paramref name="x"/> to the internal received bytes counter.
+            </summary>
+            <param name="x">The additional byte count.</param>
+        </member>
         <member name="T:AydenIO.Lifx.LifxVirtualInfraredLight">
             <summary>
-            Represents a virtual LIFX light with infrared support
+            Represents a virtual LIFX light with infrared support.
             </summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxVirtualInfraredLight.SupportsInfrared">
-            <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
             <summary>
-            Creates a new virtual LIFX light with infrared support
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxVirtualInfraredLight"/> class.
             </summary>
-            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual light with</param>
-            <param name="macAddress">The <c>MacAddress</c> of this virtual light</param>
+            <param name="lifx">The <see cref="T:AydenIO.Lifx.LifxNetwork"/> to associated this virtual light with.</param>
+            <param name="macAddress">The <see cref="T:AydenIO.Lifx.MacAddress"/> of this virtual light.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxVirtualInfraredLight.SupportsInfrared">
+            <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualInfraredLight.GetInfrared(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -1826,21 +2124,21 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxVirtualLight">
             <summary>
-            Represents a virtual LIFX light
+            Represents a virtual LIFX light.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxVirtualLight"/> class.
+            </summary>
+            <param name="lifx">The <see cref="T:AydenIO.Lifx.LifxNetwork"/> to associated this virtual device with.</param>
+            <param name="macAddress">The <see cref="T:AydenIO.Lifx.MacAddress"/> of this virtual device.</param>
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualLight.MinKelvin">
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualLight.MaxKelvin">
             <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxVirtualLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
-            <summary>
-            Creates a new virtual LIFX light
-            </summary>
-            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual light with</param>
-            <param name="macAddress">The <c>MacAddress</c> of this virtual light</param>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualLight.GetState(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -1874,8 +2172,15 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxVirtualMultizoneLight">
             <summary>
-            Represents a virtual LIFX multizone light
+            Represents a virtual LIFX multizone light.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.LifxVirtualMultizoneLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxVirtualMultizoneLight"/> class.
+            </summary>
+            <param name="lifx">The <see cref="T:AydenIO.Lifx.LifxNetwork"/> to associated this virtual device with.</param>
+            <param name="macAddress">The <see cref="T:AydenIO.Lifx.MacAddress"/> of this virtual device.</param>
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualMultizoneLight.SupportsColor">
             <inheritdoc />
@@ -1885,13 +2190,6 @@
         </member>
         <member name="P:AydenIO.Lifx.LifxVirtualMultizoneLight.IsMultizone">
             <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxVirtualMultizoneLight.#ctor(AydenIO.Lifx.LifxNetwork,AydenIO.Lifx.MacAddress)">
-            <summary>
-            Creates a new virtual LIFX multizone light
-            </summary>
-            <param name="lifx">The <c>LifxNetwork</c> to associated this virtual light with</param>
-            <param name="macAddress">The <c>MacAddress</c> of this virtual light</param>
         </member>
         <member name="M:AydenIO.Lifx.LifxVirtualMultizoneLight.GetMultizoneState(System.UInt16,System.UInt16,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
@@ -1910,8 +2208,8 @@
         </member>
         <member name="T:AydenIO.Lifx.LifxWaveform">
             <summary>
-            Possible waveform types for LIFX light bulb effects
-            <see href="https://lan.developer.lifx.com/docs/waveforms" />
+            Possible waveform types for LIFX light bulb effects.
+            <para>See also <seealso href="https://lan.developer.lifx.com/docs/waveforms" />.</para>
             </summary>
         </member>
         <member name="F:AydenIO.Lifx.LifxWaveform.Saw">
@@ -1942,6 +2240,17 @@
             <summary>
             The color will be set immediately to color, then to current color after the duty cycle fraction expires.
             </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxWifiInterface">
+            <summary>
+            An enumeration of the WiFi interface on a device.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxWifiInterface.SoftAP">
+            <summary>Software AP mode - used when device is unconfigured.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.LifxWifiInterface.Station">
+            <summary>Station mode - used when device is connected to another WiFi network.</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxWifiStatus">
             <summary>
@@ -2057,26 +2366,43 @@
         <member name="M:AydenIO.Lifx.MacAddress.Equals(System.Object)">
             <inheritdoc />
         </member>
+        <member name="T:AydenIO.Lifx.ILifxAccessPoint">
+            <summary>
+            Holds values representing a found access point.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxAccessPoint.Ssid">
+            <summary>Gets the SSID of the found access point.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxAccessPoint.SecurityProtocol">
+            <summary>Gets the security protocol of the found access point.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxAccessPoint.Strength">
+            <summary>Gets the signal strength of the found access point.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxAccessPoint.Channel">
+            <summary>Gets the channel of the found access point.</summary>
+        </member>
         <member name="T:AydenIO.Lifx.ILifxApplicationRequest">
             <summary>
             This type allows you to provide hints to the device about how the changes you make should be performed.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxApplicationRequest.Apply">
-            <value>How the change should be performed.</value>
+            <summary>Gets how the change should be performed.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxColorMultiZoneState">
             <summary>
-            Represents multiple zones on a MultiZone device
+            Represents multiple zones on a MultiZone device.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxColorZoneCount">
             <summary>
-            Represents the count of zones in a multizone device
+            Represents the count of zones in a multizone device.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxColorZoneCount.ZoneCount">
-            <value>The number of zones the device has</value>
+            <summary>Gets the number of zones the device has.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxColorZoneIndex">
             <summary>
@@ -2084,7 +2410,7 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxColorZoneIndex.Index">
-            <value>The index field is the zone we start applying the colors from. The first zone is 0.</value>
+            <summary>Gets the indexed zone we start applying the colors from. The first zone is 0.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxColorZoneRange">
             <summary>
@@ -2092,40 +2418,40 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxColorZoneRange.StartIndex">
-            <value>The index of the first zone.</value>
+            <summary>Gets the index of the first zone.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxColorZoneRange.EndIndex">
-            <value>The index of the last zone.</value>
+            <summary>Gets the index of the last zone.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxColorZones">
             <summary>
-            Common properties for set, and state messages for multizone lights
+            Common properties for set, and state messages for multizone lights.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxColorZones.Colors">
-            <value>The colors is 8/82 HSBK values and number of colors from this array will be applied sequentially from the <c>Index</c>'d zone on the device.</value>
+            <summary>Gets the colors where colors is 8/82 HSBK values and number of colors from this array will be applied sequentially from the <c>Index</c>'d zone on the device.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxColorZoneState">
             <summary>
-            Represents the state of a single zone on a multizone device
+            Represents the state of a single zone on a multizone device.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxEcho">
             <summary>
-            Common properties for <c>EchoRequest</c> and <c>EchoResponse</c>
+            Holds a payload for pings.
             </summary>
         </member>
         <member name="M:AydenIO.Lifx.ILifxEcho.GetPayload">
             <summary>
-            Gets the payload of the EchoRequest or EchoResponse
+            Gets the payload.
             </summary>
-            <returns>The payload</returns>
+            <returns>The payload.</returns>
         </member>
         <member name="M:AydenIO.Lifx.ILifxEcho.SetPayload(System.Collections.Generic.IEnumerable{System.Byte})">
             <summary>
-            Sets the payload of the EchoRequest or EchoResponse
+            Sets the payload.
             </summary>
-            <param name="payload">The payload</param>
+            <param name="payload">The payload.</param>
         </member>
         <member name="T:AydenIO.Lifx.ILifxGroupTag">
             <summary>
@@ -2133,214 +2459,263 @@
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxGroupTag.Group">
-            <value>The group identifier</value>
+            <summary>Gets the group identifier.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxHostFirmware">
             <summary>
-            Common properties for <c>Messages.StateHostFirmware</c>
+            Device's host firmware.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxHostFirmware.Build">
-            <value>Firmware build time</value>
+            <summary>Gets the firmware build time.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxHostFirmware.VersionMinor">
-            <value>Firmware minor version</value>
+            <summary>Gets the firmware minor version.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxHostFirmware.VersionMajor">
-            <value>Firmware major version</value>
+            <summary>Gets the firmware major version.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxHostInfo">
             <summary>
-            Common properties for <c>Messages.StateHostInfo</c>
+            Device's host info.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxHostInfo.Signal">
-            <value>Radio receive signal strength</value>
+            <summary>Gets the radio receive signal strength.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxHostInfo.TransmittedBytes">
-            <value>Transmitted bytes since power on</value>
+            <summary>Gets the count of transmitted bytes since power on.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxHostInfo.ReceivedBytes">
-            <value>Received bytes since power on</value>
+            <summary>Gets the count of received bytes since power on.</summary>
         </member>
         <member name="M:AydenIO.Lifx.ILifxHostInfo.GetSignalStrength">
             <summary>
             Returns the signal strength as a normalised value.
             </summary>
-            <returns>The quality of the received signal</returns>
+            <returns>The quality of the received signal.</returns>
         </member>
         <member name="T:AydenIO.Lifx.ILifxInfo">
             <summary>
-            Common properties for <c>Messages.StateInfo</c>
+            Device's info.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxInfo.Uptime">
-            <value>Time since last power on</value>
+            <summary>Gets the time since last power on.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxInfo.Downtime">
-            <value>Last power off period (5-second accuracy)</value>
+            <summary>Gets the lLast power off period (5-second accuracy).</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxInfrared">
             <summary>
-            Common properties for <c>Messages.SetInfrared</c> and <c>Messages.StateInfrared</c>
+            Device's infrared state.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxInfrared.Level">
-            <value>The current maximum setting for the infrared channel</value>
+            <summary>Gets the current maximum setting for the infrared channel.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxLabel">
             <summary>
-            Common properties for <c>Messages.SetLabel</c> and <c>Messages.StateLabel</c>
+            Device's label.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxLabel.Label">
-            <value>The device label</value>
+            <summary>Gets the device label.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxLightState">
             <summary>
-            Common properties for <c>Messages.LightState</c>
+            Light's state.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxLocationTag">
             <summary>
-            Common properties for <c>Messages.SetLocation</c> and <c>Messages.StateLocation</c>
+            A tag that identifies a device as part of a location.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxLocationTag.Location">
-            <value>The location identifier</value>
+            <summary>Gets the location identifier.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxMembershipTag">
             <summary>
-            Represents a collection that the device is a member of
+            Represents a collection that the device is a member of.
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxMembershipTag.Guid">
-            <value>The identifier for the membership information</value>
-        </member>
         <member name="P:AydenIO.Lifx.ILifxMembershipTag.Label">
-            <value>The label for the membership information</value>
+            <summary>Gets the label for the membership information.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxMembershipTag.UpdatedAt">
-            <value>When the membership information was updated</value>
+            <summary>Gets when the membership information was updated.</summary>
+        </member>
+        <member name="M:AydenIO.Lifx.ILifxMembershipTag.GetIdentifier">
+            <summary>Gets the identifier for the membership information.</summary>
+            <returns>The identifier.</returns>
         </member>
         <member name="T:AydenIO.Lifx.ILifxPower">
             <summary>
-            Common properties for <c>Messages.SetPower</c>, <c>Messages.StatePower</c>, <c>Messages.LightSetPower</c>, <c>Messages.LightStatePower</c>
+            Device's power state.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxPower.PoweredOn">
-            <value>Whether the device is powered on</value>
+            <summary>Gets a value indicating whether the device is powered on.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxService">
             <summary>
-            Common properties for <c>Messages.StateService</c>
+            A service supported by a device.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxService.Service">
-            <value>The service type</value>
+            <summary>Gets the service type.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxService.Port">
-            <value>The port that the service is on</value>
+            <summary>Gets the port that the service is on.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxTag">
+            <summary>
+            Device's tags' label.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxTag.Label">
+            <summary>Gets the label for the tag.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxTagId">
+            <summary>
+            Device's tag.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxTagId.TagId">
+            <summary>Gets the tag identifier.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxTime">
+            <summary>
+            Device's time.
+            </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxTime.Time">
-            <value>Current time</value>
+            <summary>Gets turrent time from the device.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxTransition">
             <summary>
-            Common properties for transitionable messages <c>Messages.LightSetPower</c> and <c>Messages.LightSetColor</c>
+            Holds the transition time for a transitionable property.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxTransition.Duration">
-            <value>The duration of the transition</value>
+            <summary>Gets the duration of the transition.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxVersion">
             <summary>
-            Common properties for <c>Messages.StateVersion</c>
+            Device's version.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxVersion.VendorId">
-            <value>The vendor identifier</value>
+            <summary>Gets the vendor identifier.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxVersion.ProductId">
-            <value>The product identifier</value>
+            <summary>Gets the product identifier.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxVersion.Version">
-            <value>The hardware version</value>
+            <summary>Gets the hardware version.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxWaveform">
             <summary>
-            Common properties for <c>Messages.LightSetWaveform</c>
+            A waveform for a light.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWaveform.Transient">
-            <value>True if the color does not persist.</value>
+            <summary>Gets a value indicating whether the color does not persist.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWaveform.Period">
-            <value>Duration of a cycle</value>
+            <summary>Gets the duration of a cycle.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWaveform.Cycles">
-            <value>Number of cycles</value>
+            <summary>Gets the number of cycles.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWaveform.SkewRatio">
-            <value>Waveform skew</value>
+            <summary>Gets the waveform skew.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWaveform.Waveform">
-            <value>The waveform type</value>
+            <summary>Gets the waveform type.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxWaveformOptional">
             <summary>
-            Common properties for <c>Messages.LightSetWaveformOptional</c>
+            A waveform for a light, with optional end parameters.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWaveformOptional.SetHue">
-            <value>True to use end color's hue</value>
+            <summary>Gets a value indicating whether to use the end color's hue.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWaveformOptional.SetSaturation">
-            <value>True to use end color's saturation</value>
+            <summary>Gets a value indicating whether to use the end color's saturation.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWaveformOptional.SetBrightness">
-            <value>True to use end color's brightness</value>
+            <summary>Gets a value indicating whether to use the end color's brightness.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWaveformOptional.SetKelvin">
-            <value>True to use end color's kelvin</value>
+            <summary>Gets a value indicating whether to use the end color's color temperature.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxWifiFirmware">
             <summary>
-            Common properties for <c>Messages.StateWifiFirmware</c>
+            A device's wifi firmware.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWifiFirmware.Build">
-            <value>Firmware build time</value>
+            <summary>Gets the firmware build time.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWifiFirmware.VersionMinor">
-            <value>Firmware minor version</value>
+            <summary>Gets the firmware minor version.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWifiFirmware.VersionMajor">
-            <value>Firmware major version</value>
+            <summary>Gets the firmware major version.</summary>
         </member>
         <member name="T:AydenIO.Lifx.ILifxWifiInfo">
             <summary>
-            Common properties for <c>Messages.StateWifiInfo</c>
+            A device's wifi state.
             </summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWifiInfo.Signal">
-            <value>Radio receive signal strength</value>
+            <summary>Gets the radio receive signal strength.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWifiInfo.TransmittedBytes">
-            <value>Transmitted bytes since power on</value>
+            <summary>Gets the count of transmitted bytes since power on.</summary>
         </member>
         <member name="P:AydenIO.Lifx.ILifxWifiInfo.ReceivedBytes">
-            <value>Received bytes since power on</value>
+            <summary>Gets the count of received bytes since power on.</summary>
         </member>
         <member name="M:AydenIO.Lifx.ILifxWifiInfo.GetSignalStrength">
             <summary>
             Returns the signal strength as a normalised value.
             </summary>
-            <returns>The quality of the received signal</returns>
+            <returns>The quality of the received signal.</returns>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxWifiInterface">
+            <summary>
+            A device's wifi interface.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiInterface.InterfacTypee">
+            <summary>Gets the interface type.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.ILifxWifiState">
+            <summary>
+            A device's wifi state.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiState.Status">
+            <summary>Gets the current connection state.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiState.IPAddressV4">
+            <summary>Gets the current IPv4 address.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.ILifxWifiState.IPAddressV6">
+            <summary>Gets the current IPv6 address.</summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.Acknowledgement">
             <summary>
-            Response to any message sent with _ack_required_ set to 1
+            Response to any message sent with _ack_required_ set to 1.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.Acknowledgement.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.Acknowledgement"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.EchoRequest">
@@ -2348,9 +2723,59 @@
             Request an arbitrary payload be echoed back.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoRequest.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.EchoRequest"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoRequest.GetPayload">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoRequest.SetPayload(System.Collections.Generic.IEnumerable{System.Byte})">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoRequest.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoRequest.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.Messages.EchoResponse">
             <summary>
             Response to <c>EchoRequest</c> message.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoResponse.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.EchoResponse"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoResponse.#ctor(AydenIO.Lifx.ILifxEcho)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.EchoResponse"/> class.
+            </summary>
+            <param name="echoRequest">A previous <see cref="T:AydenIO.Lifx.ILifxEcho"/> to copy the payload from.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoResponse.GetPayload">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoResponse.SetPayload(System.Collections.Generic.IEnumerable{System.Byte})">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoResponse.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoResponse.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetAccessPoints">
+            <summary>
+            A message sent to a device to retrieve the list of access points the device can se.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetAccessPoints.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetAccessPoints"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.GetColorZones">
@@ -2358,9 +2783,31 @@
             GetColorZones is used to request the zone colors for a range of zones.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.GetColorZones.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetColorZones"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.GetColorZones.StartIndex">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.GetColorZones.EndIndex">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetColorZones.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetColorZones.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.Messages.GetExtendedColorZones">
             <summary>
             This message will ask the device to return a StateExtendedColorZones containing all of it's colors.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetExtendedColorZones.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetExtendedColorZones"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.GetGroup">
@@ -2368,9 +2815,19 @@
             Ask the bulb to return its group membership information.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.GetGroup.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetGroup"/> class.
+            </summary>
+        </member>
         <member name="T:AydenIO.Lifx.Messages.GetHostFirmware">
             <summary>
             Gets Host MCU firmware information.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetHostFirmware.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetHostFirmware"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.GetHostInfo">
@@ -2378,9 +2835,19 @@
             Get Host MCU information.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.GetHostInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetHostInfo"/> class.
+            </summary>
+        </member>
         <member name="T:AydenIO.Lifx.Messages.GetInfo">
             <summary>
             Get run-time information.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetInfo"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.GetLabel">
@@ -2388,9 +2855,19 @@
             Get device label.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.GetLabel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetLabel"/> class.
+            </summary>
+        </member>
         <member name="T:AydenIO.Lifx.Messages.GetLocation">
             <summary>
             Ask the bulb to return its location information.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetLocation.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetLocation"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.GetPower">
@@ -2398,9 +2875,58 @@
             Get device power level.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.GetPower.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetPower"/> class.
+            </summary>
+        </member>
         <member name="T:AydenIO.Lifx.Messages.GetService">
             <summary>
             Sent by a client to acquire responses from all devices on the local network.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetService"/> class.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetTagLabel">
+            <summary>
+            A message sent to a device to retrieve the label for a tag.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetTagLabel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetTagLabel"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.GetTagLabel.TagId">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetTagLabel.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetTagLabel.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetTags">
+            <summary>
+            Sent to a device to retrieve its tags.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetTags.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetTags"/> class.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetTime">
+            <summary>
+            Sent to a device to get the current time.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetTime.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetTime"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.GetVersion">
@@ -2408,9 +2934,19 @@
             Get the hardware version.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.GetVersion.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetVersion"/> class.
+            </summary>
+        </member>
         <member name="T:AydenIO.Lifx.Messages.GetWifiFirmware">
             <summary>
             Get Wifi subsystem firmware.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetWifiFirmware.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetWifiFirmware"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.GetWifiInfo">
@@ -2418,9 +2954,38 @@
             Get Wifi subsystem information.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.GetWifiInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetWifiInfo"/> class.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.GetWifiState">
+            <summary>
+            Sent to a device to retrieve the wifi interface state.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetWifiState.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.GetWifiState"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.GetWifiState.InterfacTypee">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetWifiState.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.GetWifiState.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.Messages.LightGet">
             <summary>
             Sent by a client to obtain the light state.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightGet.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightGet"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.LightGetInfrared">
@@ -2428,9 +2993,19 @@
             Gets the current maximum power level of the Infrared channel.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.LightGetInfrared.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightGetInfrared"/> class.
+            </summary>
+        </member>
         <member name="T:AydenIO.Lifx.Messages.LightGetPower">
             <summary>
             Sent by a client to obtain the power level.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightGetPower.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightGetPower"/> class.
             </summary>
         </member>
         <member name="T:AydenIO.Lifx.Messages.LightSetColor">
@@ -2438,59 +3013,943 @@
             Sent by a client to change the light state.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetColor.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightSetColor"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetColor.Hue">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetColor.Saturation">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetColor.Brightness">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetColor.Kelvin">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetColor.Duration">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetColor.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetColor.ToHsbk">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetColor.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetColor.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.Messages.LightSetInfrared">
             <summary>
             Send this message to alter the current maximum brightness for the infrared channel.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetInfrared.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightSetInfrared"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetInfrared.Level">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetInfrared.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetInfrared.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.Messages.LightSetPower">
             <summary>
             Sent by a client to change the light power level.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetPower.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightSetPower"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetPower.PoweredOn">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetPower.Duration">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetPower.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetPower.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.Messages.LightSetWaveform">
             <summary>
             Apply an effect to the bulb.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetWaveform.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightSetWaveform"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetWaveform.#ctor(AydenIO.Lifx.LifxMessageType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightSetWaveform"/> class.
+            </summary>
+            <param name="type">The type of the packet when the class is derived.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveform.Transient">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveform.Hue">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveform.Saturation">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveform.Brightness">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveform.Kelvin">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveform.Period">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveform.Cycles">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveform.SkewRatio">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveform.Waveform">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetWaveform.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetWaveform.ToHsbk">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetWaveform.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetWaveform.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.Messages.LightSetWaveformOptional">
             <summary>
             Optionally set effect parameters. Same as SetWaveform but allows some parameters to be set from the current value on device.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetWaveformOptional.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightSetWaveformOptional"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveformOptional.SetHue">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveformOptional.SetSaturation">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveformOptional.SetBrightness">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightSetWaveformOptional.SetKelvin">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetWaveformOptional.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightSetWaveformOptional.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.Messages.LightState">
             <summary>
             Sent by a device to provide the current light state.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightState.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightState"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightState.#ctor(AydenIO.Lifx.ILifxLightState)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightState"/> class.
+            </summary>
+            <param name="lightState">The <see cref="T:AydenIO.Lifx.ILifxLightState"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightState.Hue">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightState.Saturation">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightState.Brightness">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightState.Kelvin">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightState.PoweredOn">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightState.Label">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightState.ToHsbk">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightState.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightState.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightState.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.Messages.LightStateInfrared">
             <summary>
             This message is returned from a GetInfrared message. It indicates the current maximum setting for the infrared channel.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStateInfrared.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightStateInfrared"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStateInfrared.#ctor(System.UInt16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightStateInfrared"/> class.
+            </summary>
+            <param name="level">The level to initialize this message from.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStateInfrared.#ctor(AydenIO.Lifx.ILifxInfrared)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightStateInfrared"/> class.
+            </summary>
+            <param name="infrared">The <see cref="T:AydenIO.Lifx.ILifxInfrared"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightStateInfrared.Level">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStateInfrared.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStateInfrared.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.Messages.LightStatePower">
             <summary>
             Sent by a device to provide the current power level.
             </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStatePower.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightStatePower"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStatePower.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightStatePower"/> class.
+            </summary>
+            <param name="poweredOn">The poweredOn to initialize this message with.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStatePower.#ctor(AydenIO.Lifx.ILifxPower)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.LightStatePower"/> class.
+            </summary>
+            <param name="power">The <see cref="T:AydenIO.Lifx.ILifxPower"/> to initialize this messagw from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.LightStatePower.PoweredOn">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStatePower.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.LightStatePower.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.SetColorZones">
+            <summary>
+            A message sent to a multizone device to set all zones between <see cref="P:AydenIO.Lifx.Messages.SetColorZones.StartIndex"/> and <see cref="P:AydenIO.Lifx.Messages.SetColorZones.EndIndex"/> to a color.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetColorZones.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.SetColorZones"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetColorZones.StartIndex">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetColorZones.EndIndex">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetColorZones.Hue">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetColorZones.Saturation">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetColorZones.Brightness">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetColorZones.Kelvin">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetColorZones.Duration">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetColorZones.Apply">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetColorZones.ToHsbk">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetColorZones.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetColorZones.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetColorZones.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.Messages.SetExtendedColorZones">
             <summary>
             This messages lets you change all the zones on your device in one message.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.SetExtendedColorZones.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.SetExtendedColorZones"/> class.
+            </summary>
+        </member>
         <member name="P:AydenIO.Lifx.Messages.SetExtendedColorZones.MaxZoneCount">
-            <value>The current maximum number of zones in a LIFX MultiZone device</value>
+            <summary>Gets the current maximum number of zones in a LIFX MultiZone device.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetExtendedColorZones.Duration">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetExtendedColorZones.Apply">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetExtendedColorZones.Index">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetExtendedColorZones.Colors">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetExtendedColorZones.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetExtendedColorZones.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.Messages.SetGroup">
             <summary>
             Set the device group.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.SetGroup.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.SetGroup"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetGroup.Group">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetGroup.Label">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetGroup.UpdatedAt">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetGroup.AydenIO#Lifx#ILifxMembershipTag#GetIdentifier">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetGroup.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetGroup.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.SetLabel">
+            <summary>
+            Sent to a device to change its label.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetLabel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.SetLabel"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetLabel.Label">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetLabel.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetLabel.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.SetLocation">
+            <summary>
+            Sent to a device to update its location.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetLocation.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.SetLocation"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetLocation.Location">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetLocation.Label">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetLocation.UpdatedAt">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetLocation.AydenIO#Lifx#ILifxMembershipTag#GetIdentifier">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetLocation.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetLocation.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.SetPower">
+            <summary>
+            Sent to a device to set its power state.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetPower.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.SetPower"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.SetPower.PoweredOn">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetPower.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.SetPower.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateAccessPoint">
+            <summary>
+            Sent from a device stating an access point the device can see.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateAccessPoint.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateAccessPoint"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateAccessPoint.InterfacTypee">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateAccessPoint.Ssid">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateAccessPoint.SecurityProtocol">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateAccessPoint.Strength">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateAccessPoint.Channel">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateAccessPoint.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateAccessPoint.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateExtendedColorZones">
+            <summary>
+            Sent from a multizone device and contains the state of the zones.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateExtendedColorZones.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateExtendedColorZones"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateExtendedColorZones.#ctor(AydenIO.Lifx.ILifxColorMultiZoneState)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateExtendedColorZones"/> class.
+            </summary>
+            <param name="state">The <see cref="T:AydenIO.Lifx.ILifxColorMultiZoneState"/> to initialize this message from.</param>
+        </member>
         <member name="P:AydenIO.Lifx.Messages.StateExtendedColorZones.MaxZoneCount">
-            <value>The current maximum number of zones in a LIFX MultiZone device</value>
+            <summary>Gets the current maximum number of zones in a LIFX MultiZone device.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateExtendedColorZones.ZoneCount">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateExtendedColorZones.Index">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateExtendedColorZones.Colors">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateExtendedColorZones.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateExtendedColorZones.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateGroup">
+            <summary>
+            Sent from a device stating the group that the device is a part of.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateGroup.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateGroup"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateGroup.#ctor(AydenIO.Lifx.ILifxGroupTag)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateGroup"/> class.
+            </summary>
+            <param name="group">The <see cref="T:AydenIO.Lifx.ILifxGroupTag"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateGroup.Group">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateGroup.Label">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateGroup.UpdatedAt">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateGroup.AydenIO#Lifx#ILifxMembershipTag#GetIdentifier">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateGroup.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateGroup.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateHostFirmware">
+            <summary>
+            Sent from a device stating its host firmware.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateHostFirmware.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateHostFirmware"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateHostFirmware.#ctor(AydenIO.Lifx.ILifxHostFirmware)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateHostFirmware"/> class.
+            </summary>
+            <param name="hostFirmware">The <see cref="T:AydenIO.Lifx.ILifxHostFirmware"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateHostFirmware.Build">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateHostFirmware.VersionMinor">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateHostFirmware.VersionMajor">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateHostFirmware.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateHostFirmware.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateHostInfo">
+            <summary>
+            Sent from a device stating its host info.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateHostInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateHostInfo"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateHostInfo.#ctor(AydenIO.Lifx.ILifxHostInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateHostInfo"/> class.
+            </summary>
+            <param name="hostInfo">The <see cref="T:AydenIO.Lifx.ILifxHostInfo"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateHostInfo.Signal">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateHostInfo.TransmittedBytes">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateHostInfo.ReceivedBytes">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateHostInfo.GetSignalStrength">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateHostInfo.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateHostInfo.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateInfo">
+            <summary>
+            Sent by a device stating its info.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateInfo"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateInfo.#ctor(AydenIO.Lifx.ILifxInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateInfo"/> class.
+            </summary>
+            <param name="info">The <see cref="T:AydenIO.Lifx.ILifxInfo"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateInfo.Time">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateInfo.Uptime">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateInfo.Downtime">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateInfo.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateInfo.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateLabel">
+            <summary>
+            Sent by a device to state its current label.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLabel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateLabel"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLabel.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateLabel"/> class.
+            </summary>
+            <param name="label">The string label to initialize this message from.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLabel.#ctor(AydenIO.Lifx.ILifxLabel)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateLabel"/> class.
+            </summary>
+            <param name="label">The <see cref="T:AydenIO.Lifx.ILifxLabel"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateLabel.Label">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLabel.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLabel.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateLocation">
+            <summary>
+            Sent from a device to state its location.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLocation.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateLocation"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLocation.#ctor(AydenIO.Lifx.ILifxLocationTag)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateLocation"/> class.
+            </summary>
+            <param name="location">The <see cref="T:AydenIO.Lifx.ILifxLocationTag"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateLocation.Location">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateLocation.Label">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateLocation.UpdatedAt">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLocation.AydenIO#Lifx#ILifxMembershipTag#GetIdentifier">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLocation.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateLocation.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateMultiZone">
+            <summary>
+            Sent by a multizone device to state up to 8 zones of color.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateMultiZone.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateMultiZone"/> class.
+            </summary>
         </member>
         <member name="P:AydenIO.Lifx.Messages.StateMultiZone.MaxZoneCount">
-            <value>Gets the maximum number of zones supported by this message</value>
+            <summary>Gets the maximum number of zones supported by this message.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateMultiZone.ZoneCount">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateMultiZone.Index">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateMultiZone.Colors">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateMultiZone.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateMultiZone.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StatePower">
+            <summary>
+            Sent by a device to indicate it's current power state.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StatePower.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StatePower"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StatePower.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StatePower"/> class.
+            </summary>
+            <param name="poweredOn">The <see cref="P:AydenIO.Lifx.Messages.StatePower.PoweredOn"/> value to initialize this message from.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StatePower.#ctor(AydenIO.Lifx.ILifxPower)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StatePower"/> class.
+            </summary>
+            <param name="power">The <see cref="T:AydenIO.Lifx.ILifxPower"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StatePower.PoweredOn">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StatePower.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StatePower.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateService">
+            <summary>
+            Sent by a device to indicate the services it supports.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateService"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateService.#ctor(AydenIO.Lifx.ILifxService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateService"/> class.
+            </summary>
+            <param name="service">The <see cref="T:AydenIO.Lifx.ILifxService"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateService.Service">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateService.Port">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateService.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateService.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateTagLabel">
+            <summary>
+            Sent by a device to state the label for a tag.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateTagLabel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateTagLabel"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateTagLabel.TagId">
+            <inheritdoc/>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateTagLabel.Label">
+            <inheritdoc/>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateTagLabel.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc/>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateTagLabel.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc/>
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateTags">
+            <summary>
+            Seny by a device to state its tags.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateTags.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateTags"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateTags.TagId">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateTags.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateTags.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateTime">
+            <summary>
+            Sent by a device to state the current time.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateTime.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateTime"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateTime.Time">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateTime.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateTime.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateVersion">
+            <summary>
+            Sent by a device to state its version.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateVersion.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateVersion"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateVersion.#ctor(AydenIO.Lifx.ILifxVersion)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateVersion"/> class.
+            </summary>
+            <param name="version">The <see cref="T:AydenIO.Lifx.ILifxVersion"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateVersion.VendorId">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateVersion.ProductId">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateVersion.Version">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateVersion.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateVersion.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateWifiFirmware">
+            <summary>
+            Sent by a device to state its wifi firmware.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateWifiFirmware.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateWifiFirmware"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateWifiFirmware.#ctor(AydenIO.Lifx.ILifxWifiFirmware)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateWifiFirmware"/> class.
+            </summary>
+            <param name="wifiFirmware">The <see cref="T:AydenIO.Lifx.ILifxWifiFirmware"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateWifiFirmware.Build">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateWifiFirmware.VersionMinor">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateWifiFirmware.VersionMajor">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateWifiFirmware.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateWifiFirmware.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateWifiInfo">
+            <summary>
+            Sent by a device to state its wifi info.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateWifiInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateWifiInfo"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateWifiInfo.#ctor(AydenIO.Lifx.ILifxWifiInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateWifiInfo"/> class.
+            </summary>
+            <param name="wifiInfo">The <see cref="T:AydenIO.Lifx.ILifxWifiInfo"/> to initialize this message from.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateWifiInfo.Signal">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateWifiInfo.TransmittedBytes">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateWifiInfo.ReceivedBytes">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateWifiInfo.GetSignalStrength">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateWifiInfo.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateWifiInfo.ReadPayload(System.IO.BinaryReader)">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.Messages.StateWifiState">
             <summary>
@@ -2502,7 +3961,7 @@
             Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateWifiState"/> class.
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.Messages.StateWifiState.Interface">
+        <member name="P:AydenIO.Lifx.Messages.StateWifiState.InterfacTypee">
             <inheritdoc />
         </member>
         <member name="P:AydenIO.Lifx.Messages.StateWifiState.Status">
@@ -2518,6 +3977,46 @@
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.Messages.StateWifiState.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Messages.StateZone">
+            <summary>
+            Sent by a multizone device to state the color of a single zone.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateZone.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.StateZone"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateZone.ZoneCount">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateZone.Index">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateZone.Hue">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateZone.Saturation">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateZone.Brightness">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Messages.StateZone.Kelvin">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateZone.ToHsbk">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateZone.FromHsbk(AydenIO.Lifx.ILifxHsbkColor)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateZone.WritePayload(System.IO.BinaryWriter)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Messages.StateZone.ReadPayload(System.IO.BinaryReader)">
             <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.ReadOnlyDeviceCollection">
@@ -2540,11 +4039,109 @@
         <member name="M:AydenIO.Lifx.ReadOnlyDeviceCollection.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.Utilities.AssertCallerIgnoreUnsupported(System.String)">
+        <member name="T:AydenIO.Lifx.Utilities">
             <summary>
-            Walks up the stack to ensure that the method calling this' caller(s) has the LifxIgnoreUnsupportedAttribute for the calling method.
+            Helper methods used by this library.
             </summary>
-            <param name="calleeMethodName">The method name to assert the callee has explicitly allowed.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Utilities.ResourceManager">
+            <summary>Gets the resource manager for the library.</summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.Clamp(System.Double,System.Double,System.Double)">
+            <summary>
+            Clamps a number so it's falls in the range <paramref name="min"/> to <paramref name="max"/> inclusive.
+            </summary>
+            <param name="min">The lower bound.</param>
+            <param name="max">The upper bound.</param>
+            <param name="value">The value to clamp between the lower and upper bounds.</param>
+            <returns>The value between the lower bound and the upper bound.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.MultiplyRoundClampUInt16(System.Double)">
+            <summary>
+            Multiplies a floating point value of the range 0.0 - 1.0 by the maximum value for an unsigned short, and clamps it to fit in the data type.
+            </summary>
+            <param name="f">The value to multiply, round, and clamp.</param>
+            <returns>The value scaled to a ushort.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.MultiplyRoundClampUInt8(System.Double)">
+            <summary>
+            Multiplies a floating point value of the range 0.0 - 1.0 by the maximum value for a byte, and clamps it to fit in the data type.
+            </summary>
+            <param name="f">The value to multiply, round, and clamp.</param>
+            <returns>The value scaled to a byte.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.BytesToHexString(System.Byte[],System.Nullable{System.Char})">
+            <summary>
+            Converts a sequence of bytes to a hexadecimal string, separated by <paramref name="sep"/>.
+            </summary>
+            <param name="bytes">The byte sequence to convert.</param>
+            <param name="sep">The separator to put between bytes.</param>
+            <returns>The bytes in hexadecimal representation.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.StringToFixedBuffer(System.String,System.Int32)">
+            <summary>
+            Encodes a string as UTF8 bytes into a buffer of a fixed size.
+            </summary>
+            <param name="str">The string to encode.</param>
+            <param name="bufferSize">The size of the resulting buffer.</param>
+            <returns>The string encoded as a sequence of bytes.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.BufferToString(System.Byte[])">
+            <summary>
+            Decodes a sequence of bytes as a string, up to the first \0.
+            </summary>
+            <param name="buffer">The buffer to decode.</param>
+            <returns>The buffer decoded as a string.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.NanosecondsToTimeSpan(System.UInt64)">
+            <summary>
+            Converts a number of nanoseconds to a <see cref="T:System.TimeSpan"/>.
+            </summary>
+            <param name="ns">The nanoseconds.</param>
+            <returns>The nanoseconds as a <see cref="T:System.TimeSpan"/>.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.TimeSpanToNanoseconds(System.TimeSpan)">
+            <summary>
+            Converts a <see cref="T:System.TimeSpan"/> to a count of nanoseconds.
+            </summary>
+            <param name="ts">The nanoseconds.</param>
+            <returns>The <see cref="T:System.TimeSpan"/> as a count of nanoseconds.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.NanosecondsToDateTime(System.UInt64)">
+            <summary>
+            Converts a number of nanoseconds since the unix epoch to a <see cref="T:System.DateTime"/>.
+            </summary>
+            <param name="ns">The nanoseconds.</param>
+            <returns>A <see cref="T:System.DateTime"/> that is <paramref name="ns" /> nanoseconds from the unix epoch.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.DateTimeToNanoseconds(System.DateTime)">
+            <summary>
+            Converts a <see cref="T:System.DateTime"/> to a number of nanoseconds.
+            </summary>
+            <param name="dt">The <see cref="T:System.DateTime"/> to convert.</param>
+            <returns>The <see cref="T:System.DateTime"/> as the number of nanoseconds since the unix epoch.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.GetSignalStrength(System.Single)">
+            <summary>
+            Some LIFX devices report the <see cref="P:AydenIO.Lifx.ILifxWifiInfo.Signal"/> and <see cref="P:AydenIO.Lifx.ILifxHostInfo.Signal"/> as two different types. This function normalises them into a quantified range.
+            </summary>
+            <param name="signal">The raw signal value reported from the device.</param>
+            <returns>A quantified representation of the signal value.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.GetResourceString(System.String)">
+            <summary>
+            Returns a resource string.
+            </summary>
+            <param name="stringName">The string name to get from the resources table.</param>
+            <returns>The string.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Utilities.GetResourceString(System.String,System.Object[])">
+            <summary>
+            Returns a formatted resource string.
+            </summary>
+            <param name="stringName">The string name to get from the resources table.</param>
+            <param name="args">Arguments used when the raw string is passed to <see cref="M:System.String.Format(System.String,System.Object[])"/>.</param>
+            <returns>The formatted string.</returns>
         </member>
     </members>
 </doc>

@@ -17,7 +17,7 @@ namespace AydenIO.Lifx.Messages {
         }
 
         /// <inheritdoc />
-        public LifxWifiInterface Interface { get; set; }
+        public LifxWifiInterface InterfacTypee { get; set; }
 
         /// <inheritdoc />
         public LifxWifiStatus Status { get; set; }
@@ -33,7 +33,7 @@ namespace AydenIO.Lifx.Messages {
             // Interface
             byte iface = reader.ReadByte();
 
-            this.Interface = (LifxWifiInterface)iface;
+            this.InterfacTypee = (LifxWifiInterface)iface;
 
             // Status
             byte status = reader.ReadByte();
@@ -53,7 +53,7 @@ namespace AydenIO.Lifx.Messages {
 
         /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
-            /* uint8_t interface */ writer.Write((byte)this.Interface);
+            /* uint8_t interface */ writer.Write((byte)this.InterfacTypee);
             /* uint8_t status */ writer.Write((byte)this.Status);
 
             byte[] ipv4Bytes = new byte[4];

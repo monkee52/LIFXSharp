@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Get the hardware version.
     /// </summary>
     internal class GetVersion : LifxMessage {
-        public const LifxMessageType TYPE = LifxMessageType.GetVersion;
-
-        public GetVersion() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetVersion"/> class.
+        /// </summary>
+        public GetVersion() : base(LifxMessageType.GetVersion) {
+            // Empty
         }
     }
 }

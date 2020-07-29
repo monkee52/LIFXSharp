@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-async Task PrintMemberships(ILifxMembershipCollection<ILifxMembership<ILifxMembershipTag>, ILifxMembershipTag> collections) {
+static async Task PrintMemberships(ILifxMembershipCollection<ILifxMembership<ILifxMembershipTag>, ILifxMembershipTag> collections) {
     Console.WriteLine($"{collections.Count} collection(s)");
 
     foreach (ILifxMembership<ILifxMembershipTag> membership in collections) {
-        Console.WriteLine($"  {membership.Label} [Guid = {membership.Guid}, UpdatedAt = {membership.UpdatedAt}]");
+        Console.WriteLine($"  {membership.Label} [Guid = {membership.GetIdentifier()}, UpdatedAt = {membership.UpdatedAt}]");
 
         Console.WriteLine($"    {membership.DeviceCount} member(s)");
 
@@ -22,7 +22,7 @@ async Task PrintMemberships(ILifxMembershipCollection<ILifxMembership<ILifxMembe
     }
 }
 
-async Task<TResult> TryOrDefault<TResult>(Func<Task<TResult>> fn, TResult defaultValue = default, int retryCount = 3) {
+static async Task<TResult> TryOrDefault<TResult>(Func<Task<TResult>> fn, TResult defaultValue = default, int retryCount = 3) {
     TResult returnValue = defaultValue;
 
     bool didGetValue = false;
@@ -45,7 +45,7 @@ async Task<TResult> TryOrDefault<TResult>(Func<Task<TResult>> fn, TResult defaul
     return returnValue;
 }
 
-async Task DumpDevice(ILifxDevice device, int? timeoutMs = null, CancellationToken cancellationToken = default) {
+static async Task DumpDevice(ILifxDevice device, int? timeoutMs = null, CancellationToken cancellationToken = default) {
     // Location
     ILifxLocationTag location = await TryOrDefault(() => device.GetLocation(false, timeoutMs, cancellationToken));
 

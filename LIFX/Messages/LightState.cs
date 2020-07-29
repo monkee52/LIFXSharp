@@ -1,20 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a device to provide the current light state.
     /// </summary>
     internal class LightState : LifxMessage, ILifxLightState {
-        public const LifxMessageType TYPE = LifxMessageType.LightState;
-
-        public LightState() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LightState"/> class.
+        /// </summary>
+        public LightState() : base(LifxMessageType.LightState) {
+            // Empty
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LightState"/> class.
+        /// </summary>
+        /// <param name="lightState">The <see cref="ILifxLightState"/> to initialize this message from.</param>
         public LightState(ILifxLightState lightState) : this() {
             this.FromHsbk(lightState);
 
@@ -22,14 +26,40 @@ namespace AydenIO.Lifx.Messages {
             this.Label = lightState.Label;
         }
 
+        /// <inheritdoc />
         public ushort Hue { get; set; }
+
+        /// <inheritdoc />
         public ushort Saturation { get; set; }
+
+        /// <inheritdoc />
         public ushort Brightness { get; set; }
+
+        /// <inheritdoc />
         public ushort Kelvin { get; set; }
 
+        /// <inheritdoc />
         public bool PoweredOn { get; set; }
+
+        /// <inheritdoc />
         public string Label { get; set; }
 
+        /// <inheritdoc />
+        public ILifxHsbkColor ToHsbk() {
+            return this;
+        }
+
+        /// <inheritdoc />
+        public void FromHsbk(ILifxHsbkColor hsbk) {
+            if (hsbk != this && hsbk is not null) {
+                this.Hue = hsbk.Hue;
+                this.Saturation = hsbk.Saturation;
+                this.Brightness = hsbk.Brightness;
+                this.Kelvin = hsbk.Kelvin;
+            }
+        }
+
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             // HSBK
             /* uint16_t le hue */ writer.Write(this.Hue);
@@ -44,9 +74,10 @@ namespace AydenIO.Lifx.Messages {
             /* uint8_t[32] label */ writer.Write(Utilities.StringToFixedBuffer(this.Label, 32));
 
             // Reserved
-            /* uint64_t le reserved */ writer.Write((ulong)0);
+            /* uint64_t le reserved */ writer.Write(0uL);
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             // HSBK
             ushort hue = reader.ReadUInt16();
@@ -76,19 +107,6 @@ namespace AydenIO.Lifx.Messages {
             this.Label = Utilities.BufferToString(label);
 
             /* uint64_t le reserved */ reader.ReadUInt64();
-        }
-
-        public ILifxHsbkColor ToHsbk() {
-            return this;
-        }
-
-        public void FromHsbk(ILifxHsbkColor hsbk) {
-            if (hsbk != this) {
-                this.Hue = hsbk.Hue;
-                this.Saturation = hsbk.Saturation;
-                this.Brightness = hsbk.Brightness;
-                this.Kelvin = hsbk.Kelvin;
-            }
         }
     }
 }

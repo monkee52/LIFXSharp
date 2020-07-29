@@ -1,13 +1,14 @@
-﻿using System;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>Messages.SetLocation</c> and <c>Messages.StateLocation</c>
+    /// A tag that identifies a device as part of a location.
     /// </summary>
     public interface ILifxLocationTag : ILifxMembershipTag {
-        /// <value>The location identifier</value>
+        /// <summary>Gets the location identifier.</summary>
         public Guid Location { get; }
-
-        Guid ILifxMembershipTag.Guid => this.Location;
     }
 }

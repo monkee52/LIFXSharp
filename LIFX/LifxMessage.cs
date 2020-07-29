@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
 // See LICENSE for more information.
 
+using System;
 using System.IO;
 
 namespace AydenIO.Lifx {
@@ -8,7 +9,7 @@ namespace AydenIO.Lifx {
     /// Represents a LIFX protocol message.
     /// </summary>
     internal class LifxMessage {
-        private const int Protocol = 1024;
+        private const ushort Protocol = 1024;
         private const bool Addressable = true;
         private const byte Origin = 0;
 
@@ -87,6 +88,14 @@ namespace AydenIO.Lifx {
             // Empty
         }
 
+        private static void AssertEquals<T>(string stringName, T expected, T actual) {
+            if (Object.Equals(expected, actual)) {
+                return;
+            }
+
+            throw new InvalidDataException(Utilities.GetResourceString(stringName, expected, actual));
+        }
+
         private void WriteFrame(BinaryWriter writer) {
             /* uint16_t le size */ writer.Write((ushort)0); // Updated during GetBytes
 
@@ -125,23 +134,15 @@ namespace AydenIO.Lifx {
             /* bool tagged = ((flags >> 13) & 1) != 0; */
             byte origin = (byte)((flags >> 14) & 3);
 
-            if (protocol != LifxMessage.Protocol) {
-                throw new InvalidDataException($"Protocol number must be '{LifxMessage.Protocol}', got '{protocol}'");
-            }
-
-            if (addressable != LifxMessage.Addressable) {
-                throw new InvalidDataException($"Addressable must be be '{LifxMessage.Addressable}', got '{addressable}'");
-            }
-
-            if (origin != LifxMessage.Origin) {
-                throw new InvalidDataException($"Origin must be '{LifxMessage.Origin}', got '{origin}'");
-            }
+            LifxMessage.AssertEquals("invalid_protocol", LifxMessage.Protocol, protocol);
+            LifxMessage.AssertEquals("invalid_addressable_flag", LifxMessage.Addressable, addressable);
+            LifxMessage.AssertEquals("invalid_origin", LifxMessage.Origin, origin);
 
             // Source
             uint source = reader.ReadUInt32();
 
-            if (this.Type != LifxMessageType._internal_unknown_ && source != (uint)this.SourceId) {
-                throw new InvalidDataException($"Source must be '{(uint)this.SourceId}', got '{source}'");
+            if (this.SourceId != 0) {
+                LifxMessage.AssertEquals("invalid_source", (uint)this.SourceId, source);
             }
 
             this.SourceId = (int)source;
@@ -176,8 +177,8 @@ namespace AydenIO.Lifx {
             // Type
             ushort type = reader.ReadUInt16();
 
-            if (type != (ushort)this.Type && this.Type != LifxMessageType._internal_unknown_) {
-                throw new InvalidDataException($"Type must be '{this.Type}', got '{type}'");
+            if (this.Type != LifxMessageType.Unknown) {
+                LifxMessage.AssertEquals("invalid_type", (ushort)this.Type, type);
             }
 
             this.Type = (LifxMessageType)type;

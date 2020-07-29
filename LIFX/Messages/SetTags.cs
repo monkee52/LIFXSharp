@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Sent to a device to set its tags.
+    /// </summary>
     internal class SetTags : LifxMessage, ILifxTagId {
-        public const LifxMessageType TYPE = LifxMessageType.SetTags;
-
-        public ulong TagId { get; set; }
-
-        public SetTags() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SetTags"/> class.
+        /// </summary>
+        public SetTags() : base(LifxMessageType.SetTags) {
+            // Empty
         }
+
+        /// <inheritdoc />
+        public ulong TagId { get; set; }
     }
 }

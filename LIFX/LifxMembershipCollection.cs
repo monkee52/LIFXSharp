@@ -104,6 +104,18 @@ namespace AydenIO.Lifx {
         /// <returns>The created <typeparamref name="TCollection"/>.</returns>
         protected abstract TCollection CreateCollection(Guid guid, string label, DateTime updatedAt);
 
+        private static async void RenameTask(TCollection collection, string newLabel) {
+            try {
+                await collection.Rename(newLabel);
+            } catch (AggregateException ae) {
+                IEnumerable<Exception> nonTimeoutExceptions = ae.InnerExceptions.Where(e => e is not TimeoutException);
+
+                if (nonTimeoutExceptions.Any()) {
+                    throw new AggregateException(ae.Message, nonTimeoutExceptions);
+                }
+            }
+        }
+
         private TCollection GetOrCreateCollectionInternal(Guid guid, string label, DateTime updatedAt) {
             TCollection newCollection = null;
 
@@ -115,7 +127,7 @@ namespace AydenIO.Lifx {
 
                         // Synchronise labels if needed
                         if (collection.Label != label) {
-                            this.RenameTask(collection, label);
+                            LifxMembershipCollection<TCollection, TPublicCollection, TTag>.RenameTask(collection, label);
                         }
                     }
 
@@ -137,19 +149,7 @@ namespace AydenIO.Lifx {
         }
 
         private TCollection GetOrCreateCollectionInternal(TTag collection) {
-            return this.GetOrCreateCollectionInternal(collection.Guid, collection.Label, collection.UpdatedAt);
-        }
-
-        private async void RenameTask(TCollection collection, string newLabel) {
-            try {
-                await collection.Rename(newLabel);
-            } catch (AggregateException ae) {
-                IEnumerable<Exception> nonTimeoutExceptions = ae.InnerExceptions.Where(e => e is not TimeoutException);
-
-                if (nonTimeoutExceptions.Any()) {
-                    throw new AggregateException(ae.Message, nonTimeoutExceptions);
-                }
-            }
+            return this.GetOrCreateCollectionInternal(collection.GetIdentifier(), collection.Label, collection.UpdatedAt);
         }
     }
 }

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// Common properties for <c>Messages.SetLabel</c> and <c>Messages.StateLabel</c>
+    /// Device's label.
     /// </summary>
     public interface ILifxLabel {
-        /// <value>The device label</value>
+        /// <summary>Gets the device label.</summary>
         public string Label { get; }
     }
 }

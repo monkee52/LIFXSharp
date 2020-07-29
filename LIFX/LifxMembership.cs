@@ -16,6 +16,8 @@ namespace AydenIO.Lifx {
     internal abstract class LifxMembership<TTag> : ICollection<ILifxDevice>, ILifxMembership<TTag> where TTag : ILifxMembershipTag {
         private readonly ICollection<EquatableWeakReference<ILifxDevice>> members;
 
+        private Guid guid;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LifxMembership{TTag}"/> class.
         /// </summary>
@@ -25,7 +27,7 @@ namespace AydenIO.Lifx {
         protected LifxMembership(Guid guid, string label, DateTime updatedAt) {
             this.members = new HashSet<EquatableWeakReference<ILifxDevice>>();
 
-            this.Guid = guid;
+            this.guid = guid;
             this.Label = label;
             this.UpdatedAt = updatedAt;
         }
@@ -46,13 +48,15 @@ namespace AydenIO.Lifx {
         public bool IsReadOnly => false;
 
         /// <inheritdoc />
-        public Guid Guid { get; private set; }
-
-        /// <inheritdoc />
         public string Label { get; private set; }
 
         /// <inheritdoc />
         public DateTime UpdatedAt { get; set; }
+
+        /// <inheritdoc />
+        public Guid GetIdentifier() {
+            return this.guid;
+        }
 
         /// <inheritdoc />
         public Task Rename(string newLabel, int? timeoutMs = null, CancellationToken cancellationToken = default) {

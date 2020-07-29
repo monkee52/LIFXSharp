@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx {
     /// <summary>
     /// Represents a range of zones covered by a multizone state message.
     /// </summary>
     public interface ILifxColorZoneRange {
-        /// <value>The index of the first zone.</value>
+        /// <summary>Gets the index of the first zone.</summary>
         public byte StartIndex { get; }
 
-        /// <value>The index of the last zone.</value>
+        /// <summary>Gets the index of the last zone.</summary>
         public byte EndIndex { get; }
     }
 }

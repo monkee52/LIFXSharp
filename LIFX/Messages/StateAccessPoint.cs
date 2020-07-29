@@ -1,31 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
 using System.IO;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// Sent from a device stating an access point the device can see.
+    /// </summary>
     internal class StateAccessPoint : LifxMessage, ILifxAccessPoint {
-        public const LifxMessageType TYPE = LifxMessageType.StateAccessPoint;
-
-        public LifxWifiInterface Interface { get; set; }
-
-        public string Ssid { get; set; }
-
-        public LifxSecurityProtocol SecurityProtocol { get; set; }
-
-        public ushort Strength { get; set; }
-
-        public ushort Channel { get; set; }
-
-
-        public StateAccessPoint() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StateAccessPoint"/> class.
+        /// </summary>
+        public StateAccessPoint() : base(LifxMessageType.StateAccessPoint) {
+            // Empty
         }
 
+        /// <inheritdoc />
+        public LifxWifiInterface InterfacTypee { get; set; }
+
+        /// <inheritdoc />
+        public string Ssid { get; set; }
+
+        /// <inheritdoc />
+        public LifxSecurityProtocol SecurityProtocol { get; set; }
+
+        /// <inheritdoc />
+        public ushort Strength { get; set; }
+
+        /// <inheritdoc />
+        public ushort Channel { get; set; }
+
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             byte iface = reader.ReadByte();
 
-            this.Interface = (LifxWifiInterface)iface;
+            this.InterfacTypee = (LifxWifiInterface)iface;
 
             // SSID
             byte[] ssid = reader.ReadBytes(32);
@@ -48,8 +57,9 @@ namespace AydenIO.Lifx.Messages {
             this.Channel = channel;
         }
 
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
-            /* uint8_t interface */ writer.Write((byte)this.Interface);
+            /* uint8_t interface */ writer.Write((byte)this.InterfacTypee);
             /* uint8_t[32] ssid */ writer.Write(Utilities.StringToFixedBuffer(this.Ssid, 32));
             /* uint8_t security_protocol */ writer.Write((byte)this.SecurityProtocol);
             /* uint16_t le strength */ writer.Write(this.Strength);

@@ -21,7 +21,7 @@ namespace AydenIO.Lifx {
         }
 
         /// <inheritdoc />
-        public Guid Location => this.Guid;
+        public Guid Location => this.GetIdentifier();
 
         /// <inheritdoc />
         protected override Task RenameDeviceMembership(ILifxDevice device, int? timeoutMs = null, CancellationToken cancellationToken = default) {

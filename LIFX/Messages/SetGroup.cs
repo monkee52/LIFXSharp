@@ -1,24 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Set the device group.
     /// </summary>
     internal class SetGroup : LifxMessage, ILifxGroupTag {
-        public const LifxMessageType TYPE = LifxMessageType.SetGroup;
-
-        public SetGroup() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SetGroup"/> class.
+        /// </summary>
+        public SetGroup() : base(LifxMessageType.SetGroup) {
+            // Empty
         }
 
+        /// <inheritdoc />
         public Guid Group { get; set; }
+
+        /// <inheritdoc />
         public string Label { get; set; }
+
+        /// <inheritdoc />
         public DateTime UpdatedAt { get; set; }
 
+        /// <inheritdoc />
+        Guid ILifxMembershipTag.GetIdentifier() {
+            return this.Group;
+        }
+
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint8_t[16] guid */ writer.Write(this.Group.ToByteArray());
 
@@ -27,6 +39,7 @@ namespace AydenIO.Lifx.Messages {
             /* uint64_t le updated_at */ writer.Write(Utilities.DateTimeToNanoseconds(this.UpdatedAt));
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             // Group
             byte[] guid = reader.ReadBytes(16);

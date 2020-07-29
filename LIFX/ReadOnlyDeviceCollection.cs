@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System.Collections;
 using System.Collections.Generic;
 
 namespace AydenIO.Lifx {

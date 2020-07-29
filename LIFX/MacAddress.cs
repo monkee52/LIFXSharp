@@ -114,7 +114,7 @@ namespace AydenIO.Lifx {
             if (MacAddress.TryParse(macAddress, out MacAddress result)) {
                 return result;
             } else {
-                throw new ArgumentException("Error parsing MAC address string", nameof(macAddress));
+                throw new FormatException(Utilities.GetResourceString("bad_mac_address"));
             }
         }
 

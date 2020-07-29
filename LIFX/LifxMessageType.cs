@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
 // See LICENSE for more information.
 
+using System;
 using System.IO;
 
 namespace AydenIO.Lifx {
@@ -8,7 +9,7 @@ namespace AydenIO.Lifx {
     /// Possible message types for the LIFX protocol.
     /// </summary>
     public enum LifxMessageType {
-        /// <summary>A message that hasn't been decoded yet. Used to prevent the <see cref="LifxMessage.FromBytes(byte[])"/> method from throwing an <see cref="InvalidDataException"/> during decoding</summary>
+        /// <summary>A message that hasn't been decoded yet. Used to prevent the <see cref="LifxMessage.FromBytes(Byte[])"/> method from throwing an <see cref="InvalidDataException"/> during decoding</summary>
         Unknown = -1,
 
         // Device messages

@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx.Messages {
+    /// <summary>
+    /// A message sent to a device to retrieve the list of access points the device can se.
+    /// </summary>
     internal class GetAccessPoints : LifxMessage {
-        public const LifxMessageType TYPE = LifxMessageType.GetAccessPoints;
-
-        public GetAccessPoints() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetAccessPoints"/> class.
+        /// </summary>
+        public GetAccessPoints() : base(LifxMessageType.GetAccessPoints) {
+            // Empty
         }
     }
 }

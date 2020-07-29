@@ -1,26 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
+
+using System;
 using System.IO;
-using System.Text;
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a client to change the light state.
     /// </summary>
     internal class LightSetColor : LifxMessage, ILifxHsbkColor, ILifxTransition {
-        public const LifxMessageType TYPE = LifxMessageType.LightSetColor;
-
-        public LightSetColor() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LightSetColor"/> class.
+        /// </summary>
+        public LightSetColor() : base(LifxMessageType.LightSetColor) {
+            // Empty
         }
 
+        /// <inheritdoc />
         public ushort Hue { get; set; }
+
+        /// <inheritdoc />
         public ushort Saturation { get; set; }
+
+        /// <inheritdoc />
         public ushort Brightness { get; set; }
+
+        /// <inheritdoc />
         public ushort Kelvin { get; set; }
 
+        /// <inheritdoc />
         public TimeSpan Duration { get; set; }
 
+        /// <inheritdoc />
+        public void FromHsbk(ILifxHsbkColor hsbk) {
+            if (hsbk != this && hsbk is not null) {
+                this.Hue = hsbk.Hue;
+                this.Saturation = hsbk.Saturation;
+                this.Brightness = hsbk.Brightness;
+                this.Kelvin = hsbk.Kelvin;
+            }
+        }
+
+        /// <inheritdoc />
+        public ILifxHsbkColor ToHsbk() {
+            return this;
+        }
+
+        /// <inheritdoc />
         protected override void WritePayload(BinaryWriter writer) {
             /* uint8_t reserved */ writer.Write((byte)0);
 
@@ -33,6 +59,7 @@ namespace AydenIO.Lifx.Messages {
             /* uint32_t le duration */ writer.Write((uint)this.Duration.TotalMilliseconds);
         }
 
+        /// <inheritdoc />
         protected override void ReadPayload(BinaryReader reader) {
             /* uint8_t reserved */ reader.ReadByte();
 
@@ -56,19 +83,6 @@ namespace AydenIO.Lifx.Messages {
             uint duration = reader.ReadUInt32();
 
             this.Duration = TimeSpan.FromMilliseconds(duration);
-        }
-
-        public void FromHsbk(ILifxHsbkColor hsbk) {
-            if (hsbk != this) {
-                this.Hue = hsbk.Hue;
-                this.Saturation = hsbk.Saturation;
-                this.Brightness = hsbk.Brightness;
-                this.Kelvin = hsbk.Kelvin;
-            }
-        }
-
-        public ILifxHsbkColor ToHsbk() {
-            return this;
         }
     }
 }

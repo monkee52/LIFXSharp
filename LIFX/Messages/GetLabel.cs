@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Ayden Hull 2020. All rights reserved.
+// See LICENSE for more information.
 
 namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Get device label.
     /// </summary>
     internal class GetLabel : LifxMessage {
-        public const LifxMessageType TYPE = LifxMessageType.GetLabel;
-
-        public GetLabel() : base(TYPE) {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetLabel"/> class.
+        /// </summary>
+        public GetLabel() : base(LifxMessageType.GetLabel) {
+            // Empty
         }
     }
 }
