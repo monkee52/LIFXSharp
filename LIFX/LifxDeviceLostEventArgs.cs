@@ -7,7 +7,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Event arguments for when a device has been lost.
     /// </summary>
-    public class LifxDeviceLostEventArgs : EventArgs {
+    public sealed class LifxDeviceLostEventArgs : EventArgs {
         /// <summary>
         /// Initializes a new instance of the <see cref="LifxDeviceLostEventArgs"/> class.
         /// </summary>

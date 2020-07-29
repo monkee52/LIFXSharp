@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a device to state its version.
     /// </summary>
-    internal class StateVersion : LifxMessage, ILifxVersion {
+    internal sealed class StateVersion : LifxMessage, ILifxVersion {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateVersion"/> class.
         /// </summary>

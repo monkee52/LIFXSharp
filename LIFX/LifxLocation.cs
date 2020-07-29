@@ -9,7 +9,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// A collection of devices belong to a LIFX location.
     /// </summary>
-    internal class LifxLocation : Membership<ILifxLocationTag>, ILifxLocation {
+    internal sealed class LifxLocation : Membership<ILifxLocationTag>, ILifxLocation {
         /// <summary>
         /// Initializes a new instance of the <see cref="LifxLocation"/> class.
         /// </summary>

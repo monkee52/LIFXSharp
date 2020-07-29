@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// A message sent to a device to retrieve the label for a tag.
     /// </summary>
-    internal class GetTagLabel : LifxMessage, ILifxTagId {
+    internal sealed class GetTagLabel : LifxMessage, ILifxTagId {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetTagLabel"/> class.
         /// </summary>

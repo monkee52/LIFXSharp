@@ -9,7 +9,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Request an arbitrary payload be echoed back.
     /// </summary>
-    internal class EchoRequest : LifxMessage, ILifxEcho {
+    internal sealed class EchoRequest : LifxMessage, ILifxEcho {
         private byte[] payload;
 
         /// <summary>
@@ -17,6 +17,14 @@ namespace AydenIO.Lifx.Messages {
         /// </summary>
         public EchoRequest() : base(LifxMessageType.EchoRequest) {
             this.payload = new byte[64];
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EchoRequest"/> class.
+        /// </summary>
+        /// <param name="echoRequest">A previous <see cref="ILifxEcho"/> to copy the payload from.</param>
+        public EchoRequest(ILifxEcho echoRequest) : this() {
+            this.SetPayload(echoRequest.GetPayload());
         }
 
         /// <inheritdoc />

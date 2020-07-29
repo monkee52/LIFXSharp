@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent from a device stating its host info.
     /// </summary>
-    internal class StateHostInfo : LifxMessage, ILifxHostInfo {
+    internal sealed class StateHostInfo : LifxMessage, ILifxHostInfo {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateHostInfo"/> class.
         /// </summary>

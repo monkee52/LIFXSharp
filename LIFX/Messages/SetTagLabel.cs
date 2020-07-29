@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent to a device to set the label for a tag.
     /// </summary>
-    internal class SetTagLabel : LifxMessage, ILifxTag {
+    internal sealed class SetTagLabel : LifxMessage, ILifxTag {
         /// <summary>
         /// Initializes a new instance of the <see cref="SetTagLabel"/> class.
         /// </summary>

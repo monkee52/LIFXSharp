@@ -9,7 +9,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// A collection of devices belong to a LIFX group.
     /// </summary>
-    internal class LifxGroup : Membership<ILifxGroupTag>, ILifxGroup {
+    internal sealed class LifxGroup : Membership<ILifxGroupTag>, ILifxGroup {
         /// <summary>
         /// Initializes a new instance of the <see cref="LifxGroup"/> class.
         /// </summary>

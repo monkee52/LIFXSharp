@@ -9,7 +9,7 @@ namespace AydenIO.Lifx {
     /// An <see cref="IResponseAwaiter"/> that waits for a single response before completing.
     /// </summary>
     /// <typeparam name="TMessage">The message type.</typeparam>
-    internal class SingleResponseAwaiter<TMessage> : IResponseAwaiter where TMessage : LifxMessage {
+    internal sealed class SingleResponseAwaiter<TMessage> : IResponseAwaiter where TMessage : LifxMessage {
         private readonly TaskCompletionSource<Response<TMessage>> taskCompletionSource;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace AydenIO.Lifx {
         Task IResponseAwaiter.Task => this.taskCompletionSource.Task;
 
         /// <inheritdoc />
-        public void HandleResponse(Response response) {
+        public void HandleResponse(Response<LifxMessage> response) {
             this.taskCompletionSource.SetResult((Response<TMessage>)response);
         }
 

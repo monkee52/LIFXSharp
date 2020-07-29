@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Represents a StateWifiState packet.
     /// </summary>
-    internal class StateWifiState : LifxMessage, ILifxWifiState {
+    internal sealed class StateWifiState : LifxMessage, ILifxWifiState {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateWifiState"/> class.
         /// </summary>

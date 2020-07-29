@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a client to acquire responses from all devices on the local network.
     /// </summary>
-    internal class GetService : LifxMessage {
+    internal sealed class GetService : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetService"/> class.
         /// </summary>

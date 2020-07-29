@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Response to any message sent with _ack_required_ set to 1.
     /// </summary>
-    internal class Acknowledgement : LifxMessage {
+    internal sealed class Acknowledgement : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="Acknowledgement"/> class.
         /// </summary>

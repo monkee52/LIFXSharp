@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Get run-time information.
     /// </summary>
-    internal class GetInfo : LifxMessage {
+    internal sealed class GetInfo : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetInfo"/> class.
         /// </summary>

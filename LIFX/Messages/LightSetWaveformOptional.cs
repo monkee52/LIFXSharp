@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Optionally set effect parameters. Same as SetWaveform but allows some parameters to be set from the current value on device.
     /// </summary>
-    internal class LightSetWaveformOptional : LightSetWaveform, ILifxWaveformOptional {
+    internal sealed class LightSetWaveformOptional : LightSetWaveform, ILifxWaveformOptional {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightSetWaveformOptional"/> class.
         /// </summary>

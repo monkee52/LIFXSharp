@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a multizone device to state up to 8 zones of color.
     /// </summary>
-    internal class StateMultiZone : LifxMessage, ILifxColorMultiZoneState {
+    internal sealed class StateMultiZone : LifxMessage, ILifxColorMultiZoneState {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateMultiZone"/> class.
         /// </summary>

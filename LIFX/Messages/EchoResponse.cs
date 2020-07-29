@@ -9,7 +9,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Response to <c>EchoRequest</c> message.
     /// </summary>
-    internal class EchoResponse : LifxMessage, ILifxEcho {
+    internal sealed class EchoResponse : LifxMessage, ILifxEcho {
         private byte[] payload;
 
         /// <summary>

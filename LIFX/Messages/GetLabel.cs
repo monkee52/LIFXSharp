@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Get device label.
     /// </summary>
-    internal class GetLabel : LifxMessage {
+    internal sealed class GetLabel : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetLabel"/> class.
         /// </summary>

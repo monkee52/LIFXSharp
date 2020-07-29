@@ -639,7 +639,7 @@
         <member name="P:AydenIO.Lifx.IResponseAwaiter.Task">
             <summary>Gets the awaitable task.</summary>
         </member>
-        <member name="M:AydenIO.Lifx.IResponseAwaiter.HandleResponse(AydenIO.Lifx.Response)">
+        <member name="M:AydenIO.Lifx.IResponseAwaiter.HandleResponse(AydenIO.Lifx.Response{AydenIO.Lifx.LifxMessage})">
             <summary>
             Called whenever a response is received.
             </summary>
@@ -822,6 +822,9 @@
             Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs"/> class.
             </summary>
             <param name="device">The discovered <see cref="T:AydenIO.Lifx.ILifxDevice"/>.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.LifxDeviceDiscoveredEventArgs.Device">
+            <summary>Gets the added <see cref="T:AydenIO.Lifx.ILifxDevice"/>.</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxDeviceLostEventArgs">
             <summary>
@@ -2589,6 +2592,12 @@
             Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.EchoRequest"/> class.
             </summary>
         </member>
+        <member name="M:AydenIO.Lifx.Messages.EchoRequest.#ctor(AydenIO.Lifx.ILifxEcho)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Messages.EchoRequest"/> class.
+            </summary>
+            <param name="echoRequest">A previous <see cref="T:AydenIO.Lifx.ILifxEcho"/> to copy the payload from.</param>
+        </member>
         <member name="M:AydenIO.Lifx.Messages.EchoRequest.GetPayload">
             <inheritdoc />
         </member>
@@ -3897,7 +3906,7 @@
         <member name="P:AydenIO.Lifx.MultipleResponseAwaiter`1.AydenIO#Lifx#IResponseAwaiter#Task">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.MultipleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.Response)">
+        <member name="M:AydenIO.Lifx.MultipleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.Response{AydenIO.Lifx.LifxMessage})">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.MultipleResponseAwaiter`1.HandleException(System.Exception)">
@@ -3920,7 +3929,7 @@
         <member name="P:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1.Task">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1.HandleResponse(AydenIO.Lifx.Response)">
+        <member name="M:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1.HandleResponse(AydenIO.Lifx.Response{AydenIO.Lifx.LifxMessage})">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1.HandleException(System.Exception)">
@@ -3951,51 +3960,44 @@
         <member name="P:AydenIO.Lifx.MultizoneState.Colors">
             <inheritdoc />
         </member>
-        <member name="T:AydenIO.Lifx.ReadOnlyDeviceCollection">
+        <member name="T:AydenIO.Lifx.ReadOnlyCollection`1">
             <summary>
-            Wraps a collection of <see cref="T:AydenIO.Lifx.ILifxDevice"/>s as a <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/>.
+            Wraps a collection to be read only.
             </summary>
+            <typeparam name="T">The type of the collection's elements.</typeparam>
         </member>
-        <member name="M:AydenIO.Lifx.ReadOnlyDeviceCollection.#ctor(System.Collections.Generic.ICollection{AydenIO.Lifx.ILifxDevice})">
+        <member name="M:AydenIO.Lifx.ReadOnlyCollection`1.#ctor(System.Collections.Generic.ICollection{`0})">
             <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.ReadOnlyDeviceCollection"/> class.
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.ReadOnlyCollection`1"/> class.
             </summary>
-            <param name="underlyingCollection">The underlying <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/>.</param>
+            <param name="underlyingCollection">The underlying collection.</param>
         </member>
-        <member name="P:AydenIO.Lifx.ReadOnlyDeviceCollection.Count">
+        <member name="P:AydenIO.Lifx.ReadOnlyCollection`1.Count">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.ReadOnlyDeviceCollection.GetEnumerator">
+        <member name="P:AydenIO.Lifx.ReadOnlyCollection`1.IsReadOnly">
+            <inheritdoc/>
+        </member>
+        <member name="M:AydenIO.Lifx.ReadOnlyCollection`1.Add(`0)">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.ReadOnlyDeviceCollection.System#Collections#IEnumerable#GetEnumerator">
+        <member name="M:AydenIO.Lifx.ReadOnlyCollection`1.Clear">
             <inheritdoc />
         </member>
-        <member name="T:AydenIO.Lifx.Response">
-            <summary>
-            Holds a grouping of an <see cref="T:System.Net.IPEndPoint"/> and an untyped response.
-            </summary>
+        <member name="M:AydenIO.Lifx.ReadOnlyCollection`1.Contains(`0)">
+            <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.Response.#ctor(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage)">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Response"/> class.
-            </summary>
-            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</param>
-            <param name="message">The message.</param>
+        <member name="M:AydenIO.Lifx.ReadOnlyCollection`1.CopyTo(`0[],System.Int32)">
+            <inheritdoc />
         </member>
-        <member name="T:AydenIO.Lifx.ResponseFlags">
-            <summary>
-            Determines whether an acknowledgement, response, both, or neither are required.
-            </summary>
+        <member name="M:AydenIO.Lifx.ReadOnlyCollection`1.GetEnumerator">
+            <inheritdoc />
         </member>
-        <member name="F:AydenIO.Lifx.ResponseFlags.None">
-            <summary>No response or acknowledgement is required.</summary>
+        <member name="M:AydenIO.Lifx.ReadOnlyCollection`1.Remove(`0)">
+            <inheritdoc />
         </member>
-        <member name="F:AydenIO.Lifx.ResponseFlags.ResponseRequired">
-            <summary>A response is required.</summary>
-        </member>
-        <member name="F:AydenIO.Lifx.ResponseFlags.AcknowledgementRequired">
-            <summary>An acknowledgement is required.</summary>
+        <member name="M:AydenIO.Lifx.ReadOnlyCollection`1.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.Response`1">
             <summary>
@@ -4016,6 +4018,20 @@
         <member name="P:AydenIO.Lifx.Response`1.Message">
             <summary>Gets the message.</summary>
         </member>
+        <member name="T:AydenIO.Lifx.ResponseFlags">
+            <summary>
+            Determines whether an acknowledgement, response, both, or neither are required.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.ResponseFlags.None">
+            <summary>No response or acknowledgement is required.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.ResponseFlags.ResponseRequired">
+            <summary>A response is required.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.ResponseFlags.AcknowledgementRequired">
+            <summary>An acknowledgement is required.</summary>
+        </member>
         <member name="T:AydenIO.Lifx.SingleResponseAwaiter`1">
             <summary>
             An <see cref="T:AydenIO.Lifx.IResponseAwaiter"/> that waits for a single response before completing.
@@ -4033,7 +4049,7 @@
         <member name="P:AydenIO.Lifx.SingleResponseAwaiter`1.AydenIO#Lifx#IResponseAwaiter#Task">
             <inheritdoc />
         </member>
-        <member name="M:AydenIO.Lifx.SingleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.Response)">
+        <member name="M:AydenIO.Lifx.SingleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.Response{AydenIO.Lifx.LifxMessage})">
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.SingleResponseAwaiter`1.HandleException(System.Exception)">

@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Get Host MCU information.
     /// </summary>
-    internal class GetHostInfo : LifxMessage {
+    internal sealed class GetHostInfo : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetHostInfo"/> class.
         /// </summary>

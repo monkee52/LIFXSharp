@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Gets the current maximum power level of the Infrared channel.
     /// </summary>
-    internal class LightGetInfrared : LifxMessage {
+    internal sealed class LightGetInfrared : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightGetInfrared"/> class.
         /// </summary>

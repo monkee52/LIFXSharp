@@ -7,7 +7,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Event arguments for when a device has been added to a collection.
     /// </summary>
-    public class LifxDeviceAddedEventArgs : EventArgs {
+    public sealed class LifxDeviceAddedEventArgs : EventArgs {
         /// <summary>
         /// Initializes a new instance of the <see cref="LifxDeviceAddedEventArgs"/> class.
         /// </summary>

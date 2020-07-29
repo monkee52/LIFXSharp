@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a client to change the light power level.
     /// </summary>
-    internal class LightSetPower : LifxMessage, ILifxPower, ILifxTransition {
+    internal sealed class LightSetPower : LifxMessage, ILifxPower, ILifxTransition {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightSetPower"/> class.
         /// </summary>

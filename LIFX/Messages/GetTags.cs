@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent to a device to retrieve its tags.
     /// </summary>
-    internal class GetTags : LifxMessage {
+    internal sealed class GetTags : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetTags"/> class.
         /// </summary>

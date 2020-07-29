@@ -16,7 +16,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Common class that connects C# to the LIFX protocol.
     /// </summary>
-    public partial class LifxNetwork : IDisposable {
+    public sealed partial class LifxNetwork : IDisposable {
         /// <summary>
         /// The default LIFX LAN protocol port.
         /// </summary>
@@ -34,6 +34,8 @@ namespace AydenIO.Lifx {
         private readonly LifxLocationCollection locations;
 
         private readonly LifxGroupCollection groups;
+
+        private ReadOnlyCollection<ILifxDevice> devicesReadOnly;
 
         private UdpClient socket;
 
@@ -124,7 +126,15 @@ namespace AydenIO.Lifx {
         public ILifxGroupCollection Groups => this.groups;
 
         /// <summary>Gets a list of all devices that have been discovered, or explicitly found.</summary>
-        public IReadOnlyCollection<ILifxDevice> Devices => new ReadOnlyDeviceCollection(this.deviceLookup.Values);
+        public IReadOnlyCollection<ILifxDevice> Devices {
+            get {
+                if (this.devicesReadOnly is null) {
+                    this.devicesReadOnly = new ReadOnlyCollection<ILifxDevice>(this.deviceLookup.Values);
+                }
+
+                return this.devicesReadOnly;
+            }
+        }
 
         /// <summary>
         /// Gets the features supported by a device, given a vendor and product ID.
@@ -463,11 +473,19 @@ namespace AydenIO.Lifx {
             return this.SendWithResponse<Messages.Acknowledgement>(device?.EndPoint, message, timeoutMs, cancellationToken);
         }
 
+        private static void SetReplyMessageHeaderCommon(ILifxDevice device, LifxMessage request, LifxMessage reply) {
+            reply.Target = device.MacAddress;
+
+            reply.SourceId = request.SourceId;
+            reply.SequenceNumber = request.SequenceNumber;
+            reply.ResponseFlags = ResponseFlags.None;
+        }
+
         /// <summary>
         /// Internal dispose handler.
         /// </summary>
         /// <param name="disposing">Whether the <see cref="Dispose()"/> was called by the user.</param>
-        protected virtual void Dispose(bool disposing) {
+        private void Dispose(bool disposing) {
             if (!this.isDisposed) {
                 if (disposing) {
                     // TODO: dispose managed state (managed objects).
@@ -492,14 +510,6 @@ namespace AydenIO.Lifx {
 
                 this.isDisposed = true;
             }
-        }
-
-        private static void SetReplyMessageHeaderCommon(ILifxDevice device, LifxMessage request, LifxMessage reply) {
-            reply.Target = device.MacAddress;
-
-            reply.SourceId = request.SourceId;
-            reply.SequenceNumber = request.SequenceNumber;
-            reply.ResponseFlags = ResponseFlags.None;
         }
 
         private void SocketReceiveWorker() {
@@ -665,7 +675,7 @@ namespace AydenIO.Lifx {
                             }
 
                             try {
-                                responseAwaiter.HandleResponse(new Response(endPoint, message));
+                                responseAwaiter.HandleResponse(new Response<LifxMessage>(endPoint, message));
                             } catch (InvalidCastException e) {
                                 Debug.WriteLine($"{e.GetType().Name} while handling message: {e.Message}");
                             }

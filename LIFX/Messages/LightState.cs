@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a device to provide the current light state.
     /// </summary>
-    internal class LightState : LifxMessage, ILifxLightState {
+    internal sealed class LightState : LifxMessage, ILifxLightState {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightState"/> class.
         /// </summary>

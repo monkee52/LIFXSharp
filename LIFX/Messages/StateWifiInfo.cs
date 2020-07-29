@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a device to state its wifi info.
     /// </summary>
-    internal class StateWifiInfo : LifxMessage, ILifxWifiInfo {
+    internal sealed class StateWifiInfo : LifxMessage, ILifxWifiInfo {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateWifiInfo"/> class.
         /// </summary>

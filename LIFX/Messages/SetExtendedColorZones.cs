@@ -9,7 +9,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// This messages lets you change all the zones on your device in one message.
     /// </summary>
-    internal class SetExtendedColorZones : LifxMessage, ILifxTransition, ILifxApplicationRequest, ILifxColorZones {
+    internal sealed class SetExtendedColorZones : LifxMessage, ILifxTransition, ILifxApplicationRequest, ILifxColorZones {
         /// <summary>
         /// Initializes a new instance of the <see cref="SetExtendedColorZones"/> class.
         /// </summary>

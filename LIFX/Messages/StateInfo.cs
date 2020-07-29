@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a device stating its info.
     /// </summary>
-    internal class StateInfo : LifxMessage, ILifxInfo {
+    internal sealed class StateInfo : LifxMessage, ILifxInfo {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateInfo"/> class.
         /// </summary>

@@ -10,7 +10,7 @@ namespace AydenIO.Lifx {
     /// An <see cref="IResponseAwaiter"/> that waits for all responses before the user cancels, or it times out.
     /// </summary>
     /// <typeparam name="T">The response type.</typeparam>
-    internal class MultipleResponseAwaiter<T> : IResponseAwaiter where T : LifxMessage {
+    internal sealed class MultipleResponseAwaiter<T> : IResponseAwaiter where T : LifxMessage {
         private readonly TaskCompletionSource<IReadOnlyCollection<Response<T>>> taskCompletionSource;
 
         private readonly List<Response<T>> responses;
@@ -31,7 +31,7 @@ namespace AydenIO.Lifx {
         Task IResponseAwaiter.Task => this.taskCompletionSource.Task;
 
         /// <inheritdoc />
-        public void HandleResponse(Response response) {
+        public void HandleResponse(Response<LifxMessage> response) {
             this.responses.Add((Response<T>)response);
         }
 

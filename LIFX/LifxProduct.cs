@@ -5,7 +5,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Default implementation of <see cref="ILifxProduct"/>.
     /// </summary>
-    internal class LifxProduct : ILifxProduct {
+    internal sealed class LifxProduct : ILifxProduct {
         /// <summary>Gets or sets the <see cref="VendorId"/>.</summary>
         public uint VendorId { get; set; }
 

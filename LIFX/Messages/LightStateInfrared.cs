@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// This message is returned from a GetInfrared message. It indicates the current maximum setting for the infrared channel.
     /// </summary>
-    internal class LightStateInfrared : LifxMessage, ILifxInfrared {
+    internal sealed class LightStateInfrared : LifxMessage, ILifxInfrared {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightStateInfrared"/> class.
         /// </summary>

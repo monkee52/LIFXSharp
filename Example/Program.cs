@@ -1,9 +1,7 @@
 ﻿using AydenIO.Lifx;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -215,7 +213,22 @@ static async Task DumpDevice(ILifxDevice device, int? timeoutMs = null, Cancella
     Console.WriteLine(result.ToString());
 }
 
+static async void DeviceAddedToMembership(object sender, LifxDeviceAddedEventArgs e) {
+    ILifxMembership<ILifxMembershipTag> collection = (ILifxMembership<ILifxMembershipTag>)sender;
+
+    Console.WriteLine($"{await e.Device.GetLabel()} added to {collection.Label} [Guid = {collection.GetIdentifier()}, UpdatedAt = {collection.UpdatedAt}]");
+}
+
+static void CollectionCreated(object sender, ILifxMembershipCreatedEventArgs<ILifxMembership<ILifxMembershipTag>, ILifxMembershipTag> e) {
+    Console.WriteLine($"Membership created: {e.Collection.Label} [Guid = {e.Collection.GetIdentifier()}, UpdatedAt = {e.Collection.UpdatedAt}]");
+
+    e.Collection.DeviceAdded += DeviceAddedToMembership;
+}
+
 using LifxNetwork lifx = new LifxNetwork();
+
+lifx.Locations.CollectionCreated += CollectionCreated;
+lifx.Groups.CollectionCreated += CollectionCreated;
 
 lifx.DeviceDiscovered += async (object sender, LifxDeviceDiscoveredEventArgs e) => {
     await DumpDevice(e.Device);

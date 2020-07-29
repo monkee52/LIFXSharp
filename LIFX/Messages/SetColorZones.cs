@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// A message sent to a multizone device to set all zones between <see cref="StartIndex"/> and <see cref="EndIndex"/> to a color.
     /// </summary>
-    internal class SetColorZones : LifxMessage, ILifxColorZoneRange, ILifxHsbkColor, ILifxTransition, ILifxApplicationRequest {
+    internal sealed class SetColorZones : LifxMessage, ILifxColorZoneRange, ILifxHsbkColor, ILifxTransition, ILifxApplicationRequest {
         /// <summary>
         /// Initializes a new instance of the <see cref="SetColorZones"/> class.
         /// </summary>

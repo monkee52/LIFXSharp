@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a client to change the light state.
     /// </summary>
-    internal class LightSetColor : LifxMessage, ILifxHsbkColor, ILifxTransition {
+    internal sealed class LightSetColor : LifxMessage, ILifxHsbkColor, ILifxTransition {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightSetColor"/> class.
         /// </summary>

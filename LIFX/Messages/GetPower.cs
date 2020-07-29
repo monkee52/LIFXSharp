@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Get device power level.
     /// </summary>
-    internal class GetPower : LifxMessage {
+    internal sealed class GetPower : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetPower"/> class.
         /// </summary>

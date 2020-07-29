@@ -7,12 +7,12 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Event arguments for when a device is removed from a collection.
     /// </summary>
-    public class LifxDeviceRemovedEventArgs : EventArgs {
+    public sealed class LifxDeviceRemovedEventArgs : EventArgs {
         /// <summary>
         /// Initializes a new instance of the <see cref="LifxDeviceRemovedEventArgs"/> class.
         /// </summary>
         /// <param name="device">The removed <see cref="ILifxDevice"/>.</param>
-        protected internal LifxDeviceRemovedEventArgs(ILifxDevice device) {
+        internal LifxDeviceRemovedEventArgs(ILifxDevice device) {
             this.Device = device;
         }
 

@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Ask the bulb to return its group membership information.
     /// </summary>
-    internal class GetGroup : LifxMessage {
+    internal sealed class GetGroup : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetGroup"/> class.
         /// </summary>

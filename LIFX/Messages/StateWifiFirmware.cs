@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a device to state its wifi firmware.
     /// </summary>
-    internal class StateWifiFirmware : LifxMessage, ILifxWifiFirmware {
+    internal sealed class StateWifiFirmware : LifxMessage, ILifxWifiFirmware {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateWifiFirmware"/> class.
         /// </summary>

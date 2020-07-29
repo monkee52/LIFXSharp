@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a client to obtain the power level.
     /// </summary>
-    internal class LightGetPower : LifxMessage {
+    internal sealed class LightGetPower : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightGetPower"/> class.
         /// </summary>

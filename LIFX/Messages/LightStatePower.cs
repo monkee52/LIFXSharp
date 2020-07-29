@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a device to provide the current power level.
     /// </summary>
-    internal class LightStatePower : LifxMessage, ILifxPower {
+    internal sealed class LightStatePower : LifxMessage, ILifxPower {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightStatePower"/> class.
         /// </summary>

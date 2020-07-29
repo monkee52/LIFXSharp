@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Gets Host MCU firmware information.
     /// </summary>
-    internal class GetHostFirmware : LifxMessage {
+    internal sealed class GetHostFirmware : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetHostFirmware"/> class.
         /// </summary>

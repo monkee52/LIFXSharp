@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Ask the bulb to return its location information.
     /// </summary>
-    internal class GetLocation : LifxMessage {
+    internal sealed class GetLocation : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetLocation"/> class.
         /// </summary>

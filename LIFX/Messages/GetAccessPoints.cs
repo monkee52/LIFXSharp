@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// A message sent to a device to retrieve the list of access points the device can se.
     /// </summary>
-    internal class GetAccessPoints : LifxMessage {
+    internal sealed class GetAccessPoints : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAccessPoints"/> class.
         /// </summary>

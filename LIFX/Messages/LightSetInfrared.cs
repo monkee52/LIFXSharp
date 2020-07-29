@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Send this message to alter the current maximum brightness for the infrared channel.
     /// </summary>
-    internal class LightSetInfrared : LifxMessage, ILifxInfrared {
+    internal sealed class LightSetInfrared : LifxMessage, ILifxInfrared {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightSetInfrared"/> class.
         /// </summary>

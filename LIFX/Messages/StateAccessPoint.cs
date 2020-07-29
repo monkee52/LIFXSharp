@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent from a device stating an access point the device can see.
     /// </summary>
-    internal class StateAccessPoint : LifxMessage, ILifxAccessPoint {
+    internal sealed class StateAccessPoint : LifxMessage, ILifxAccessPoint {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateAccessPoint"/> class.
         /// </summary>

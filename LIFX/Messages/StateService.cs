@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a device to indicate the services it supports.
     /// </summary>
-    internal class StateService : LifxMessage, ILifxService {
+    internal sealed class StateService : LifxMessage, ILifxService {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateService"/> class.
         /// </summary>

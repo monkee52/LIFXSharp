@@ -7,7 +7,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Represents a state of zones with colors for a multizone device.
     /// </summary>
-    internal class MultizoneState : ILifxColorMultiZoneState {
+    internal sealed class MultizoneState : ILifxColorMultiZoneState {
         /// <summary>
         /// Initializes a new instance of the <see cref="MultizoneState"/> class.
         /// </summary>

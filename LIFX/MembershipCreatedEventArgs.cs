@@ -19,7 +19,7 @@ namespace AydenIO.Lifx {
     /// </summary>
     /// <typeparam name="TMembership">The membership type.</typeparam>
     /// <typeparam name="TTag">The membership type's tag.</typeparam>
-    internal class MembershipCreatedEventArgs<TMembership, TTag> : EventArgs, ILifxMembershipCreatedEventArgs<TMembership, TTag> where TMembership : ILifxMembership<TTag> where TTag : ILifxMembershipTag {
+    internal sealed class MembershipCreatedEventArgs<TMembership, TTag> : EventArgs, ILifxMembershipCreatedEventArgs<TMembership, TTag> where TMembership : ILifxMembership<TTag> where TTag : ILifxMembershipTag {
         /// <summary>
         /// Initializes a new instance of the <see cref="MembershipCreatedEventArgs{TMembership, TTag}"/> class.
         /// </summary>

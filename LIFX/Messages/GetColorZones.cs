@@ -7,7 +7,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// GetColorZones is used to request the zone colors for a range of zones.
     /// </summary>
-    internal class GetColorZones : LifxMessage, ILifxColorZoneRange {
+    internal sealed class GetColorZones : LifxMessage, ILifxColorZoneRange {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetColorZones"/> class.
         /// </summary>

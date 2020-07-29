@@ -25,7 +25,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Represents a MAC address.
     /// </summary>
-    public class MacAddress : IEquatable<MacAddress> {
+    public sealed class MacAddress : IEquatable<MacAddress> {
         /// <summary>Gets the standard Ethernet broadcast MAC address.</summary>
         public static readonly MacAddress Broadcast = new MacAddress(new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff });
 

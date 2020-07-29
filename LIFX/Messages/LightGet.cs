@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a client to obtain the light state.
     /// </summary>
-    internal class LightGet : LifxMessage {
+    internal sealed class LightGet : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="LightGet"/> class.
         /// </summary>

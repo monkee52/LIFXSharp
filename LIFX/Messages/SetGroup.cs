@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Set the device group.
     /// </summary>
-    internal class SetGroup : LifxMessage, ILifxGroupTag {
+    internal sealed class SetGroup : LifxMessage, ILifxGroupTag {
         /// <summary>
         /// Initializes a new instance of the <see cref="SetGroup"/> class.
         /// </summary>

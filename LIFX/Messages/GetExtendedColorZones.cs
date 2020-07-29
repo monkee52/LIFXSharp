@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// This message will ask the device to return a StateExtendedColorZones containing all of it's colors.
     /// </summary>
-    internal class GetExtendedColorZones : LifxMessage {
+    internal sealed class GetExtendedColorZones : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetExtendedColorZones"/> class.
         /// </summary>

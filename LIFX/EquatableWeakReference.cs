@@ -36,7 +36,7 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public override int GetHashCode() {
-            return this.targetHashCode ^ 0x43076903;
+            return this.targetHashCode;
         }
 
         /// <summary>

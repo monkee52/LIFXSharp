@@ -16,7 +16,7 @@ namespace AydenIO.Lifx {
         /// Called whenever a response is received.
         /// </summary>
         /// <param name="response">The response that was received.</param>
-        public void HandleResponse(Response response);
+        public void HandleResponse(Response<LifxMessage> response);
 
         /// <summary>
         /// Called whenever an exception is generated while waiting for a response.

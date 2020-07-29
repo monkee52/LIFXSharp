@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent from a device stating its host firmware.
     /// </summary>
-    internal class StateHostFirmware : LifxMessage, ILifxHostFirmware {
+    internal sealed class StateHostFirmware : LifxMessage, ILifxHostFirmware {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateHostFirmware"/> class.
         /// </summary>

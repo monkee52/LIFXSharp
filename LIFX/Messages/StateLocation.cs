@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent from a device to state its location.
     /// </summary>
-    internal class StateLocation : LifxMessage, ILifxLocationTag {
+    internal sealed class StateLocation : LifxMessage, ILifxLocationTag {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateLocation"/> class.
         /// </summary>

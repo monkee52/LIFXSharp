@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Get the hardware version.
     /// </summary>
-    internal class GetVersion : LifxMessage {
+    internal sealed class GetVersion : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetVersion"/> class.
         /// </summary>

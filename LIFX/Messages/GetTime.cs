@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent to a device to get the current time.
     /// </summary>
-    internal class GetTime : LifxMessage {
+    internal sealed class GetTime : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetTime"/> class.
         /// </summary>

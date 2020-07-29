@@ -5,7 +5,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Get Wifi subsystem firmware.
     /// </summary>
-    internal class GetWifiFirmware : LifxMessage {
+    internal sealed class GetWifiFirmware : LifxMessage {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetWifiFirmware"/> class.
         /// </summary>

@@ -8,7 +8,7 @@ namespace AydenIO.Lifx.Messages {
     /// <summary>
     /// Sent by a device to state the current time.
     /// </summary>
-    internal class StateTime : LifxMessage, ILifxTime {
+    internal sealed class StateTime : LifxMessage, ILifxTime {
         /// <summary>
         /// Initializes a new instance of the <see cref="StateTime"/> class.
         /// </summary>
