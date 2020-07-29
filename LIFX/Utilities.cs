@@ -102,7 +102,7 @@ namespace AydenIO.Lifx {
         /// <param name="buffer">The buffer to decode.</param>
         /// <returns>The buffer decoded as a string.</returns>
         public static string BufferToString(byte[] buffer) {
-            int nullIndex = Array.IndexOf(buffer, 0);
+            int nullIndex = Array.IndexOf<byte>(buffer, 0);
 
             return Encoding.UTF8.GetString(buffer, 0, nullIndex < 0 ? buffer.Length : nullIndex);
         }
