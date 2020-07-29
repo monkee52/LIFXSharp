@@ -14,14 +14,14 @@ namespace AydenIO.Lifx {
     /// <typeparam name="TCollection">The collection's type.</typeparam>
     /// <typeparam name="TPublicCollection">The collection's interface type.</typeparam>
     /// <typeparam name="TTag">The collection's membership information type as known to devices.</typeparam>
-    internal abstract class LifxMembershipCollection<TCollection, TPublicCollection, TTag> : ILifxMembershipCollection<TPublicCollection, TTag> where TCollection : LifxMembership<TTag>, TPublicCollection, TTag where TPublicCollection : class, ILifxMembership<TTag> where TTag : ILifxMembershipTag {
+    internal abstract class MembershipCollection<TCollection, TPublicCollection, TTag> : ILifxMembershipCollection<TPublicCollection, TTag> where TCollection : Membership<TTag>, TPublicCollection, TTag where TPublicCollection : class, ILifxMembership<TTag> where TTag : ILifxMembershipTag {
         private readonly IDictionary<Guid, TCollection> collections;
         private readonly ConditionalWeakTable<ILifxDevice, TCollection> deviceMap;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LifxMembershipCollection{TCollection, TPublicCollection, TTag}"/> class.
+        /// Initializes a new instance of the <see cref="MembershipCollection{TCollection, TPublicCollection, TTag}"/> class.
         /// </summary>
-        protected LifxMembershipCollection() {
+        protected MembershipCollection() {
             this.collections = new Dictionary<Guid, TCollection>();
             this.deviceMap = new ConditionalWeakTable<ILifxDevice, TCollection>();
         }
@@ -127,7 +127,7 @@ namespace AydenIO.Lifx {
 
                         // Synchronise labels if needed
                         if (collection.Label != label) {
-                            LifxMembershipCollection<TCollection, TPublicCollection, TTag>.RenameTask(collection, label);
+                            MembershipCollection<TCollection, TPublicCollection, TTag>.RenameTask(collection, label);
                         }
                     }
 
@@ -139,7 +139,7 @@ namespace AydenIO.Lifx {
                 this.collections.Add(guid, newCollection);
             }
 
-            this.CollectionCreated?.Invoke(this, new LifxMembershipCreatedEventArgs<TPublicCollection, TTag>(newCollection));
+            this.CollectionCreated?.Invoke(this, new MembershipCreatedEventArgs<TPublicCollection, TTag>(newCollection));
 
             return newCollection;
         }

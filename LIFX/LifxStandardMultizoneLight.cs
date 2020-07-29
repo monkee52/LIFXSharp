@@ -26,7 +26,7 @@ namespace AydenIO.Lifx {
 
         /// <inheritdoc />
         public override async Task<ILifxColorMultiZoneState> GetMultizoneState(ushort startAt = 0, ushort length = 255, int? timeoutMs = null, CancellationToken cancellationToken = default) {
-            LifxColorMultizoneState state = new LifxColorMultizoneState(length) {
+            MultizoneState state = new MultizoneState(length) {
                 Index = startAt,
             };
 

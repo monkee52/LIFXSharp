@@ -32,7 +32,7 @@ namespace AydenIO.Lifx {
             Messages.StateExtendedColorZones extendedColorZones = await this.Lifx.SendWithResponse<Messages.StateExtendedColorZones>(this, getExtendedColorZones, timeoutMs, cancellationToken);
 
             // Create state
-            ILifxColorMultiZoneState state = new LifxColorMultizoneState(length) {
+            ILifxColorMultiZoneState state = new MultizoneState(length) {
                 ZoneCount = extendedColorZones.ZoneCount,
                 Index = startAt,
             };

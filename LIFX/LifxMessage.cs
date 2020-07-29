@@ -31,7 +31,7 @@ namespace AydenIO.Lifx {
         public MacAddress Target { get; set; }
 
         /// <summary>Gets or sets the response flags.</summary>
-        public LifxeResponseFlags ResponseFlags { get; set; }
+        public ResponseFlags ResponseFlags { get; set; }
 
         /// <summary>Gets the type of the message.</summary>
         public LifxMessageType Type { get; private set; }
@@ -162,7 +162,7 @@ namespace AydenIO.Lifx {
             // Res required, ack required
             byte flags = reader.ReadByte();
 
-            this.ResponseFlags = (LifxeResponseFlags)(flags & 3);
+            this.ResponseFlags = (ResponseFlags)(flags & 3);
 
             // Sequence
             byte sequence = reader.ReadByte();

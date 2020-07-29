@@ -631,21 +631,21 @@
         <member name="P:AydenIO.Lifx.ILifxProduct.MaxKelvin">
             <summary>Gets the maximum kelvin value for the device.</summary>
         </member>
-        <member name="T:AydenIO.Lifx.ILifxResponseAwaiter">
+        <member name="T:AydenIO.Lifx.IResponseAwaiter">
             <summary>
             Allows response(s) to be handled when received on the socket.
             </summary>
         </member>
-        <member name="P:AydenIO.Lifx.ILifxResponseAwaiter.Task">
+        <member name="P:AydenIO.Lifx.IResponseAwaiter.Task">
             <summary>Gets the awaitable task.</summary>
         </member>
-        <member name="M:AydenIO.Lifx.ILifxResponseAwaiter.HandleResponse(AydenIO.Lifx.LifxResponse)">
+        <member name="M:AydenIO.Lifx.IResponseAwaiter.HandleResponse(AydenIO.Lifx.Response)">
             <summary>
             Called whenever a response is received.
             </summary>
             <param name="response">The response that was received.</param>
         </member>
-        <member name="M:AydenIO.Lifx.ILifxResponseAwaiter.HandleException(System.Exception)">
+        <member name="M:AydenIO.Lifx.IResponseAwaiter.HandleException(System.Exception)">
             <summary>
             Called whenever an exception is generated while waiting for a response.
             </summary>
@@ -664,31 +664,6 @@
         </member>
         <member name="F:AydenIO.Lifx.LifxApplicationRequest.ApplyOnly">
             <summary>Ignore the requested changes in this message and only apply pending changes.</summary>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxColorMultizoneState">
-            <summary>
-            Represents a state of zones with colors for a multizone device.
-            </summary>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxColorMultizoneState.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxColorMultizoneState"/> class.
-            </summary>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxColorMultizoneState.#ctor(System.Int32)">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxColorMultizoneState"/> class.
-            </summary>
-            <param name="size">The number colors to initially create for the <see cref="P:AydenIO.Lifx.LifxColorMultizoneState.Colors"/> list.</param>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxColorMultizoneState.ZoneCount">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxColorMultizoneState.Index">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxColorMultizoneState.Colors">
-            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxDevice">
             <summary>
@@ -1031,163 +1006,6 @@
         <member name="M:AydenIO.Lifx.LifxLocationCollection.CreateCollection(System.Guid,System.String,System.DateTime)">
             <inheritdoc />
         </member>
-        <member name="T:AydenIO.Lifx.LifxMembership`1">
-            <summary>
-            A collection of devices belonging to a membership information.
-            </summary>
-            <typeparam name="TTag">The membership tag type.</typeparam>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.#ctor(System.Guid,System.String,System.DateTime)">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxMembership`1"/> class.
-            </summary>
-            <param name="guid">The identifier for the membership information.</param>
-            <param name="label">The label for the membership information.</param>
-            <param name="updatedAt">The time the membership information was last updated.</param>
-        </member>
-        <member name="E:AydenIO.Lifx.LifxMembership`1.DeviceAdded">
-            <inheritdoc />
-        </member>
-        <member name="E:AydenIO.Lifx.LifxMembership`1.DeviceRemoved">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMembership`1.DeviceCount">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMembership`1.Count">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMembership`1.IsReadOnly">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMembership`1.Label">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMembership`1.UpdatedAt">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.GetIdentifier">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.Rename(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.System#Collections#Generic#ICollection{AydenIO#Lifx#ILifxDevice}#Clear">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.Add(AydenIO.Lifx.ILifxDevice)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.Remove(AydenIO.Lifx.ILifxDevice)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.Contains(AydenIO.Lifx.ILifxDevice)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.GetEnumerator">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.CopyTo(AydenIO.Lifx.ILifxDevice[],System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.System#Collections#IEnumerable#GetEnumerator">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.RenameDeviceMembership(AydenIO.Lifx.ILifxDevice,System.Nullable{System.Int32},System.Threading.CancellationToken)">
-            <summary>
-            Called for each device that.
-            </summary>
-            <param name="device">The device that the membership rename operation is called on.</param>
-            <param name="timeoutMs">How long to wait for a response before the call times out.</param>
-            <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembership`1.Purge">
-            <summary>
-            Removes all stale weak references in the collection.
-            </summary>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxMembershipCollection`3">
-            <summary>
-            Manages collections known to the <see cref="T:AydenIO.Lifx.LifxNetwork"/>.
-            </summary>
-            <typeparam name="TCollection">The collection's type.</typeparam>
-            <typeparam name="TPublicCollection">The collection's interface type.</typeparam>
-            <typeparam name="TTag">The collection's membership information type as known to devices.</typeparam>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxMembershipCollection`3"/> class.
-            </summary>
-        </member>
-        <member name="E:AydenIO.Lifx.LifxMembershipCollection`3.CollectionCreated">
-            <inheritdoc />
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMembershipCollection`3.Count">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.GetGrouping(System.Guid)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.GetGrouping(System.Guid,System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.GetGrouping(System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.GetGrouping(AydenIO.Lifx.ILifxMembershipTag)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.Create(System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.GetEnumerator">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.System#Collections#IEnumerable#GetEnumerator">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.UpdateMembershipInformation(AydenIO.Lifx.ILifxDevice,`2)">
-            <summary>
-            Removes a <see cref="T:AydenIO.Lifx.ILifxDevice"/> from a former grouping and adds it to the grouping specified by <paramref name="newCollection"/>.
-            </summary>
-            <param name="device">The <see cref="T:AydenIO.Lifx.ILifxDevice"/> to updated the membership information for.</param>
-            <param name="newCollection">The <typeparamref name="TCollection"/> to add the <see cref="T:AydenIO.Lifx.ILifxDevice"/> to.</param>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCollection`3.CreateCollection(System.Guid,System.String,System.DateTime)">
-            <summary>
-            Used to create a collection.
-            </summary>
-            <param name="guid">The identifier of the group.</param>
-            <param name="label">The label for the group.</param>
-            <param name="updatedAt">When the group was last updated.</param>
-            <returns>The created <typeparamref name="TCollection"/>.</returns>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxMembershipCreatedEventHandler`2">
-            <summary>
-            An event handler for when a membership group is created.
-            </summary>
-            <typeparam name="TMembership">The membership group type.</typeparam>
-            <typeparam name="TTag">The membership group's tag type.</typeparam>
-            <param name="sender">The membership collection that created the membership group.</param>
-            <param name="e">The event arguments containing the membership collection.</param>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxMembershipCreatedEventArgs`2">
-            <summary>
-            The event arguments for when a new membership is created.
-            </summary>
-            <typeparam name="TMembership">The membership type.</typeparam>
-            <typeparam name="TTag">The membership type's tag.</typeparam>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMembershipCreatedEventArgs`2.#ctor(`0)">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxMembershipCreatedEventArgs`2"/> class.
-            </summary>
-            <param name="collection">The membership.</param>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMembershipCreatedEventArgs`2.Collection">
-            <inheritdoc />
-        </member>
         <member name="T:AydenIO.Lifx.LifxMessage">
             <summary>
             Represents a LIFX protocol message.
@@ -1237,20 +1055,6 @@
             Reads the payload into the properties of this packet.
             </summary>
             <param name="reader">The <see cref="T:System.IO.BinaryReader"/> to read the bytes from.</param>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxeResponseFlags">
-            <summary>
-            Determines whether an acknowledgement, response, both, or neither are required.
-            </summary>
-        </member>
-        <member name="F:AydenIO.Lifx.LifxeResponseFlags.None">
-            <summary>No response or acknowledgement is required.</summary>
-        </member>
-        <member name="F:AydenIO.Lifx.LifxeResponseFlags.ResponseRequired">
-            <summary>A response is required.</summary>
-        </member>
-        <member name="F:AydenIO.Lifx.LifxeResponseFlags.AcknowledgementRequired">
-            <summary>An acknowledgement is required.</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxMessageType">
             <summary>
@@ -1436,52 +1240,6 @@
         </member>
         <member name="F:AydenIO.Lifx.LifxMessageType.StateTileEffect">
             <summary>It describes the current state of the effects on the device.</summary>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxMultipleResponseAwaiter`1">
-            <summary>
-            An <see cref="T:AydenIO.Lifx.ILifxResponseAwaiter"/> that waits for all responses before the user cancels, or it times out.
-            </summary>
-            <typeparam name="T">The response type.</typeparam>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxMultipleResponseAwaiter`1"/> class.
-            </summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.Task">
-            <summary>Gets the awaitable task.</summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.AydenIO#Lifx#ILifxResponseAwaiter#Task">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.LifxResponse)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMultipleResponseAwaiter`1.HandleException(System.Exception)">
-            <inheritdoc />
-        </member>
-        <member name="T:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1">
-            <summary>
-            An <see cref="T:AydenIO.Lifx.ILifxResponseAwaiter"/> that calls a delegate whenever a response is received, until the user cancels, or it times out.
-            </summary>
-            <typeparam name="T">The returned message type.</typeparam>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1"/> class.
-            </summary>
-        </member>
-        <member name="E:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.ResponseReceived">
-            <summary>An event that is invoked for every response received.</summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.Task">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.HandleResponse(AydenIO.Lifx.LifxResponse)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxMultipleResponseDelegatedAwaiter`1.HandleException(System.Exception)">
-            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxMultizoneLight">
             <summary>
@@ -1734,7 +1492,7 @@
             <param name="endPoint">The destination, or null if message is to be broadcast.</param>
             <param name="message">The message.</param>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.SetMessageHeaderCommon(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,AydenIO.Lifx.LifxeResponseFlags)">
+        <member name="M:AydenIO.Lifx.LifxNetwork.SetMessageHeaderCommon(AydenIO.Lifx.LifxDevice,AydenIO.Lifx.LifxMessage,AydenIO.Lifx.ResponseFlags)">
             <summary>
             Sets common header fields of the <paramref name="message"/>.
             </summary>
@@ -1743,7 +1501,7 @@
             <param name="responseFlags">The type of response required from the device.</param>
             <returns>An 8-bit sequence number.</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponseCommon(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage,AydenIO.Lifx.ILifxResponseAwaiter,System.Nullable{System.Int32},System.Boolean,System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithResponseCommon(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage,AydenIO.Lifx.IResponseAwaiter,System.Nullable{System.Int32},System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Sends a message, and returns the response.
             </summary>
@@ -1776,7 +1534,7 @@
             <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
             <returns>The returned messages.</returns>
         </member>
-        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithMultipleResponseDelegated``1(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage,System.Action{AydenIO.Lifx.LifxResponse{``0}},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:AydenIO.Lifx.LifxNetwork.SendWithMultipleResponseDelegated``1(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage,System.Action{AydenIO.Lifx.Response{``0}},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Sends a message, and invokes a handler for each response received.
             </summary>
@@ -1824,37 +1582,6 @@
         </member>
         <member name="P:AydenIO.Lifx.LifxProduct.MaxKelvin">
             <summary>Gets or sets the <see cref="P:AydenIO.Lifx.LifxProduct.MaxKelvin"/>.</summary>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxResponse">
-            <summary>
-            Holds a grouping of an <see cref="T:System.Net.IPEndPoint"/> and an untyped response.
-            </summary>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxResponse.#ctor(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage)">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxResponse"/> class.
-            </summary>
-            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</param>
-            <param name="message">The message.</param>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxResponse`1">
-            <summary>
-            Holds a grouping of an <see cref="T:System.Net.IPEndPoint"/> and a <typeparamref name="TMessage"/> message.
-            </summary>
-            <typeparam name="TMessage">The message type.</typeparam>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxResponse`1.#ctor(System.Net.IPEndPoint,`0)">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxResponse`1"/> class.
-            </summary>
-            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</param>
-            <param name="message">The message.</param>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxResponse`1.EndPoint">
-            <summary>Gets the <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxResponse`1.Message">
-            <summary>Gets the message.</summary>
         </member>
         <member name="T:AydenIO.Lifx.LifxSecurityProtocol">
             <summary>
@@ -1909,29 +1636,6 @@
         </member>
         <member name="F:AydenIO.Lifx.LifxSignalStrength.Excellent">
             <summary>Excellent signal strength</summary>
-        </member>
-        <member name="T:AydenIO.Lifx.LifxSingleResponseAwaiter`1">
-            <summary>
-            An <see cref="T:AydenIO.Lifx.ILifxResponseAwaiter"/> that waits for a single response before completing.
-            </summary>
-            <typeparam name="TMessage">The message type.</typeparam>
-        </member>
-        <member name="M:AydenIO.Lifx.LifxSingleResponseAwaiter`1.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:AydenIO.Lifx.LifxSingleResponseAwaiter`1"/> class.
-            </summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxSingleResponseAwaiter`1.Task">
-            <summary>Gets the awaitable task.</summary>
-        </member>
-        <member name="P:AydenIO.Lifx.LifxSingleResponseAwaiter`1.AydenIO#Lifx#ILifxResponseAwaiter#Task">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxSingleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.LifxResponse)">
-            <inheritdoc />
-        </member>
-        <member name="M:AydenIO.Lifx.LifxSingleResponseAwaiter`1.HandleException(System.Exception)">
-            <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.LifxStandardMultizoneLight">
             <summary>
@@ -2364,6 +2068,163 @@
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.MacAddress.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Membership`1">
+            <summary>
+            A collection of devices belonging to a membership information.
+            </summary>
+            <typeparam name="TTag">The membership tag type.</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.#ctor(System.Guid,System.String,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Membership`1"/> class.
+            </summary>
+            <param name="guid">The identifier for the membership information.</param>
+            <param name="label">The label for the membership information.</param>
+            <param name="updatedAt">The time the membership information was last updated.</param>
+        </member>
+        <member name="E:AydenIO.Lifx.Membership`1.DeviceAdded">
+            <inheritdoc />
+        </member>
+        <member name="E:AydenIO.Lifx.Membership`1.DeviceRemoved">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Membership`1.DeviceCount">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Membership`1.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Membership`1.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Membership`1.Label">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.Membership`1.UpdatedAt">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.GetIdentifier">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.Rename(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.System#Collections#Generic#ICollection{AydenIO#Lifx#ILifxDevice}#Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.Add(AydenIO.Lifx.ILifxDevice)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.Remove(AydenIO.Lifx.ILifxDevice)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.Contains(AydenIO.Lifx.ILifxDevice)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.CopyTo(AydenIO.Lifx.ILifxDevice[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.RenameDeviceMembership(AydenIO.Lifx.ILifxDevice,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Called for each device that.
+            </summary>
+            <param name="device">The device that the membership rename operation is called on.</param>
+            <param name="timeoutMs">How long to wait for a response before the call times out.</param>
+            <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AydenIO.Lifx.Membership`1.Purge">
+            <summary>
+            Removes all stale weak references in the collection.
+            </summary>
+        </member>
+        <member name="T:AydenIO.Lifx.MembershipCollection`3">
+            <summary>
+            Manages collections known to the <see cref="T:AydenIO.Lifx.LifxNetwork"/>.
+            </summary>
+            <typeparam name="TCollection">The collection's type.</typeparam>
+            <typeparam name="TPublicCollection">The collection's interface type.</typeparam>
+            <typeparam name="TTag">The collection's membership information type as known to devices.</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.MembershipCollection`3"/> class.
+            </summary>
+        </member>
+        <member name="E:AydenIO.Lifx.MembershipCollection`3.CollectionCreated">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.MembershipCollection`3.Count">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.GetGrouping(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.GetGrouping(System.Guid,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.GetGrouping(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.GetGrouping(AydenIO.Lifx.ILifxMembershipTag)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.Create(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.UpdateMembershipInformation(AydenIO.Lifx.ILifxDevice,`2)">
+            <summary>
+            Removes a <see cref="T:AydenIO.Lifx.ILifxDevice"/> from a former grouping and adds it to the grouping specified by <paramref name="newCollection"/>.
+            </summary>
+            <param name="device">The <see cref="T:AydenIO.Lifx.ILifxDevice"/> to updated the membership information for.</param>
+            <param name="newCollection">The <typeparamref name="TCollection"/> to add the <see cref="T:AydenIO.Lifx.ILifxDevice"/> to.</param>
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCollection`3.CreateCollection(System.Guid,System.String,System.DateTime)">
+            <summary>
+            Used to create a collection.
+            </summary>
+            <param name="guid">The identifier of the group.</param>
+            <param name="label">The label for the group.</param>
+            <param name="updatedAt">When the group was last updated.</param>
+            <returns>The created <typeparamref name="TCollection"/>.</returns>
+        </member>
+        <member name="T:AydenIO.Lifx.LifxMembershipCreatedEventHandler`2">
+            <summary>
+            An event handler for when a membership group is created.
+            </summary>
+            <typeparam name="TMembership">The membership group type.</typeparam>
+            <typeparam name="TTag">The membership group's tag type.</typeparam>
+            <param name="sender">The membership collection that created the membership group.</param>
+            <param name="e">The event arguments containing the membership collection.</param>
+        </member>
+        <member name="T:AydenIO.Lifx.MembershipCreatedEventArgs`2">
+            <summary>
+            The event arguments for when a new membership is created.
+            </summary>
+            <typeparam name="TMembership">The membership type.</typeparam>
+            <typeparam name="TTag">The membership type's tag.</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.MembershipCreatedEventArgs`2.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.MembershipCreatedEventArgs`2"/> class.
+            </summary>
+            <param name="collection">The membership.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.MembershipCreatedEventArgs`2.Collection">
             <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.ILifxAccessPoint">
@@ -4019,6 +3880,77 @@
         <member name="M:AydenIO.Lifx.Messages.StateZone.ReadPayload(System.IO.BinaryReader)">
             <inheritdoc />
         </member>
+        <member name="T:AydenIO.Lifx.MultipleResponseAwaiter`1">
+            <summary>
+            An <see cref="T:AydenIO.Lifx.IResponseAwaiter"/> that waits for all responses before the user cancels, or it times out.
+            </summary>
+            <typeparam name="T">The response type.</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.MultipleResponseAwaiter`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.MultipleResponseAwaiter`1"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.MultipleResponseAwaiter`1.Task">
+            <summary>Gets the awaitable task.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.MultipleResponseAwaiter`1.AydenIO#Lifx#IResponseAwaiter#Task">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MultipleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.Response)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MultipleResponseAwaiter`1.HandleException(System.Exception)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1">
+            <summary>
+            An <see cref="T:AydenIO.Lifx.IResponseAwaiter"/> that calls a delegate whenever a response is received, until the user cancels, or it times out.
+            </summary>
+            <typeparam name="T">The returned message type.</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1"/> class.
+            </summary>
+        </member>
+        <member name="E:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1.ResponseReceived">
+            <summary>An event that is invoked for every response received.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1.Task">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1.HandleResponse(AydenIO.Lifx.Response)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.MultipleResponseDelegatedAwaiter`1.HandleException(System.Exception)">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.MultizoneState">
+            <summary>
+            Represents a state of zones with colors for a multizone device.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.MultizoneState.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.MultizoneState"/> class.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.MultizoneState.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.MultizoneState"/> class.
+            </summary>
+            <param name="size">The number colors to initially create for the <see cref="P:AydenIO.Lifx.MultizoneState.Colors"/> list.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.MultizoneState.ZoneCount">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.MultizoneState.Index">
+            <inheritdoc />
+        </member>
+        <member name="P:AydenIO.Lifx.MultizoneState.Colors">
+            <inheritdoc />
+        </member>
         <member name="T:AydenIO.Lifx.ReadOnlyDeviceCollection">
             <summary>
             Wraps a collection of <see cref="T:AydenIO.Lifx.ILifxDevice"/>s as a <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/>.
@@ -4037,6 +3969,74 @@
             <inheritdoc />
         </member>
         <member name="M:AydenIO.Lifx.ReadOnlyDeviceCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="T:AydenIO.Lifx.Response">
+            <summary>
+            Holds a grouping of an <see cref="T:System.Net.IPEndPoint"/> and an untyped response.
+            </summary>
+        </member>
+        <member name="M:AydenIO.Lifx.Response.#ctor(System.Net.IPEndPoint,AydenIO.Lifx.LifxMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Response"/> class.
+            </summary>
+            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="T:AydenIO.Lifx.ResponseFlags">
+            <summary>
+            Determines whether an acknowledgement, response, both, or neither are required.
+            </summary>
+        </member>
+        <member name="F:AydenIO.Lifx.ResponseFlags.None">
+            <summary>No response or acknowledgement is required.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.ResponseFlags.ResponseRequired">
+            <summary>A response is required.</summary>
+        </member>
+        <member name="F:AydenIO.Lifx.ResponseFlags.AcknowledgementRequired">
+            <summary>An acknowledgement is required.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.Response`1">
+            <summary>
+            Holds a grouping of an <see cref="T:System.Net.IPEndPoint"/> and a <typeparamref name="TMessage"/> message.
+            </summary>
+            <typeparam name="TMessage">The message type.</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.Response`1.#ctor(System.Net.IPEndPoint,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.Response`1"/> class.
+            </summary>
+            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="P:AydenIO.Lifx.Response`1.EndPoint">
+            <summary>Gets the <see cref="T:System.Net.IPEndPoint"/> that the message originated from.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.Response`1.Message">
+            <summary>Gets the message.</summary>
+        </member>
+        <member name="T:AydenIO.Lifx.SingleResponseAwaiter`1">
+            <summary>
+            An <see cref="T:AydenIO.Lifx.IResponseAwaiter"/> that waits for a single response before completing.
+            </summary>
+            <typeparam name="TMessage">The message type.</typeparam>
+        </member>
+        <member name="M:AydenIO.Lifx.SingleResponseAwaiter`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:AydenIO.Lifx.SingleResponseAwaiter`1"/> class.
+            </summary>
+        </member>
+        <member name="P:AydenIO.Lifx.SingleResponseAwaiter`1.Task">
+            <summary>Gets the awaitable task.</summary>
+        </member>
+        <member name="P:AydenIO.Lifx.SingleResponseAwaiter`1.AydenIO#Lifx#IResponseAwaiter#Task">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.SingleResponseAwaiter`1.HandleResponse(AydenIO.Lifx.Response)">
+            <inheritdoc />
+        </member>
+        <member name="M:AydenIO.Lifx.SingleResponseAwaiter`1.HandleException(System.Exception)">
             <inheritdoc />
         </member>
         <member name="T:AydenIO.Lifx.Utilities">

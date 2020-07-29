@@ -7,19 +7,19 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Represents a state of zones with colors for a multizone device.
     /// </summary>
-    internal class LifxColorMultizoneState : ILifxColorMultiZoneState {
+    internal class MultizoneState : ILifxColorMultiZoneState {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LifxColorMultizoneState"/> class.
+        /// Initializes a new instance of the <see cref="MultizoneState"/> class.
         /// </summary>
-        public LifxColorMultizoneState() {
+        public MultizoneState() {
             this.Colors = new List<ILifxHsbkColor>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LifxColorMultizoneState"/> class.
+        /// Initializes a new instance of the <see cref="MultizoneState"/> class.
         /// </summary>
         /// <param name="size">The number colors to initially create for the <see cref="Colors"/> list.</param>
-        public LifxColorMultizoneState(int size) {
+        public MultizoneState(int size) {
             this.Colors = new List<ILifxHsbkColor>(size);
         }
 

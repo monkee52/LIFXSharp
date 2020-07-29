@@ -8,7 +8,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Allows response(s) to be handled when received on the socket.
     /// </summary>
-    internal interface ILifxResponseAwaiter {
+    internal interface IResponseAwaiter {
         /// <summary>Gets the awaitable task.</summary>
         public Task Task { get; }
 
@@ -16,7 +16,7 @@ namespace AydenIO.Lifx {
         /// Called whenever a response is received.
         /// </summary>
         /// <param name="response">The response that was received.</param>
-        public void HandleResponse(LifxResponse response);
+        public void HandleResponse(Response response);
 
         /// <summary>
         /// Called whenever an exception is generated while waiting for a response.

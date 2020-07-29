@@ -6,28 +6,28 @@ using System.Threading.Tasks;
 
 namespace AydenIO.Lifx {
     /// <summary>
-    /// An <see cref="ILifxResponseAwaiter"/> that calls a delegate whenever a response is received, until the user cancels, or it times out.
+    /// An <see cref="IResponseAwaiter"/> that calls a delegate whenever a response is received, until the user cancels, or it times out.
     /// </summary>
     /// <typeparam name="T">The returned message type.</typeparam>
-    internal class LifxMultipleResponseDelegatedAwaiter<T> : ILifxResponseAwaiter where T : LifxMessage {
+    internal class MultipleResponseDelegatedAwaiter<T> : IResponseAwaiter where T : LifxMessage {
         private readonly TaskCompletionSource<bool> taskCompletionSource;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LifxMultipleResponseDelegatedAwaiter{T}"/> class.
+        /// Initializes a new instance of the <see cref="MultipleResponseDelegatedAwaiter{T}"/> class.
         /// </summary>
-        public LifxMultipleResponseDelegatedAwaiter() {
+        public MultipleResponseDelegatedAwaiter() {
             this.taskCompletionSource = new TaskCompletionSource<bool>(false);
         }
 
         /// <summary>An event that is invoked for every response received.</summary>
-        public event Action<LifxResponse<T>> ResponseReceived;
+        public event Action<Response<T>> ResponseReceived;
 
         /// <inheritdoc />
         public Task Task => this.taskCompletionSource.Task;
 
         /// <inheritdoc />
-        public void HandleResponse(LifxResponse response) {
-            this.ResponseReceived?.Invoke((LifxResponse<T>)response);
+        public void HandleResponse(Response response) {
+            this.ResponseReceived?.Invoke((Response<T>)response);
         }
 
         /// <inheritdoc />

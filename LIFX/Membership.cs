@@ -13,18 +13,18 @@ namespace AydenIO.Lifx {
     /// A collection of devices belonging to a membership information.
     /// </summary>
     /// <typeparam name="TTag">The membership tag type.</typeparam>
-    internal abstract class LifxMembership<TTag> : ICollection<ILifxDevice>, ILifxMembership<TTag> where TTag : ILifxMembershipTag {
+    internal abstract class Membership<TTag> : ICollection<ILifxDevice>, ILifxMembership<TTag> where TTag : ILifxMembershipTag {
         private readonly ICollection<EquatableWeakReference<ILifxDevice>> members;
 
         private Guid guid;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LifxMembership{TTag}"/> class.
+        /// Initializes a new instance of the <see cref="Membership{TTag}"/> class.
         /// </summary>
         /// <param name="guid">The identifier for the membership information.</param>
         /// <param name="label">The label for the membership information.</param>
         /// <param name="updatedAt">The time the membership information was last updated.</param>
-        protected LifxMembership(Guid guid, string label, DateTime updatedAt) {
+        protected Membership(Guid guid, string label, DateTime updatedAt) {
             this.members = new HashSet<EquatableWeakReference<ILifxDevice>>();
 
             this.guid = guid;

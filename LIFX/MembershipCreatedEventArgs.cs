@@ -19,12 +19,12 @@ namespace AydenIO.Lifx {
     /// </summary>
     /// <typeparam name="TMembership">The membership type.</typeparam>
     /// <typeparam name="TTag">The membership type's tag.</typeparam>
-    internal class LifxMembershipCreatedEventArgs<TMembership, TTag> : EventArgs, ILifxMembershipCreatedEventArgs<TMembership, TTag> where TMembership : ILifxMembership<TTag> where TTag : ILifxMembershipTag {
+    internal class MembershipCreatedEventArgs<TMembership, TTag> : EventArgs, ILifxMembershipCreatedEventArgs<TMembership, TTag> where TMembership : ILifxMembership<TTag> where TTag : ILifxMembershipTag {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LifxMembershipCreatedEventArgs{TMembership, TTag}"/> class.
+        /// Initializes a new instance of the <see cref="MembershipCreatedEventArgs{TMembership, TTag}"/> class.
         /// </summary>
         /// <param name="collection">The membership.</param>
-        public LifxMembershipCreatedEventArgs(TMembership collection) {
+        public MembershipCreatedEventArgs(TMembership collection) {
             this.Collection = collection;
         }
 

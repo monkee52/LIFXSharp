@@ -7,7 +7,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Manages locations known to the <see cref="LifxNetwork"/>.
     /// </summary>
-    internal class LifxLocationCollection : LifxMembershipCollection<LifxLocation, ILifxLocation, ILifxLocationTag>, ILifxLocationCollection {
+    internal class LifxLocationCollection : MembershipCollection<LifxLocation, ILifxLocation, ILifxLocationTag>, ILifxLocationCollection {
         /// <summary>
         /// Initializes a new instance of the <see cref="LifxLocationCollection"/> class.
         /// </summary>

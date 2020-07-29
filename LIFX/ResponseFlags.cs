@@ -8,7 +8,7 @@ namespace AydenIO.Lifx {
     /// Determines whether an acknowledgement, response, both, or neither are required.
     /// </summary>
     [Flags]
-    internal enum LifxeResponseFlags {
+    internal enum ResponseFlags {
         /// <summary>No response or acknowledgement is required.</summary>
         None = 0,
 

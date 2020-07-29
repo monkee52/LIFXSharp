@@ -25,7 +25,7 @@ namespace AydenIO.Lifx {
         /// <summary>Gets the default broadcast target.</summary>
         public static readonly MacAddress LifxBroadcast = new MacAddress(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
 
-        private readonly IDictionary<byte, ILifxResponseAwaiter> awaitingSequences;
+        private readonly IDictionary<byte, IResponseAwaiter> awaitingSequences;
 
         private readonly IDictionary<MacAddress, ILifxDevice> deviceLookup;
 
@@ -85,7 +85,7 @@ namespace AydenIO.Lifx {
             // Set up internals
             this.sequenceCounter = -1; // Start at -1 because Interlocked.Increment returns the incremented value
             this.deviceLookup = new Dictionary<MacAddress, ILifxDevice>();
-            this.awaitingSequences = new ConcurrentDictionary<byte, ILifxResponseAwaiter>();
+            this.awaitingSequences = new ConcurrentDictionary<byte, IResponseAwaiter>();
 
             // Set up config
             this.DiscoveryInterval = discoveryInterval;
@@ -225,7 +225,7 @@ namespace AydenIO.Lifx {
             LifxMessage getVersion = new Messages.GetVersion();
 
             // Send message
-            await this.SendWithMultipleResponseDelegated<Messages.StateVersion>(null, getVersion, (LifxResponse<Messages.StateVersion> response) => this.DiscoveryResponseHandler(response, cancellationToken), this.DiscoveryInterval, cancellationToken);
+            await this.SendWithMultipleResponseDelegated<Messages.StateVersion>(null, getVersion, (Response<Messages.StateVersion> response) => this.DiscoveryResponseHandler(response, cancellationToken), this.DiscoveryInterval, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) {
                 return;
@@ -285,7 +285,7 @@ namespace AydenIO.Lifx {
             };
 
             // Send message
-            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(new IPEndPoint(IPAddress.Broadcast, port), getVersion, timeoutMs, cancellationToken);
+            Response<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(new IPEndPoint(IPAddress.Broadcast, port), getVersion, timeoutMs, cancellationToken);
 
             LifxDevice device = await this.CreateAndAddDevice(response, cancellationToken);
 
@@ -314,7 +314,7 @@ namespace AydenIO.Lifx {
             LifxMessage getVersion = new Messages.GetVersion();
 
             // Send message
-            LifxResponse<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(endPoint, getVersion, timeoutMs, cancellationToken);
+            Response<Messages.StateVersion> response = await this.SendWithResponse<Messages.StateVersion>(endPoint, getVersion, timeoutMs, cancellationToken);
 
             return await this.GetDevice(response.Message.Target, (ushort)endPoint.Port, timeoutMs, cancellationToken);
         }
@@ -402,7 +402,7 @@ namespace AydenIO.Lifx {
         /// <param name="message">The message.</param>
         /// <returns>>A <see cref="Task"/> representing the asynchronous operation.</returns>
         internal Task Send(LifxDevice device, LifxMessage message) {
-            this.SetMessageHeaderCommon(device, message, LifxeResponseFlags.None);
+            this.SetMessageHeaderCommon(device, message, ResponseFlags.None);
 
             return this.SendCommon(device?.EndPoint, message);
         }
@@ -417,7 +417,7 @@ namespace AydenIO.Lifx {
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
         /// <returns>The returned message.</returns>
         internal async Task<T> SendWithResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken cancellationToken = default) where T : LifxMessage {
-            LifxResponse<T> response = await this.SendWithResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken);
+            Response<T> response = await this.SendWithResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken);
 
             return response.Message;
         }
@@ -432,9 +432,9 @@ namespace AydenIO.Lifx {
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
         /// <returns>The returned message.</returns>
         internal async Task<IReadOnlyCollection<T>> SendWithMultipleResponse<T>(LifxDevice device, LifxMessage message, int? timeoutMs = null, CancellationToken cancellationToken = default) where T : LifxMessage {
-            IReadOnlyCollection<LifxResponse<T>> responses = await this.SendWithMultipleResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken);
+            IReadOnlyCollection<Response<T>> responses = await this.SendWithMultipleResponse<T>(device?.EndPoint, message, timeoutMs, cancellationToken);
 
-            return responses.Select((LifxResponse<T> response) => response.Message).ToList().AsReadOnly();
+            return responses.Select((Response<T> response) => response.Message).ToList().AsReadOnly();
         }
 
         /// <summary>
@@ -448,7 +448,7 @@ namespace AydenIO.Lifx {
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
         /// <returns>The returned message.</returns>
         internal Task SendWithMultipleResponseDelegated<T>(LifxDevice device, LifxMessage message, Action<T> handler, int? timeoutMs = null, CancellationToken cancellationToken = default) where T : LifxMessage {
-            return this.SendWithMultipleResponseDelegated<T>(device?.EndPoint, message, (LifxResponse<T> response) => handler?.Invoke(response.Message), timeoutMs, cancellationToken);
+            return this.SendWithMultipleResponseDelegated<T>(device?.EndPoint, message, (Response<T> response) => handler?.Invoke(response.Message), timeoutMs, cancellationToken);
         }
 
         /// <summary>
@@ -499,7 +499,7 @@ namespace AydenIO.Lifx {
 
             reply.SourceId = request.SourceId;
             reply.SequenceNumber = request.SequenceNumber;
-            reply.ResponseFlags = LifxeResponseFlags.None;
+            reply.ResponseFlags = ResponseFlags.None;
         }
 
         private void SocketReceiveWorker() {
@@ -607,7 +607,7 @@ namespace AydenIO.Lifx {
                     }
                 } else {
                     // Find awaiters
-                    bool found = this.awaitingSequences.TryGetValue(origMessage.SequenceNumber, out ILifxResponseAwaiter responseAwaiter);
+                    bool found = this.awaitingSequences.TryGetValue(origMessage.SequenceNumber, out IResponseAwaiter responseAwaiter);
 
                     LifxMessage message = origMessage;
 
@@ -665,7 +665,7 @@ namespace AydenIO.Lifx {
                             }
 
                             try {
-                                responseAwaiter.HandleResponse(new LifxResponse(endPoint, message));
+                                responseAwaiter.HandleResponse(new Response(endPoint, message));
                             } catch (InvalidCastException e) {
                                 Debug.WriteLine($"{e.GetType().Name} while handling message: {e.Message}");
                             }
@@ -689,8 +689,8 @@ namespace AydenIO.Lifx {
             LifxVirtualMultizoneLight virtualMultizoneLight = virtualDevice as LifxVirtualMultizoneLight;
             bool isVirtualMultizoneLight = virtualMultizoneLight != null;
 
-            bool resRequired = request.ResponseFlags.HasFlag(LifxeResponseFlags.ResponseRequired);
-            bool ackRequired = request.ResponseFlags.HasFlag(LifxeResponseFlags.AcknowledgementRequired);
+            bool resRequired = request.ResponseFlags.HasFlag(ResponseFlags.ResponseRequired);
+            bool ackRequired = request.ResponseFlags.HasFlag(ResponseFlags.AcknowledgementRequired);
 
             ICollection<LifxMessage> responses = new List<LifxMessage>();
 
@@ -988,7 +988,7 @@ namespace AydenIO.Lifx {
             }
         }
 
-        private void DiscoveryResponseHandler(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
+        private void DiscoveryResponseHandler(Response<Messages.StateVersion> response, CancellationToken cancellationToken) {
             bool didFind = this.deviceLookup.TryGetValue(response.Message.Target, out ILifxDevice device);
 
             if (didFind) {
@@ -1011,7 +1011,7 @@ namespace AydenIO.Lifx {
             }
         }
 
-        private async Task<LifxDevice> CreateAndAddDevice(LifxResponse<Messages.StateVersion> response, CancellationToken cancellationToken) {
+        private async Task<LifxDevice> CreateAndAddDevice(Response<Messages.StateVersion> response, CancellationToken cancellationToken) {
             LifxDevice device;
 
             ILifxProduct product = LifxNetwork.GetFeaturesForProduct(response.Message);
@@ -1071,7 +1071,7 @@ namespace AydenIO.Lifx {
         /// <param name="message">The message.</param>
         /// <param name="responseFlags">The type of response required from the device.</param>
         /// <returns>An 8-bit sequence number.</returns>
-        private byte SetMessageHeaderCommon(LifxDevice device, LifxMessage message, LifxeResponseFlags responseFlags) {
+        private byte SetMessageHeaderCommon(LifxDevice device, LifxMessage message, ResponseFlags responseFlags) {
             // Set target if available
             if (device != null) {
                 message.Target = device.MacAddress;
@@ -1098,9 +1098,9 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
         /// <param name="isAcknowledgement">Whether the return type is <see cref="Messages.Acknowledgement"/>.</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
-        private async Task SendWithResponseCommon(IPEndPoint endPoint, LifxMessage message, ILifxResponseAwaiter awaiter, int? timeoutMs, bool isAcknowledgement, CancellationToken cancellationToken) {
+        private async Task SendWithResponseCommon(IPEndPoint endPoint, LifxMessage message, IResponseAwaiter awaiter, int? timeoutMs, bool isAcknowledgement, CancellationToken cancellationToken) {
             // Determine responseFlags
-            LifxeResponseFlags responseFlags = isAcknowledgement ? LifxeResponseFlags.AcknowledgementRequired : LifxeResponseFlags.ResponseRequired;
+            ResponseFlags responseFlags = isAcknowledgement ? ResponseFlags.AcknowledgementRequired : ResponseFlags.ResponseRequired;
 
             // Set common properties of message
             byte seq = this.SetMessageHeaderCommon(null, message, responseFlags);
@@ -1158,11 +1158,11 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
         /// <returns>The returned message.</returns>
-        private async Task<LifxResponse<T>> SendWithResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
+        private async Task<Response<T>> SendWithResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
             bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
 
             // Create awaiter
-            LifxSingleResponseAwaiter<T> awaiter = new LifxSingleResponseAwaiter<T>();
+            SingleResponseAwaiter<T> awaiter = new SingleResponseAwaiter<T>();
 
             await this.SendWithResponseCommon(endPoint, message, awaiter, timeoutMs, isAcknowledgement, cancellationToken);
 
@@ -1179,11 +1179,11 @@ namespace AydenIO.Lifx {
         /// <param name="timeoutMs">How long before the call times out if there is no response.</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
         /// <returns>The returned messages.</returns>
-        private async Task<IReadOnlyCollection<LifxResponse<T>>> SendWithMultipleResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
+        private async Task<IReadOnlyCollection<Response<T>>> SendWithMultipleResponse<T>(IPEndPoint endPoint, LifxMessage message, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
             bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
 
             // Create awaiter
-            LifxMultipleResponseAwaiter<T> awaiter = new LifxMultipleResponseAwaiter<T>();
+            MultipleResponseAwaiter<T> awaiter = new MultipleResponseAwaiter<T>();
 
             await this.SendWithResponseCommon(endPoint, message, awaiter, timeoutMs, isAcknowledgement, cancellationToken);
 
@@ -1200,10 +1200,10 @@ namespace AydenIO.Lifx {
         /// <param name="handler">The delegate to invoke for each response.</param>
         /// <param name="timeoutMs">How long before the call takes before the call completes.</param>
         /// <param name="cancellationToken">Cancellation token to force the function to return its immediate result.</param>
-        private async Task SendWithMultipleResponseDelegated<T>(IPEndPoint endPoint, LifxMessage message, Action<LifxResponse<T>> handler, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
+        private async Task SendWithMultipleResponseDelegated<T>(IPEndPoint endPoint, LifxMessage message, Action<Response<T>> handler, int? timeoutMs, CancellationToken cancellationToken) where T : LifxMessage {
             bool isAcknowledgement = typeof(T) == typeof(Messages.Acknowledgement);
 
-            LifxMultipleResponseDelegatedAwaiter<T> awaiter = new LifxMultipleResponseDelegatedAwaiter<T>();
+            MultipleResponseDelegatedAwaiter<T> awaiter = new MultipleResponseDelegatedAwaiter<T>();
 
             awaiter.ResponseReceived += handler;
 

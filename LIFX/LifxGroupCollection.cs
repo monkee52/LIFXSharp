@@ -7,7 +7,7 @@ namespace AydenIO.Lifx {
     /// <summary>
     /// Manages groups known to the <see cref="LifxNetwork"/>.
     /// </summary>
-    internal class LifxGroupCollection : LifxMembershipCollection<LifxGroup, ILifxGroup, ILifxGroupTag>, ILifxGroupCollection {
+    internal class LifxGroupCollection : MembershipCollection<LifxGroup, ILifxGroup, ILifxGroupTag>, ILifxGroupCollection {
         /// <summary>
         /// Initializes a new instance of the <see cref="LifxGroupCollection"/> class.
         /// </summary>
